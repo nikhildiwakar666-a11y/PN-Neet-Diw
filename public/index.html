@@ -21,9 +21,12 @@
       color: var(--ink);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
-    /* Header & Navigation */
+    /* Common Header */
     header {
       height: 64px;
       background: #ffffff;
@@ -77,7 +80,7 @@
       color: #111111;
     }
 
-    /* Top-Right Account & Three-Dot Menu */
+    /* Header Right & Three-Dot Menu */
     .header-right {
       display: flex;
       align-items: center;
@@ -104,7 +107,7 @@
       border: 1.5px solid #d4d4cd;
       overflow: hidden;
       flex-shrink: 0;
-      transition: transform 0.15s ease, border-color 0.15s ease;
+      transition: transform 0.15s ease;
     }
     .avatar-circle:hover {
       transform: scale(1.04);
@@ -135,7 +138,6 @@
       border-color: #111111;
     }
 
-    /* Three-Dot Dropdown Menu */
     .three-dot-menu {
       position: absolute;
       top: calc(100% + 8px);
@@ -168,11 +170,8 @@
       align-items: center;
       gap: 10px;
       cursor: pointer;
-      transition: background 0.15s ease;
     }
-    .menu-user-card:hover {
-      background: #ededeb;
-    }
+    .menu-user-card:hover { background: #ededeb; }
     .menu-user-thumb {
       width: 34px;
       height: 34px;
@@ -193,10 +192,6 @@
       font-weight: 700;
       flex-shrink: 0;
     }
-    .menu-user-thumb-fallback.admin {
-      background: #111111;
-      border: 2px solid #888884;
-    }
     .menu-user-details {
       flex: 1;
       min-width: 0;
@@ -214,26 +209,6 @@
       color: #666662;
       font-weight: 600;
     }
-    .menu-user-badge.admin {
-      color: #111111;
-      font-weight: 700;
-    }
-
-    .menu-header {
-      padding: 10px 12px;
-      display: flex;
-      flex-direction: column;
-    }
-    .menu-header-title {
-      font-size: 13.5px;
-      font-weight: 700;
-      color: #111111;
-    }
-    .menu-header-sub {
-      font-size: 11.5px;
-      color: #777773;
-    }
-
     .menu-divider {
       height: 1px;
       background: #ebebe6;
@@ -255,44 +230,23 @@
       cursor: pointer;
       transition: background 0.12s ease;
     }
-    .menu-item:hover {
-      background: #f5f5f2;
-      color: #111111;
-    }
-    .menu-item.primary {
-      background: #111111;
-      color: #ffffff;
-      font-weight: 700;
-    }
-    .menu-item.primary:hover {
-      background: #2b2b29;
-    }
+    .menu-item:hover { background: #f5f5f2; color: #111111; }
     .menu-item.admin-highlight {
-      background: #f0f0ed;
-      color: #111111;
-      border: 1px solid #d4d4cd;
-    }
-    .menu-item.admin-highlight:hover {
       background: #111111;
       color: #ffffff;
     }
-    .menu-item.logout {
-      color: #c53030;
-    }
-    .menu-item.logout:hover {
-      background: #fff0f0;
-      color: #b02020;
-    }
+    .menu-item.admin-highlight:hover { background: #2e2e2b; }
+    .menu-item.logout { color: #c53030; }
+    .menu-item.logout:hover { background: #fff0f0; color: #b02020; }
     .menu-item-icon {
       font-size: 15px;
       width: 18px;
       display: flex;
       align-items: center;
       justify-content: center;
-      opacity: 0.85;
     }
 
-    /* Core UI Elements */
+    /* Buttons & General */
     button {
       border: 0;
       border-radius: 8px;
@@ -302,45 +256,254 @@
       font-weight: 700;
       cursor: pointer;
       font-size: 14px;
-      transition: background 0.15s ease, opacity 0.15s ease;
+      transition: background 0.15s ease;
     }
-    button:hover:not(:disabled) {
-      background: #2b2b28;
-    }
+    button:hover:not(:disabled) { background: #2b2b28; }
     button.light {
       background: #f0f0ed;
       color: #111111;
       border: 1px solid #e0e0da;
     }
-    button.light:hover {
-      background: #e5e5e0;
-    }
+    button.light:hover { background: #e5e5e0; }
     button.out {
       color: #111111;
       background: #ffffff;
       border: 1px solid var(--line);
     }
-    button.out:hover {
-      background: #f8f8f6;
-      border-color: #111111;
-    }
+    button.out:hover { background: #f8f8f6; border-color: #111111; }
     button.red {
       color: var(--red);
       background: #fff0f0;
       border: 1px solid #ffdcdc;
     }
-    button.red:hover {
-      background: #ffe3e3;
+    button.red:hover { background: #ffe3e3; }
+    button:disabled { opacity: .45; cursor: not-allowed; }
+
+    /* ==========================================================================
+       MANDATORY LOGIN GATE (LANDING PAGE WHEN LOGGED OUT)
+       ========================================================================== */
+    #loginGateContainer {
+      display: flex;
+      flex: 1;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
     }
-    button:disabled {
-      opacity: .45;
-      cursor: not-allowed;
+    .gate-wrapper {
+      max-width: 980px;
+      width: 100%;
+      background: #ffffff;
+      border: 1px solid #e2e2dc;
+      border-radius: 20px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+    }
+    .gate-hero-side {
+      background: linear-gradient(145deg, #111111 0%, #1e1e1b 100%);
+      color: #ffffff;
+      padding: 44px 38px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .gate-brand-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .gate-badge {
+      background: #2b2b28;
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 3px 8px;
+      border-radius: 999px;
+      width: fit-content;
+      margin: 14px 0 12px;
+    }
+    .gate-quote {
+      font-size: clamp(24px, 3.2vw, 32px);
+      font-weight: 800;
+      line-height: 1.3;
+      letter-spacing: -0.02em;
+      margin: 0 0 14px;
+    }
+    .gate-subtitle {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #cfcfca;
+      margin: 0 0 24px;
+    }
+    .gate-notice-box {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-size: 12.5px;
+      line-height: 1.55;
+      color: #e5e5e0;
+      margin-bottom: 24px;
+    }
+    .gate-features-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 13px;
+      color: #e0e0da;
+    }
+    .gate-feature-item {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+    .gate-check {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #ffffff;
+      color: #111111;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 900;
+      flex-shrink: 0;
     }
 
-    main {
+    .gate-form-side {
+      background: #ffffff;
+      padding: 44px 38px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .gate-tabs {
+      display: flex;
+      background: #f0f0ed;
+      border-radius: 10px;
+      padding: 4px;
+      margin-bottom: 24px;
+    }
+    .gate-tab-btn {
+      flex: 1;
+      background: transparent;
+      color: #666662;
+      border: none;
+      padding: 9px 12px;
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .gate-tab-btn.active {
+      background: #ffffff;
+      color: #111111;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    }
+    .gate-form-title {
+      font-size: 20px;
+      font-weight: 800;
+      margin: 0 0 6px;
+      color: #111111;
+    }
+    .gate-form-desc {
+      font-size: 13px;
+      color: #666662;
+      margin: 0 0 20px;
+    }
+    .gate-error-banner {
+      display: none;
+      background: #fff0f0;
+      border: 1px solid #ffd8d8;
+      color: #c53030;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    .gate-field {
+      margin-bottom: 15px;
+    }
+    .gate-field label {
+      display: block;
+      font-size: 12.5px;
+      font-weight: 700;
+      margin-bottom: 5px;
+      color: #222220;
+    }
+    .gate-field input {
+      width: 100%;
+      padding: 11px 13px;
+      border: 1.5px solid #dcdcd6;
+      border-radius: 9px;
+      font-size: 14px;
+      background: #ffffff;
+      color: #111111;
+      transition: border-color 0.15s ease;
+    }
+    .gate-field input:focus {
+      outline: none;
+      border-color: #111111;
+    }
+    .gate-admin-hint {
+      font-size: 11.5px;
+      color: #777773;
+      margin: 4px 0 18px;
+      line-height: 1.5;
+    }
+    .gate-submit-btn {
+      width: 100%;
+      padding: 13px;
+      border-radius: 9px;
+      background: #111111;
+      color: #ffffff;
+      font-size: 14.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    .gate-submit-btn:hover {
+      background: #2b2b28;
+    }
+    .gate-switch-link {
+      font-size: 12.5px;
+      color: #666662;
+      text-align: center;
+      margin-top: 18px;
+    }
+    .gate-switch-link a {
+      color: #111111;
+      font-weight: 700;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    @media (max-width: 840px) {
+      .gate-wrapper { grid-template-columns: 1fr; }
+      .gate-hero-side { padding: 32px 24px; }
+      .gate-form-side { padding: 32px 24px; }
+    }
+
+    /* ==========================================================================
+       DASHBOARD STYLES (STUDENT & ADMIN)
+       ========================================================================== */
+    #studentDashboard, #adminDashboardView {
       max-width: 1140px;
       margin: auto;
-      padding: 42px 20px;
+      padding: 36px 20px;
+      width: 100%;
+    }
+    .dashboard-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
     }
     .head {
       display: flex;
@@ -381,7 +544,7 @@
     .meta { font-size: 13px; margin: 15px 0; line-height: 1.6; }
     .card button { width: 100%; }
 
-    /* Modal System */
+    /* Modals */
     .modal {
       display: none;
       position: fixed;
@@ -422,12 +585,8 @@
       cursor: pointer;
       padding: 0;
     }
-    .close:hover {
-      background: #111111;
-      color: #ffffff;
-    }
+    .close:hover { background: #111111; color: #ffffff; }
 
-    /* Forms */
     .formgrid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -449,15 +608,9 @@
       font: inherit;
       background: #ffffff;
       color: #111111;
-      transition: border-color 0.15s ease;
-    }
-    input:focus, textarea:focus, select:focus {
-      outline: none;
-      border-color: #111111;
     }
     textarea { min-height: 72px; }
 
-    /* Test attempt view */
     .row, .nav, .testbar {
       display: flex;
       align-items: center;
@@ -506,17 +659,9 @@
       padding: 12px 14px;
       font-size: 14.5px;
       cursor: pointer;
-      transition: all 0.15s ease;
     }
-    .option:hover {
-      border-color: #111111;
-      background: #fbfbf9;
-    }
-    .option.selected {
-      border-color: #111111;
-      background: #111111;
-      color: #ffffff;
-    }
+    .option:hover { border-color: #111111; background: #fbfbf9; }
+    .option.selected { border-color: #111111; background: #111111; color: #ffffff; }
     .nav { margin-top: 24px; }
     .item {
       padding: 14px;
@@ -553,7 +698,6 @@
       font-weight: 800;
       border: 2px solid #d4d4cd;
       flex-shrink: 0;
-      position: relative;
     }
     .profile-avatar-large img {
       width: 100%;
@@ -569,75 +713,237 @@
   </style>
 </head>
 <body>
+  <!-- Global Header -->
   <header>
-    <div class="brand" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+    <div class="brand" onclick="brandHomeClick()">
       <span class="brand-badge">PN</span>
       <span>Neet <b>Diw</b></span>
     </div>
 
-    <!-- Quick Navigation (Responsive) -->
-    <nav class="nav-links">
+    <!-- Student Navigation Links (Visible only when logged in) -->
+    <nav class="nav-links" id="mainNavLinks" style="display:none">
       <button class="nav-link-btn" onclick="scrollToSchedule()">Test Schedule</button>
-      <button class="nav-link-btn" id="navLibraryBtn" onclick="libraryOpen()" style="display:none">Notes & Videos</button>
-      <button class="nav-link-btn" id="navCommunityBtn" onclick="communityOpen()" style="display:none">Community Chat</button>
+      <button class="nav-link-btn" onclick="libraryOpen()">Notes & Videos</button>
+      <button class="nav-link-btn" onclick="communityOpen()">Community Chat</button>
     </nav>
 
-    <!-- Top-Right Avatar & Three-Dot Menu (⋮) -->
-    <div class="header-right">
-      <div class="user-avatar-trigger" id="avatarTrigger" onclick="toggleMenu()" title="Account & Features">
-        <div class="avatar-circle" id="navAvatar">
-          <span class="nav-avatar-letter" id="navAvatarInitials">👤</span>
+    <!-- Top-Right Actions -->
+    <div class="header-right" id="headerRightArea">
+      <!-- In Logged Out state, subtle indicator -->
+      <span class="tag" id="loggedOutBadge" style="display:none">Sign In Required</span>
+
+      <!-- In Logged In state: Avatar circle & Three-Dot Menu -->
+      <div id="loggedInControls" style="display:none;align-items:center;gap:10px">
+        <div class="user-avatar-trigger" id="avatarTrigger" onclick="toggleMenu()" title="Account & Features">
+          <div class="avatar-circle" id="navAvatar">
+            <span class="nav-avatar-letter" id="navAvatarInitials">👤</span>
+          </div>
         </div>
+
+        <button class="menu-dots-btn" id="menuBtn" onclick="toggleMenu()" aria-label="Account Menu" title="Account Menu">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <circle cx="12" cy="5" r="2.2"/>
+            <circle cx="12" cy="12" r="2.2"/>
+            <circle cx="12" cy="19" r="2.2"/>
+          </svg>
+        </button>
+
+        <div class="three-dot-menu" id="threeDotMenu" role="menu"></div>
       </div>
-
-      <button class="menu-dots-btn" id="menuBtn" onclick="toggleMenu()" aria-label="Account Menu" title="Account Menu">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-          <circle cx="12" cy="5" r="2.2"/>
-          <circle cx="12" cy="12" r="2.2"/>
-          <circle cx="12" cy="19" r="2.2"/>
-        </svg>
-      </button>
-
-      <!-- Three-Dot Dropdown Menu Content -->
-      <div class="three-dot-menu" id="threeDotMenu" role="menu"></div>
     </div>
   </header>
 
-  <main>
-    <section class="hero">
-      <div>
-        <span class="tag">NEET 2026/2027</span>
-        <h1>Every small study session brings your NEET dream closer.</h1>
-        <p>Prepare for NEET with chapter-wise Biology, Chemistry and Physics tests, study notes, videos, and an honest practice schedule.</p>
-        <button onclick="startFirst()">Begin Your Practice →</button>
+  <!-- ==========================================================================
+       1. MANDATORY LOGIN GATE (ONLY VISIBLE WHEN LOGGED OUT)
+       ========================================================================== -->
+  <main id="loginGateContainer">
+    <div class="gate-wrapper">
+      <!-- Left Hero & Motivation Side -->
+      <div class="gate-hero-side">
+        <div>
+          <div class="gate-brand-row">
+            <span class="brand-badge">PN</span>
+            <span style="font-size:18px;font-weight:800;letter-spacing:-0.01em">Neet <b>Diw</b></span>
+          </div>
+          <div class="gate-badge">NEET 2026/2027 Aspirant Portal</div>
+          <h1 class="gate-quote">“Your NEET journey starts with one focused step.”</h1>
+          <p class="gate-subtitle">A disciplined, chapter-by-chapter practice and testing platform designed for serious medical aspirants.</p>
+
+          <div class="gate-notice-box">
+            <b>🔒 Member-Only Access Notice:</b><br>
+            Students can access chapter tests, study material notes, lecture videos, score analytics, doubt community chat, study calendar, and live classes only after signing in.
+          </div>
+        </div>
+
+        <div class="gate-features-list">
+          <div class="gate-feature-item">
+            <span class="gate-check">✓</span>
+            <span>Chapter-wise timed Biology, Chemistry & Physics mock tests</span>
+          </div>
+          <div class="gate-feature-item">
+            <span class="gate-check">✓</span>
+            <span>Comprehensive PDF revision notes & recorded lecture library</span>
+          </div>
+          <div class="gate-feature-item">
+            <span class="gate-check">✓</span>
+            <span>Per-question time tracking, accuracy review & explanations</span>
+          </div>
+          <div class="gate-feature-item">
+            <span class="gate-check">✓</span>
+            <span>Live interactive doubt chat with question photo sharing</span>
+          </div>
+          <div class="gate-feature-item">
+            <span class="gate-check">✓</span>
+            <span>Private daily study planner & revision calendar</span>
+          </div>
+        </div>
       </div>
-      <i>🧬</i>
-    </section>
+
+      <!-- Right Login & Register Form Side -->
+      <div class="gate-form-side">
+        <div class="gate-tabs">
+          <button type="button" class="gate-tab-btn active" id="tabSignIn" onclick="setAuthMode('login')">Sign In</button>
+          <button type="button" class="gate-tab-btn" id="tabRegister" onclick="setAuthMode('register')">Create Account</button>
+        </div>
+
+        <h2 class="gate-form-title" id="authTitle">Student Login</h2>
+        <p class="gate-form-desc" id="authDesc">Sign in with your email to unlock your tests and study materials.</p>
+
+        <div class="gate-error-banner" id="authErrorBanner"></div>
+
+        <form id="authForm" onsubmit="handleAuthSubmit(event)">
+          <div class="gate-field" id="authNameField" style="display:none">
+            <label>Full Name</label>
+            <input id="authName" placeholder="e.g. Rahul Sharma" autocomplete="name">
+          </div>
+
+          <div class="gate-field">
+            <label>Email Address</label>
+            <input id="authEmail" type="email" placeholder="student@example.com" required autocomplete="email">
+          </div>
+
+          <div class="gate-field">
+            <label>Password</label>
+            <input id="authPassword" type="password" placeholder="Minimum 6 characters" required autocomplete="current-password">
+          </div>
+
+          <p class="gate-admin-hint" id="authAdminHint">
+            Teacher or Administrator? Sign in with your administrator email and password above to open the Admin Dashboard.
+          </p>
+
+          <button type="submit" class="gate-submit-btn" id="authSubmitBtn">Sign In to Dashboard →</button>
+        </form>
+
+        <div class="gate-switch-link" id="authSwitchPrompt">
+          New student? <a onclick="setAuthMode('register')">Create a free student account</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ==========================================================================
+       2. STUDENT DASHBOARD (ONLY VISIBLE FOR AUTHENTICATED STUDENTS)
+       ========================================================================== -->
+  <div id="studentDashboard" style="display:none">
+    <div id="studentHeroSection"></div>
+
     <div class="head">
       <h2>Chapter-wise Test Schedule</h2>
       <button class="light" onclick="resultsOpen()">My Results</button>
     </div>
     <section class="grid" id="cards"></section>
-  </main>
+  </div>
 
-  <!-- Student / Admin Login Modal -->
-  <div class="modal" id="login">
-    <div class="box" style="max-width:420px">
-      <button class="close" onclick="hide('login')">✕</button>
-      <h2 id="loginTitle" style="margin-top:0">Student Login</h2>
-      <p class="muted" id="loginInfo">Sign in to start a test or join community chat.</p>
-      <div id="nameField">
-        <label>Full name</label>
-        <input id="name" placeholder="Your name">
+  <!-- ==========================================================================
+       3. ADMIN DASHBOARD VIEW (ONLY VISIBLE FOR AUTHENTICATED ADMIN)
+       ========================================================================== -->
+  <div id="adminDashboardView" style="display:none">
+    <div class="panel" style="background:#111111;color:#ffffff;border-radius:18px;padding:30px;margin-bottom:24px">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px">
+        <div>
+          <span class="tag" style="background:#262624;color:#f0f0ed">Administrator Portal</span>
+          <h1 style="font-size:28px;margin:8px 0 4px">PN Neet Diw Admin Dashboard</h1>
+          <p style="color:#d7d7d2;margin:0;font-size:14px">Manage chapter tests, question banks, scheduled timings, student accounts, and study materials.</p>
+        </div>
+        <div style="display:flex;gap:10px">
+          <button class="light" onclick="libraryOpen()">Study Material</button>
+          <button class="red" onclick="logoutUser()">Logout</button>
+        </div>
       </div>
-      <label>Email address</label>
-      <input id="email" type="email" placeholder="student@example.com">
-      <label>Password</label>
-      <input id="password" type="password" placeholder="Minimum 6 characters">
-      <button style="width:100%;margin-top:16px" id="loginSubmit">Login</button>
-      <p class="muted" id="loginSwitch" style="font-size:13px;text-align:center;margin-top:16px"></p>
+    </div>
+
+    <div class="tabs">
+      <button id="adminTabManageBtn" onclick="switchAdminTab('manage')">Tests & Questions</button>
+      <button id="adminTabReportsBtn" class="light" onclick="switchAdminTab('reports')">Students & Attempt Reports</button>
+    </div>
+
+    <div id="adminManageSection">
+      <div class="formgrid">
+        <div class="panel">
+          <h3 id="testHeading">Create a scheduled test</h3>
+          <input id="editTest" type="hidden">
+          <label>Test title</label>
+          <input id="testTitle" placeholder="Human Physiology Test">
+          <label>Subject</label>
+          <select id="testSubject">
+            <option>Biology</option>
+            <option>Chemistry</option>
+            <option>Physics</option>
+          </select>
+          <label>Chapter</label>
+          <input id="testChapter" placeholder="Human Physiology">
+          <label>Duration in minutes</label>
+          <input id="testDuration" type="number" min="1" value="30">
+          <label>Scheduled start date and time (leave blank for instant practice)</label>
+          <input id="testStart" type="datetime-local">
+          <label><input id="testActive" type="checkbox" checked style="width:auto"> Show to students</label>
+          <button style="margin-top:14px" onclick="saveTest()">Save Test</button>
+          <button class="out" onclick="resetTest()">Reset</button>
+        </div>
+
+        <div class="panel">
+          <h3 id="questionHeading">Add a question</h3>
+          <input id="editQuestion" type="hidden">
+          <label>Test</label>
+          <select id="questionTest"></select>
+          <label>Question</label>
+          <textarea id="questionText"></textarea>
+          <label>Option A</label>
+          <input id="oa">
+          <label>Option B</label>
+          <input id="ob">
+          <label>Option C</label>
+          <input id="oc">
+          <label>Option D</label>
+          <input id="od">
+          <label>Correct answer</label>
+          <select id="answer">
+            <option value="0">A</option>
+            <option value="1">B</option>
+            <option value="2">C</option>
+            <option value="3">D</option>
+          </select>
+          <button style="margin-top:14px" onclick="saveQuestion()">Save Question</button>
+          <button class="out" onclick="resetQuestion()">Reset</button>
+        </div>
+
+        <div class="panel wide">
+          <h3>Existing tests and questions</h3>
+          <div id="content"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="adminReportsSection" class="hidden">
+      <div class="panel">
+        <div id="reportContent"></div>
+      </div>
     </div>
   </div>
+
+  <!-- ==========================================================================
+       MODALS: PROFILE, SETTINGS, TEST TAKING, RESULTS, LIBRARY, UPLOAD
+       ========================================================================== -->
 
   <!-- Student Profile Modal -->
   <div class="modal" id="profileModal">
@@ -698,11 +1004,12 @@
     </div>
   </div>
 
-  <!-- Test Attempt & Result Modals -->
+  <!-- Test Attempt Modal -->
   <div class="modal" id="test">
     <div class="box" id="testBox"></div>
   </div>
 
+  <!-- Results Modal -->
   <div class="modal" id="results">
     <div class="box">
       <button class="close" onclick="hide('results')">✕</button>
@@ -743,76 +1050,6 @@
     </div>
   </div>
 
-  <!-- Admin Dashboard Modal (Strictly Admin-Only) -->
-  <div class="modal" id="admin">
-    <div class="box">
-      <button class="close" onclick="hide('admin')">✕</button>
-      <h2>PN Neet Diw Admin Dashboard</h2>
-      <p class="muted">Create chapter tests, schedule release dates, manage questions, and review student attempts.</p>
-      <div class="tabs">
-        <button onclick="adminTab('manage')">Tests & Questions</button>
-        <button class="light" onclick="adminTab('reports')">Students & Results</button>
-      </div>
-      <div id="manage">
-        <div class="formgrid">
-          <div class="panel">
-            <h3 id="testHeading">Create a scheduled test</h3>
-            <input id="editTest" type="hidden">
-            <label>Test title</label>
-            <input id="testTitle" placeholder="Human Physiology Test">
-            <label>Subject</label>
-            <select id="testSubject">
-              <option>Biology</option>
-              <option>Chemistry</option>
-              <option>Physics</option>
-            </select>
-            <label>Chapter</label>
-            <input id="testChapter" placeholder="Human Physiology">
-            <label>Duration in minutes</label>
-            <input id="testDuration" type="number" min="1" value="30">
-            <label>Scheduled start date and time (leave blank for instant practice)</label>
-            <input id="testStart" type="datetime-local">
-            <label><input id="testActive" type="checkbox" checked style="width:auto"> Show to students</label>
-            <button style="margin-top:14px" onclick="saveTest()">Save Test</button>
-            <button class="out" onclick="resetTest()">Reset</button>
-          </div>
-          <div class="panel">
-            <h3 id="questionHeading">Add a question</h3>
-            <input id="editQuestion" type="hidden">
-            <label>Test</label>
-            <select id="questionTest"></select>
-            <label>Question</label>
-            <textarea id="questionText"></textarea>
-            <label>Option A</label>
-            <input id="oa">
-            <label>Option B</label>
-            <input id="ob">
-            <label>Option C</label>
-            <input id="oc">
-            <label>Option D</label>
-            <input id="od">
-            <label>Correct answer</label>
-            <select id="answer">
-              <option value="0">A</option>
-              <option value="1">B</option>
-              <option value="2">C</option>
-              <option value="3">D</option>
-            </select>
-            <button style="margin-top:14px" onclick="saveQuestion()">Save Question</button>
-            <button class="out" onclick="resetQuestion()">Reset</button>
-          </div>
-          <div class="panel wide">
-            <h3>Existing tests and questions</h3>
-            <div id="content"></div>
-          </div>
-        </div>
-      </div>
-      <div id="reports" class="hidden">
-        <div id="reportContent"></div>
-      </div>
-    </div>
-  </div>
-
   <script>
     let token = localStorage.token || '',
         user = JSON.parse(localStorage.user || 'null'),
@@ -822,7 +1059,7 @@
         answers = {},
         timer,
         ended = true,
-        register = false;
+        authMode = 'login'; // 'login' or 'register'
 
     const $ = id => document.getElementById(id),
           show = id => $(id).classList.add('show'),
@@ -839,11 +1076,174 @@
         }
       });
       let d = await r.json();
-      if (!r.ok) throw Error(d.error || 'Request failed');
+      if (!r.ok) {
+        if (r.status === 401) {
+          // Token expired or invalid: immediately return to login gate
+          logoutUser();
+        }
+        throw Error(d.error || 'Request failed');
+      }
       return d;
     }
 
-    // Three-Dot Account Menu Management
+    // =========================================================================
+    // MANDATORY LOGIN GATE CONTROLS
+    // =========================================================================
+    function setAuthMode(mode) {
+      authMode = mode;
+      const isRegister = mode === 'register';
+
+      $('tabSignIn').classList.toggle('active', !isRegister);
+      $('tabRegister').classList.toggle('active', isRegister);
+
+      $('authTitle').textContent = isRegister ? 'Student Registration' : 'Student Login';
+      $('authDesc').textContent = isRegister
+        ? 'Create your free student account to start practicing NEET tests.'
+        : 'Sign in with your email to unlock your tests and study materials.';
+
+      $('authNameField').style.display = isRegister ? 'block' : 'none';
+      $('authSubmitBtn').textContent = isRegister ? 'Create Account & Start Practice →' : 'Sign In to Dashboard →';
+      $('authAdminHint').style.display = isRegister ? 'none' : 'block';
+
+      $('authSwitchPrompt').innerHTML = isRegister
+        ? 'Already registered? <a onclick="setAuthMode(\'login\')">Sign in here</a>'
+        : 'New student? <a onclick="setAuthMode(\'register\')">Create a free student account</a>';
+
+      hideAuthError();
+    }
+
+    function showAuthError(msg) {
+      const banner = $('authErrorBanner');
+      banner.textContent = msg;
+      banner.style.display = 'block';
+    }
+
+    function hideAuthError() {
+      const banner = $('authErrorBanner');
+      banner.style.display = 'none';
+    }
+
+    async function handleAuthSubmit(e) {
+      e.preventDefault();
+      hideAuthError();
+
+      const email = $('authEmail').value.trim();
+      const password = $('authPassword').value;
+      const name = $('authName').value.trim();
+      const submitBtn = $('authSubmitBtn');
+
+      if (!email || !password) {
+        showAuthError('Please enter both email and password.');
+        return;
+      }
+      if (authMode === 'register' && !name) {
+        showAuthError('Please enter your full name.');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Authenticating...';
+
+      try {
+        const payload = authMode === 'register'
+          ? { name, email, password }
+          : { email, password };
+
+        const d = await api(authMode === 'register' ? 'register' : 'login', {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        });
+
+        token = d.token;
+        user = d.user;
+        localStorage.token = token;
+        localStorage.user = JSON.stringify(user);
+
+        // Transition views according to role
+        applyViewState();
+      } catch (err) {
+        showAuthError(err.message || 'Login failed. Please check credentials.');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = authMode === 'register' ? 'Create Account & Start Practice →' : 'Sign In to Dashboard →';
+      }
+    }
+
+    // =========================================================================
+    // ROLE-BASED VIEW ROUTING
+    // =========================================================================
+    function applyViewState() {
+      const isLoggedIn = !!(token && user);
+
+      if (!isLoggedIn) {
+        // STATE 1: LOGGED OUT -> MANDATORY LOGIN GATE ONLY
+        $('loginGateContainer').style.display = 'flex';
+        $('studentDashboard').style.display = 'none';
+        $('adminDashboardView').style.display = 'none';
+        $('mainNavLinks').style.display = 'none';
+        $('loggedOutBadge').style.display = 'inline-block';
+        $('loggedInControls').style.display = 'none';
+
+        // Close any modals
+        ['test', 'results', 'library', 'upload', 'profileModal', 'settingsModal'].forEach(hide);
+        setAuthMode('login');
+      } else if (user.role === 'admin') {
+        // STATE 2: ADMIN LOGGED IN -> DIRECT ADMIN DASHBOARD VIEW ONLY
+        $('loginGateContainer').style.display = 'none';
+        $('studentDashboard').style.display = 'none';
+        $('adminDashboardView').style.display = 'block';
+        $('mainNavLinks').style.display = 'none';
+        $('loggedOutBadge').style.display = 'none';
+        $('loggedInControls').style.display = 'flex';
+
+        updateNavAvatar();
+        renderThreeDotMenu();
+        adminLoad();
+      } else {
+        // STATE 3: STUDENT LOGGED IN -> STUDENT DASHBOARD ONLY
+        $('loginGateContainer').style.display = 'none';
+        $('studentDashboard').style.display = 'block';
+        $('adminDashboardView').style.display = 'none';
+        $('mainNavLinks').style.display = 'flex';
+        $('loggedOutBadge').style.display = 'none';
+        $('loggedInControls').style.display = 'flex';
+
+        updateNavAvatar();
+        renderThreeDotMenu();
+
+        if (typeof window.renderStudentDashboardHero === 'function') {
+          window.renderStudentDashboardHero();
+        }
+        load();
+      }
+    }
+
+    function logoutUser() {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      token = '';
+      user = null;
+      closeMenu();
+      $('authEmail').value = '';
+      $('authPassword').value = '';
+      $('authName').value = '';
+      hideAuthError();
+      applyViewState();
+    }
+
+    function brandHomeClick() {
+      if (!user) return;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function scrollToSchedule() {
+      const el = document.getElementById('cards');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // =========================================================================
+    // THREE-DOT ACCOUNT MENU
+    // =========================================================================
     function toggleMenu() {
       const menu = $('threeDotMenu');
       if (menu.classList.contains('open')) {
@@ -860,47 +1260,66 @@
     }
 
     document.addEventListener('click', e => {
-      const headerRight = document.querySelector('.header-right');
+      const headerRight = document.getElementById('headerRightArea');
       if (headerRight && !headerRight.contains(e.target)) {
         closeMenu();
       }
     });
 
     document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') {
-        closeMenu();
-      }
+      if (e.key === 'Escape') closeMenu();
     });
 
     function renderThreeDotMenu() {
       const menu = $('threeDotMenu');
-      if (!menu) return;
+      if (!menu || !user) return;
 
-      if (!user) {
-        // When Logged Out: Only Login / Register and Help
+      const letter = (user.name || 'U').trim().charAt(0).toUpperCase();
+      const avatarImg = user.avatar
+        ? `<img src="${user.avatar}" class="menu-user-thumb" alt="${esc(user.name)}">`
+        : `<div class="menu-user-thumb-fallback ${user.role==='admin'?'admin':''}">${letter}</div>`;
+
+      if (user.role === 'admin') {
         menu.innerHTML = `
-          <div class="menu-header">
-            <span class="menu-header-title">Welcome to PN Neet Diw</span>
-            <span class="menu-header-sub">Chapter tests & NEET practice</span>
+          <div class="menu-user-card" onclick="closeMenu();openProfileModal()">
+            ${avatarImg}
+            <div class="menu-user-details">
+              <div class="menu-user-name">${esc(user.name)}</div>
+              <div class="menu-user-badge">🛡️ Administrator</div>
+            </div>
           </div>
           <div class="menu-divider"></div>
-          <button class="menu-item primary" onclick="closeMenu();loginOpen()">
-            <span class="menu-item-icon">🔑</span>
-            <span>Login / Register</span>
+          <button class="menu-item admin-highlight" onclick="closeMenu();window.scrollTo({top:0,behavior:'smooth'})">
+            <span class="menu-item-icon">🛡️</span>
+            <span>Admin Dashboard</span>
           </button>
-          <div class="menu-divider"></div>
+          <button class="menu-item" onclick="closeMenu();openProfileModal()">
+            <span class="menu-item-icon">👤</span>
+            <span>My Profile</span>
+          </button>
+          <button class="menu-item" onclick="closeMenu();openSettingsModal()">
+            <span class="menu-item-icon">⚙️</span>
+            <span>Settings</span>
+          </button>
+          <button class="menu-item" onclick="closeMenu();libraryOpen()">
+            <span class="menu-item-icon">📚</span>
+            <span>Manage Notes & Videos</span>
+          </button>
+          <button class="menu-item" onclick="closeMenu();if(typeof startLiveClass==='function')startLiveClass()">
+            <span class="menu-item-icon">🔴</span>
+            <span>Start Live Stream</span>
+          </button>
           <button class="menu-item" onclick="closeMenu();if(typeof helpOpen==='function')helpOpen()">
             <span class="menu-item-icon">❓</span>
             <span>Help & Support</span>
           </button>
+          <div class="menu-divider"></div>
+          <button class="menu-item logout" onclick="closeMenu();logoutUser()">
+            <span class="menu-item-icon">🚪</span>
+            <span>Logout</span>
+          </button>
         `;
-      } else if (user.role === 'student') {
-        // When Student is Logged In: My Profile, Settings, My Results, My Study Calendar, Help & Support, Logout
-        const letter = (user.name || 'S').trim().charAt(0).toUpperCase();
-        const avatarImg = user.avatar
-          ? `<img src="${user.avatar}" class="menu-user-thumb" alt="${esc(user.name)}">`
-          : `<div class="menu-user-thumb-fallback">${letter}</div>`;
-
+      } else {
         menu.innerHTML = `
           <div class="menu-user-card" onclick="closeMenu();openProfileModal()">
             ${avatarImg}
@@ -936,77 +1355,28 @@
             <span>Logout</span>
           </button>
         `;
-      } else if (user.role === 'admin') {
-        // When Admin is Logged In
-        const letter = (user.name || 'A').trim().charAt(0).toUpperCase();
-        const avatarImg = user.avatar
-          ? `<img src="${user.avatar}" class="menu-user-thumb" alt="${esc(user.name)}">`
-          : `<div class="menu-user-thumb-fallback admin">${letter}</div>`;
-
-        menu.innerHTML = `
-          <div class="menu-user-card" onclick="closeMenu();openProfileModal()">
-            ${avatarImg}
-            <div class="menu-user-details">
-              <div class="menu-user-name">${esc(user.name)}</div>
-              <div class="menu-user-badge admin">🛡️ Administrator</div>
-            </div>
-          </div>
-          <div class="menu-divider"></div>
-          <button class="menu-item admin-highlight" onclick="closeMenu();adminOpen()">
-            <span class="menu-item-icon">🛡️</span>
-            <span>Admin Dashboard</span>
-          </button>
-          <button class="menu-item" onclick="closeMenu();openProfileModal()">
-            <span class="menu-item-icon">👤</span>
-            <span>My Profile</span>
-          </button>
-          <button class="menu-item" onclick="closeMenu();openSettingsModal()">
-            <span class="menu-item-icon">⚙️</span>
-            <span>Settings</span>
-          </button>
-          <button class="menu-item" onclick="closeMenu();libraryOpen()">
-            <span class="menu-item-icon">📚</span>
-            <span>Notes & Videos</span>
-          </button>
-          <button class="menu-item" onclick="closeMenu();if(typeof helpOpen==='function')helpOpen()">
-            <span class="menu-item-icon">❓</span>
-            <span>Help & Support</span>
-          </button>
-          <div class="menu-divider"></div>
-          <button class="menu-item logout" onclick="closeMenu();logoutUser()">
-            <span class="menu-item-icon">🚪</span>
-            <span>Logout</span>
-          </button>
-        `;
       }
     }
 
     function updateNavAvatar() {
       const avatarElem = $('navAvatar');
-      if (!avatarElem) return;
+      if (!avatarElem || !user) return;
 
-      if (user) {
-        if (user.avatar) {
-          avatarElem.innerHTML = `<img src="${user.avatar}" alt="${esc(user.name)}" class="nav-avatar-img">`;
-        } else {
-          const letter = (user.name || 'S').trim().charAt(0).toUpperCase();
-          avatarElem.innerHTML = `<span class="nav-avatar-letter">${letter}</span>`;
-        }
+      if (user.avatar) {
+        avatarElem.innerHTML = `<img src="${user.avatar}" alt="${esc(user.name)}" class="nav-avatar-img">`;
       } else {
-        avatarElem.innerHTML = `<span class="nav-avatar-letter">👤</span>`;
+        const letter = (user.name || 'U').trim().charAt(0).toUpperCase();
+        avatarElem.innerHTML = `<span class="nav-avatar-letter">${letter}</span>`;
       }
     }
 
-    function scrollToSchedule() {
-      const el = document.getElementById('scheduleArea') || document.getElementById('cards');
-      if (el) el.scrollIntoView({ behavior: 'smooth' });
-    }
-
-    // Student Profile Modal & Updating
+    // =========================================================================
+    // STUDENT PROFILE & SETTINGS
+    // =========================================================================
     let selectedProfilePhoto = null;
 
     function openProfileModal() {
-      if (!user) { loginOpen(); return; }
+      if (!user) { logoutUser(); return; }
 
       $('profileNameInput').value = user.name || '';
       $('profileEmailDisplay').value = user.email || '';
@@ -1024,7 +1394,7 @@
       if (avatarUrl) {
         box.innerHTML = `<img src="${avatarUrl}" alt="Profile avatar">`;
       } else {
-        const letter = (user?.name || 'S').trim().charAt(0).toUpperCase();
+        const letter = (user?.name || 'U').trim().charAt(0).toUpperCase();
         box.innerHTML = `<span>${letter}</span>`;
       }
     }
@@ -1046,16 +1416,12 @@
       }
 
       selectedProfilePhoto = file;
-      const previewUrl = URL.createObjectURL(file);
-      renderProfileAvatarPreview(previewUrl);
+      renderProfileAvatarPreview(URL.createObjectURL(file));
     };
 
     async function saveProfileChanges() {
       const name = $('profileNameInput').value.trim();
-      if (!name) {
-        alert('Please enter a valid display name.');
-        return;
-      }
+      if (!name) return alert('Please enter a display name.');
 
       const saveBtn = $('saveProfileBtn');
       saveBtn.disabled = true;
@@ -1089,7 +1455,6 @@
       }
     }
 
-    // Settings Modal
     function openSettingsModal() {
       show('settingsModal');
     }
@@ -1101,104 +1466,35 @@
       alert('Preferences saved.');
     }
 
-    function refreshUser() {
-      updateNavAvatar();
-      renderThreeDotMenu();
-
-      const libBtn = $('navLibraryBtn');
-      const commBtn = $('navCommunityBtn');
-      if (libBtn) libBtn.style.display = user ? '' : 'none';
-      if (commBtn) commBtn.style.display = user ? '' : 'none';
-
-      // Strict role-based clean up
-      if (!user || user.role !== 'admin') {
-        const adminUpload = $('uploadLink');
-        if (adminUpload) adminUpload.innerHTML = '';
-      }
-    }
-
-    function logoutUser() {
-      localStorage.clear();
-      token = '';
-      user = null;
-      refreshUser();
-      load();
-    }
-
+    // =========================================================================
+    // STUDENT TESTS & RESULTS
+    // =========================================================================
     function when(v) {
       return v ? new Date(v).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }) : 'Available now';
     }
 
     async function load() {
-      tests = await api('tests');
-      $('cards').innerHTML = tests.map(t => {
-        let locked = t.startAt && Date.now() < new Date(t.startAt);
-        return `<article class="card">
-          <span class="tag">${esc(t.subject)} · ${esc(t.chapter || 'General')}</span>
-          <h3>${esc(t.title)}</h3>
-          <div class="meta">
-            📚 ${esc(t.chapter || 'General')}<br>
-            📝 ${t.question_count} questions · ⏱ ${t.duration} min<br>
-            📅 ${when(t.startAt)}
-          </div>
-          <button ${locked ? 'disabled' : ''} onclick="start(${t.id})">
-            ${locked ? 'Scheduled' : 'Start Test'}
-          </button>
-        </article>`;
-      }).join('') || '<p class="muted">No tests are available.</p>';
-    }
-
-    function loginOpen() {
-      register = false;
-      loginMode();
-      show('login');
-    }
-
-    function loginMode() {
-      $('loginTitle').textContent = register ? 'Student Registration' : 'Student Login';
-      $('loginInfo').textContent = register ? 'Create your student account.' : 'Sign in to access tests and community.';
-      $('nameField').style.display = register ? 'block' : 'none';
-      $('loginSubmit').textContent = register ? 'Create Account' : 'Login';
-      $('loginSwitch').innerHTML = register
-        ? 'Already have an account? <a href="#" onclick="register=false;loginMode()">Login</a>'
-        : 'New student? <a href="#" onclick="register=true;loginMode()">Create an account</a>';
-    }
-
-    $('loginSubmit').onclick = async () => {
+      if (!token) return;
       try {
-        let d = await api(register ? 'register' : 'login', {
-          method: 'POST',
-          body: JSON.stringify({
-            name: $('name').value,
-            email: $('email').value,
-            password: $('password').value
-          })
-        });
-        token = d.token;
-        user = d.user;
-        localStorage.token = token;
-        localStorage.user = JSON.stringify(user);
-        hide('login');
-        refreshUser();
-        load();
-        if (user.role === 'admin') adminLoad();
+        tests = await api('tests');
+        $('cards').innerHTML = tests.map(t => {
+          let locked = t.startAt && Date.now() < new Date(t.startAt);
+          return `<article class="card">
+            <span class="tag">${esc(t.subject)} · ${esc(t.chapter || 'General')}</span>
+            <h3>${esc(t.title)}</h3>
+            <div class="meta">
+              📚 ${esc(t.chapter || 'General')}<br>
+              📝 ${t.question_count} questions · ⏱ ${t.duration} min<br>
+              📅 ${when(t.startAt)}
+            </div>
+            <button ${locked ? 'disabled' : ''} onclick="start(${t.id})">
+              ${locked ? 'Scheduled' : 'Start Test'}
+            </button>
+          </article>`;
+        }).join('') || '<p class="muted">No tests are available right now.</p>';
       } catch (e) {
-        alert(e.message);
+        console.error(e);
       }
-    };
-
-    function adminOpen() {
-      // Strict Role Check: Only Admin can open
-      if (user?.role === 'admin') {
-        adminLoad();
-        show('admin');
-        return;
-      }
-      register = false;
-      loginMode();
-      $('loginTitle').textContent = 'Admin Login';
-      $('loginInfo').textContent = 'Use the administrator email and password.';
-      show('login');
     }
 
     function startFirst() {
@@ -1208,12 +1504,9 @@
     }
 
     async function start(id) {
-      if (!user) {
-        loginOpen();
-        return;
-      }
+      if (!user) { logoutUser(); return; }
       let meta = tests.find(x => x.id === id);
-      if (meta.startAt && new Date(meta.startAt) > Date.now()) {
+      if (meta?.startAt && new Date(meta.startAt) > Date.now()) {
         return alert('This test opens on ' + when(meta.startAt));
       }
       try {
@@ -1279,7 +1572,7 @@
             <h2>Test Complete</h2>
             <div class="score">${r.score}/${r.total}</div>
             <p class="muted">Score: ${Math.round(r.score / r.total * 100)}%</p>
-            <button onclick="hide('test')">Back to Home</button>
+            <button onclick="hide('test')">Back to Dashboard</button>
           </div>`;
       } catch (e) {
         alert(e.message);
@@ -1298,42 +1591,47 @@
     });
 
     async function resultsOpen() {
-      if (!user) {
-        loginOpen();
-        return;
+      if (!user) { logoutUser(); return; }
+      try {
+        let r = await api('my-results');
+        $('resultsList').innerHTML = r.length
+          ? r.map(x => `
+              <div class="row">
+                <span><b>${esc(x.title)}</b><br><small>${new Date(x.createdAt).toLocaleString('en-IN')}</small></span>
+                <span class="tag">${x.score}/${x.total} · ${Math.round(x.score / x.total * 100)}%</span>
+              </div>`).join('')
+          : '<p class="muted">No completed tests yet.</p>';
+        show('results');
+      } catch (e) {
+        alert(e.message);
       }
-      let r = await api('my-results');
-      $('resultsList').innerHTML = r.length
-        ? r.map(x => `
-            <div class="row">
-              <span><b>${esc(x.title)}</b><br><small>${new Date(x.createdAt).toLocaleString('en-IN')}</small></span>
-              <span class="tag">${x.score}/${x.total} · ${Math.round(x.score / x.total * 100)}%</span>
-            </div>`).join('')
-        : '<p class="muted">No completed tests yet.</p>';
-      show('results');
     }
 
     async function libraryOpen() {
-      let r = await api('resources');
-      $('resourceList').innerHTML = r.length
-        ? `<div class="grid">${r.map(x => `
-            <article class="card">
-              <span class="tag">${x.type === 'note' ? 'PDF Note' : 'Video'} · ${esc(x.subject)}</span>
-              <h3>${esc(x.title)}</h3>
-              ${x.type === 'video'
-                ? `<video controls preload="metadata" style="width:100%;border-radius:8px" src="${x.url}"></video>`
-                : `<a href="${x.url}" target="_blank" download><button>Download Note</button></a>`}
-              ${user?.role === 'admin'
-                ? `<button class="red" style="margin-top:10px" onclick="deleteResource(${x.id})">Delete</button>`
-                : ''}
-            </article>`).join('')}</div>`
-        : '<p class="muted">No study material has been uploaded yet.</p>';
+      if (!user) { logoutUser(); return; }
+      try {
+        let r = await api('resources');
+        $('resourceList').innerHTML = r.length
+          ? `<div class="grid">${r.map(x => `
+              <article class="card">
+                <span class="tag">${x.type === 'note' ? 'PDF Note' : 'Video'} · ${esc(x.subject)}</span>
+                <h3>${esc(x.title)}</h3>
+                ${x.type === 'video'
+                  ? `<video controls preload="metadata" style="width:100%;border-radius:8px" src="${x.url}"></video>`
+                  : `<a href="${x.url}" target="_blank" download><button>Download Note</button></a>`}
+                ${user?.role === 'admin'
+                  ? `<button class="red" style="margin-top:10px" onclick="deleteResource(${x.id})">Delete</button>`
+                  : ''}
+              </article>`).join('')}</div>`
+          : '<p class="muted">No study material has been uploaded yet.</p>';
 
-      // Strict role check: upload button ONLY for admin
-      $('uploadLink').innerHTML = user?.role === 'admin'
-        ? '<button onclick="show(\'upload\')">+ Upload Study Material</button>'
-        : '';
-      show('library');
+        $('uploadLink').innerHTML = user?.role === 'admin'
+          ? '<button onclick="show(\'upload\')">+ Upload Study Material</button>'
+          : '';
+        show('library');
+      } catch (e) {
+        alert(e.message);
+      }
     }
 
     async function uploadResource() {
@@ -1359,20 +1657,30 @@
       }
     }
 
+    // =========================================================================
+    // ADMIN DASHBOARD MANAGEMENT
+    // =========================================================================
     async function adminLoad() {
       if (user?.role !== 'admin') return;
-      dashboard = await api('admin/dashboard');
-      $('questionTest').innerHTML = dashboard.tests.map(t => `<option value="${t.id}">${esc(t.title)}</option>`).join('');
-      renderContent();
-      renderReports();
+      try {
+        dashboard = await api('admin/dashboard');
+        $('questionTest').innerHTML = dashboard.tests.map(t => `<option value="${t.id}">${esc(t.title)}</option>`).join('');
+        renderAdminContent();
+        renderAdminReports();
+      } catch (e) {
+        console.error(e);
+      }
     }
 
-    function adminTab(tab) {
-      $('manage').classList.toggle('hidden', tab !== 'manage');
-      $('reports').classList.toggle('hidden', tab !== 'reports');
+    function switchAdminTab(tab) {
+      const isManage = tab === 'manage';
+      $('adminManageSection').classList.toggle('hidden', !isManage);
+      $('adminReportsSection').classList.toggle('hidden', isManage);
+      $('adminTabManageBtn').className = isManage ? '' : 'light';
+      $('adminTabReportsBtn').className = isManage ? 'light' : '';
     }
 
-    function renderContent() {
+    function renderAdminContent() {
       $('content').innerHTML = dashboard.tests.map(t => `
         <div class="item">
           <b>${esc(t.title)}</b><br>
@@ -1431,7 +1739,6 @@
         });
         resetTest();
         await adminLoad();
-        load();
       } catch (e) {
         alert(e.message);
       }
@@ -1441,7 +1748,6 @@
       if (confirm('Delete this test and all its questions?')) {
         await api('admin/tests/' + id, { method: 'DELETE' });
         adminLoad();
-        load();
       }
     }
 
@@ -1477,7 +1783,6 @@
         });
         resetQuestion();
         await adminLoad();
-        load();
       } catch (e) {
         alert(e.message);
       }
@@ -1487,21 +1792,20 @@
       if (confirm('Delete this question?')) {
         await api('admin/questions/' + id, { method: 'DELETE' });
         adminLoad();
-        load();
       }
     }
 
-    function renderReports() {
+    function renderAdminReports() {
       $('reportContent').innerHTML = `
-        <h3>Students (${dashboard.students.length})</h3>
-        ${dashboard.students.map(s => `
+        <h3>Registered Students (${dashboard.students?.length || 0})</h3>
+        ${(dashboard.students || []).map(s => `
           <div class="row">
             <span>${esc(s.name)}<br><small>${esc(s.email)}</small></span>
             <small>${new Date(s.createdAt).toLocaleDateString('en-IN')}</small>
-          </div>`).join('')}
-        <h3 style="margin-top:24px">Recent Attempts</h3>
-        ${dashboard.attempts.length
-          ? dashboard.attempts.map(a => `
+          </div>`).join('') || '<p class="muted">No students registered yet.</p>'}
+        <h3 style="margin-top:28px">Recent Test Attempts</h3>
+        ${(dashboard.attempts || []).length
+          ? (dashboard.attempts || []).map(a => `
               <div class="row">
                 <span><b>${esc(a.student)}</b><br><small>${esc(a.test)} · ${new Date(a.createdAt).toLocaleString('en-IN')}</small></span>
                 <span class="tag">${a.score}/${a.total}</span>
@@ -1509,9 +1813,8 @@
           : '<p class="muted">No test attempts yet.</p>'}`;
     }
 
-    // Initialize UI
-    refreshUser();
-    load();
+    // Initialize application state on page load
+    applyViewState();
   </script>
 </body>
 </html>
