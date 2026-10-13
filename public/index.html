@@ -6,12 +6,13 @@
   <title>PN Neet Diw — NEET Preparation Platform</title>
   <style>
     :root {
-      --p: #4d3bd4;
-      --ink: #172033;
-      --m: #68748b;
-      --line: #e2e7f0;
-      --bg: #f5f7fb;
-      --red: #ce3b3b;
+      --p: #111111;
+      --ink: #171717;
+      --m: #666662;
+      --line: #e2e2dc;
+      --bg: #f7f7f5;
+      --card-bg: #ffffff;
+      --red: #c53030;
     }
     * { box-sizing: border-box; }
     body {
@@ -19,495 +20,368 @@
       background: var(--bg);
       color: var(--ink);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
     }
+
+    /* Header & Navigation */
     header {
-      height: 68px;
-      background: #fff;
+      height: 64px;
+      background: #ffffff;
       border-bottom: 1px solid var(--line);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 max(18px, calc((100% - 1120px)/2));
+      padding: 0 max(20px, calc((100% - 1140px)/2));
       position: sticky;
       top: 0;
       z-index: 100;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
     }
     .brand {
-      font-size: 21px;
+      font-size: 20px;
       font-weight: 800;
       letter-spacing: -0.02em;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 7px;
+      cursor: pointer;
+      user-select: none;
     }
-    .brand b { color: var(--p); }
-    .nav-right-container {
+    .brand-badge {
+      background: #111111;
+      color: #ffffff;
+      font-size: 13px;
+      padding: 3px 7px;
+      border-radius: 6px;
+      font-weight: 800;
+    }
+    .brand b { color: #111111; }
+
+    .nav-links {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
-    button {
-      border: 0;
+    .nav-link-btn {
+      background: transparent;
+      color: #444440;
+      border: 1px solid transparent;
+      padding: 8px 13px;
       border-radius: 8px;
-      background: var(--p);
-      color: #fff;
-      padding: 10px 14px;
-      font-weight: 700;
-      cursor: pointer;
-      font-size: 14px;
-      transition: background 0.15s ease, transform 0.15s ease;
-    }
-    button:hover:not(:disabled) {
-      filter: brightness(1.06);
-    }
-    button.light { background: #eeecff; color: var(--p); }
-    button.light:hover { background: #e3dfff; }
-    button.out { color: var(--ink); background: #fff; border: 1px solid var(--line); }
-    button.out:hover { background: #f8fafc; border-color: #cbd5e1; }
-    button.red { color: var(--red); background: #fff0f0; }
-    button:disabled { opacity: .5; cursor: not-allowed; }
-
-    /* Profile Icon in Navbar */
-    .profile-nav-btn {
-      order: 9999;
-      display: inline-flex;
-      align-items: center;
-      gap: 9px;
-      background: #ffffff;
-      color: var(--ink);
-      border: 1.5px solid var(--line);
-      border-radius: 999px;
-      padding: 5px 13px 5px 6px;
       font-size: 13.5px;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-      margin-left: 6px;
+      transition: all 0.15s ease;
+    }
+    .nav-link-btn:hover {
+      background: #f0f0ed;
+      color: #111111;
+    }
+
+    /* Top-Right Account & Three-Dot Menu */
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+    }
+    .user-avatar-trigger {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
       user-select: none;
     }
-    .profile-nav-btn:hover {
-      background: #f8fafc;
-      border-color: #cbd5e1;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-      transform: translateY(-1px);
-    }
-    .profile-nav-btn:active {
-      transform: translateY(0);
-    }
-    .profile-avatar-pill {
-      width: 32px;
-      height: 32px;
+    .avatar-circle {
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      background: #111111;
       color: #ffffff;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 13.5px;
+      font-size: 14px;
       font-weight: 700;
-      position: relative;
-      flex-shrink: 0;
-      box-shadow: 0 2px 6px rgba(79, 70, 229, 0.25);
-    }
-    .profile-avatar-pill.guest {
-      background: linear-gradient(135deg, #64748b, #475569);
-      box-shadow: 0 2px 6px rgba(71, 85, 105, 0.2);
-    }
-    .profile-status-dot {
-      position: absolute;
-      bottom: -1px;
-      right: -1px;
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
-      border: 2px solid #ffffff;
-      background: #94a3b8;
-    }
-    .profile-status-dot.active {
-      background: #10b981;
-    }
-    .profile-btn-text {
-      max-width: 105px;
-      white-space: nowrap;
+      border: 1.5px solid #d4d4cd;
       overflow: hidden;
-      text-overflow: ellipsis;
-      letter-spacing: -0.01em;
-    }
-    .profile-menu-icon {
-      display: flex;
-      align-items: center;
-      opacity: 0.6;
-      margin-left: 2px;
-    }
-    .profile-nav-btn:hover .profile-menu-icon {
-      opacity: 1;
-    }
-
-    /* Features Sidebar Backdrop Overlay */
-    .sidebar-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.5);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
-      z-index: 1000;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.25s ease, visibility 0.25s ease;
-    }
-    .sidebar-overlay.open {
-      opacity: 1;
-      visibility: visible;
-    }
-
-    /* Features Sidebar Drawer */
-    .features-sidebar {
-      position: fixed;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      width: min(390px, 92vw);
-      background: #ffffff;
-      z-index: 1001;
-      box-shadow: -8px 0 36px rgba(0, 0, 0, 0.16);
-      transform: translateX(100%);
-      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-    .features-sidebar.open {
-      transform: translateX(0);
-    }
-
-    /* Sidebar Header */
-    .sidebar-header {
-      padding: 16px 20px;
-      border-bottom: 1px solid var(--line);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: #ffffff;
       flex-shrink: 0;
+      transition: transform 0.15s ease, border-color 0.15s ease;
     }
-    .sidebar-brand-badge {
-      font-size: 17px;
-      font-weight: 800;
-      color: var(--ink);
+    .avatar-circle:hover {
+      transform: scale(1.04);
+      border-color: #111111;
     }
-    .sidebar-brand-badge b {
-      color: var(--p);
+    .nav-avatar-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
-    .sidebar-close-btn {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      border: 1px solid var(--line);
-      background: #f8fafc;
-      color: #64748b;
+
+    .menu-dots-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: transparent;
+      border: 1px solid #e0e0da;
+      color: #111111;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 16px;
       cursor: pointer;
       padding: 0;
       transition: all 0.15s ease;
     }
-    .sidebar-close-btn:hover {
-      background: #fee2e2;
-      color: #ef4444;
-      border-color: #fecaca;
-      transform: rotate(90deg);
+    .menu-dots-btn:hover {
+      background: #f0f0ed;
+      border-color: #111111;
     }
 
-    /* Sidebar Body Scroll */
-    .sidebar-body {
-      flex: 1;
-      overflow-y: auto;
-      padding: 18px 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-    }
-
-    /* User Profile Card inside Sidebar */
-    .sidebar-user-card {
-      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-      border-radius: 16px;
-      padding: 18px;
-      color: #ffffff;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      box-shadow: 0 4px 18px rgba(15, 23, 42, 0.18);
-      position: relative;
-      overflow: hidden;
-    }
-    .sidebar-user-card::before {
-      content: '';
+    /* Three-Dot Dropdown Menu */
+    .three-dot-menu {
       position: absolute;
-      top: -30px;
-      right: -30px;
-      width: 100px;
-      height: 100px;
-      background: radial-gradient(circle, rgba(99, 102, 241, 0.3) 0%, transparent 70%);
-      border-radius: 50%;
-      pointer-events: none;
+      top: calc(100% + 8px);
+      right: 0;
+      width: 250px;
+      background: #ffffff;
+      border: 1px solid #dcdcd6;
+      border-radius: 14px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      padding: 8px;
+      display: none;
+      flex-direction: column;
+      gap: 3px;
+      z-index: 1000;
+      animation: menuFadeIn 0.15s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .sidebar-user-top {
+    .three-dot-menu.open {
+      display: flex;
+    }
+    @keyframes menuFadeIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .menu-user-card {
+      padding: 10px 12px;
+      background: #f7f7f5;
+      border-radius: 9px;
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 10px;
+      cursor: pointer;
+      transition: background 0.15s ease;
     }
-    .sidebar-user-avatar {
-      width: 48px;
-      height: 48px;
+    .menu-user-card:hover {
+      background: #ededeb;
+    }
+    .menu-user-thumb {
+      width: 34px;
+      height: 34px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      object-fit: cover;
+      border: 1px solid #d4d4cd;
+    }
+    .menu-user-thumb-fallback {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: #111111;
       color: #ffffff;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 20px;
-      font-weight: 800;
-      border: 2px solid rgba(255, 255, 255, 0.2);
+      font-size: 13px;
+      font-weight: 700;
       flex-shrink: 0;
     }
-    .sidebar-user-info {
+    .menu-user-thumb-fallback.admin {
+      background: #111111;
+      border: 2px solid #888884;
+    }
+    .menu-user-details {
       flex: 1;
       min-width: 0;
     }
-    .sidebar-user-name {
-      font-size: 16px;
+    .menu-user-name {
+      font-size: 13.5px;
       font-weight: 700;
-      color: #f8fafc;
+      color: #111111;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      margin: 0 0 2px;
     }
-    .sidebar-user-email {
-      font-size: 12px;
-      color: #94a3b8;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      margin: 0;
-    }
-    .sidebar-user-badge {
-      display: inline-block;
+    .menu-user-badge {
       font-size: 11px;
+      color: #666662;
+      font-weight: 600;
+    }
+    .menu-user-badge.admin {
+      color: #111111;
       font-weight: 700;
-      padding: 3px 8px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.12);
-      color: #e2e8f0;
-      width: fit-content;
-    }
-    .sidebar-user-btn {
-      padding: 8px 14px;
-      border-radius: 8px;
-      font-size: 12.5px;
-      font-weight: 700;
-      cursor: pointer;
-      border: none;
-    }
-    .sidebar-user-btn.primary {
-      background: #ffffff;
-      color: #0f172a;
-    }
-    .sidebar-user-btn.primary:hover {
-      background: #f1f5f9;
-    }
-    .sidebar-user-btn.logout {
-      background: rgba(239, 68, 68, 0.2);
-      color: #fca5a5;
-      border: 1px solid rgba(239, 68, 68, 0.35);
-    }
-    .sidebar-user-btn.logout:hover {
-      background: rgba(239, 68, 68, 0.32);
-      color: #fee2e2;
     }
 
-    /* Section Header */
-    .sidebar-section-title {
-      font-size: 11.5px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: #94a3b8;
-      margin: 6px 0 10px;
-    }
-
-    /* Features List */
-    .sidebar-features-list {
+    .menu-header {
+      padding: 10px 12px;
       display: flex;
       flex-direction: column;
-      gap: 9px;
     }
-    .sidebar-feature-item {
+    .menu-header-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #111111;
+    }
+    .menu-header-sub {
+      font-size: 11.5px;
+      color: #777773;
+    }
+
+    .menu-divider {
+      height: 1px;
+      background: #ebebe6;
+      margin: 4px 0;
+    }
+    .menu-item {
       display: flex;
       align-items: center;
-      gap: 13px;
-      padding: 12px 14px;
-      border-radius: 12px;
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      color: var(--ink);
+      gap: 10px;
+      padding: 9px 12px;
+      border-radius: 8px;
+      background: transparent;
+      border: none;
+      color: #222220;
+      font-size: 13.5px;
+      font-weight: 600;
+      text-align: left;
+      width: 100%;
       cursor: pointer;
-      transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
-      user-select: none;
+      transition: background 0.12s ease;
     }
-    .sidebar-feature-item:hover {
-      background: #ffffff;
-      border-color: #cbd5e1;
-      transform: translateX(3px);
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+    .menu-item:hover {
+      background: #f5f5f2;
+      color: #111111;
     }
-    .sidebar-feature-icon {
-      width: 38px;
-      height: 38px;
-      border-radius: 10px;
+    .menu-item.primary {
+      background: #111111;
+      color: #ffffff;
+      font-weight: 700;
+    }
+    .menu-item.primary:hover {
+      background: #2b2b29;
+    }
+    .menu-item.admin-highlight {
+      background: #f0f0ed;
+      color: #111111;
+      border: 1px solid #d4d4cd;
+    }
+    .menu-item.admin-highlight:hover {
+      background: #111111;
+      color: #ffffff;
+    }
+    .menu-item.logout {
+      color: #c53030;
+    }
+    .menu-item.logout:hover {
+      background: #fff0f0;
+      color: #b02020;
+    }
+    .menu-item-icon {
+      font-size: 15px;
+      width: 18px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 19px;
-      flex-shrink: 0;
+      opacity: 0.85;
     }
-    .sidebar-feature-icon.purple { background: #eef2ff; color: #4f46e5; }
-    .sidebar-feature-icon.green  { background: #ecfdf5; color: #059669; }
-    .sidebar-feature-icon.blue   { background: #eff6ff; color: #2563eb; }
-    .sidebar-feature-icon.red    { background: #fef2f2; color: #dc2626; }
-    .sidebar-feature-icon.amber  { background: #fffbeb; color: #d97706; }
-    .sidebar-feature-icon.teal   { background: #f0fdfa; color: #0d9488; }
-    .sidebar-feature-icon.dark   { background: #f1f5f9; color: #334155; }
-    .sidebar-feature-icon.indigo { background: #f5f3ff; color: #7c3aed; }
 
-    .sidebar-feature-text {
-      flex: 1;
-      min-width: 0;
-    }
-    .sidebar-feature-title {
+    /* Core UI Elements */
+    button {
+      border: 0;
+      border-radius: 8px;
+      background: var(--p);
+      color: #ffffff;
+      padding: 10px 15px;
+      font-weight: 700;
+      cursor: pointer;
       font-size: 14px;
-      font-weight: 700;
-      color: #1e293b;
-      margin: 0 0 2px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      transition: background 0.15s ease, opacity 0.15s ease;
     }
-    .sidebar-feature-desc {
-      font-size: 11.5px;
-      color: #64748b;
-      margin: 0;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+    button:hover:not(:disabled) {
+      background: #2b2b28;
     }
-    .sidebar-feature-badge {
-      font-size: 10px;
-      font-weight: 700;
-      padding: 2px 6px;
-      border-radius: 999px;
-      background: #eeecff;
-      color: var(--p);
+    button.light {
+      background: #f0f0ed;
+      color: #111111;
+      border: 1px solid #e0e0da;
     }
-    .sidebar-feature-badge.live {
-      background: #fef2f2;
-      color: #dc2626;
-      animation: sidebarPulse 1.8s infinite;
+    button.light:hover {
+      background: #e5e5e0;
     }
-    @keyframes sidebarPulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.55; }
+    button.out {
+      color: #111111;
+      background: #ffffff;
+      border: 1px solid var(--line);
     }
-    .sidebar-feature-arrow {
-      color: #94a3b8;
-      font-size: 16px;
-      opacity: 0.5;
-      transition: transform 0.15s ease, opacity 0.15s ease;
+    button.out:hover {
+      background: #f8f8f6;
+      border-color: #111111;
     }
-    .sidebar-feature-item:hover .sidebar-feature-arrow {
-      opacity: 1;
-      transform: translateX(2px);
-      color: var(--p);
+    button.red {
+      color: var(--red);
+      background: #fff0f0;
+      border: 1px solid #ffdcdc;
     }
-
-    /* Sidebar Footer */
-    .sidebar-footer {
-      padding: 14px 20px;
-      border-top: 1px solid var(--line);
-      background: #f8fafc;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 11.5px;
-      color: #64748b;
-      flex-shrink: 0;
+    button.red:hover {
+      background: #ffe3e3;
+    }
+    button:disabled {
+      opacity: .45;
+      cursor: not-allowed;
     }
 
     main {
-      max-width: 1120px;
+      max-width: 1140px;
       margin: auto;
-      padding: 42px 18px;
-    }
-    .hero {
-      padding: 42px;
-      border-radius: 19px;
-      background: linear-gradient(125deg, #211852, #6651e9);
-      color: #fff;
-      display: flex;
-      justify-content: space-between;
-    }
-    .hero h1 {
-      font-size: clamp(30px, 5vw, 44px);
-      margin: 0 0 12px;
-    }
-    .hero p {
-      max-width: 600px;
-      line-height: 1.6;
-      color: #e6e3ff;
-    }
-    .hero button {
-      background: #fff;
-      color: var(--p);
-    }
-    .hero i {
-      font-size: 86px;
-      font-style: normal;
+      padding: 42px 20px;
     }
     .head {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin: 30px 0 14px;
+      margin: 32px 0 16px;
+    }
+    .head h2 {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      margin: 0;
     }
     .grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 17px;
+      gap: 18px;
     }
     .card, .panel {
-      background: #fff;
+      background: var(--card-bg);
       border: 1px solid var(--line);
       border-radius: 14px;
-      padding: 19px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
     }
     .tag {
       display: inline-block;
-      background: #eeecff;
-      color: var(--p);
-      padding: 5px 9px;
-      border-radius: 99px;
-      font-size: 12px;
+      background: #f0f0ed;
+      color: #111111;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11.5px;
       font-weight: 700;
+      letter-spacing: 0.02em;
     }
-    .card h3 { margin: 14px 0 7px; }
+    .card h3 { margin: 14px 0 7px; font-size: 17px; }
     .muted, .meta, small { color: var(--m); }
-    .meta { font-size: 13px; margin: 15px 0; }
+    .meta { font-size: 13px; margin: 15px 0; line-height: 1.6; }
     .card button { width: 100%; }
+
+    /* Modal System */
     .modal {
       display: none;
       position: fixed;
@@ -515,29 +389,45 @@
       z-index: 1005;
       align-items: center;
       justify-content: center;
-      background: #101426aa;
+      background: rgba(17, 17, 17, 0.6);
+      backdrop-filter: blur(4px);
       padding: 16px;
     }
     .modal.show { display: flex; }
     .box {
       position: relative;
-      background: #fff;
-      width: min(900px, 100%);
+      background: #ffffff;
+      width: min(860px, 100%);
       max-height: 92vh;
-      overflow: auto;
-      border-radius: 17px;
-      padding: 25px;
+      overflow-y: auto;
+      border-radius: 18px;
+      padding: 26px;
+      border: 1px solid var(--line);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
     }
     .close {
       position: absolute;
-      right: 14px;
-      top: 13px;
+      right: 16px;
+      top: 16px;
       border-radius: 50%;
-      background: #eef0f5;
-      color: var(--ink);
-      font-size: 18px;
-      padding: 4px 10px;
+      background: #f0f0ed;
+      color: #111111;
+      font-size: 15px;
+      width: 32px;
+      height: 32px;
+      border: 1px solid #dcdcd6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      padding: 0;
     }
+    .close:hover {
+      background: #111111;
+      color: #ffffff;
+    }
+
+    /* Forms */
     .formgrid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -546,18 +436,28 @@
     .wide { grid-column: 1/-1; }
     label {
       display: block;
-      font-size: 13px;
-      font-weight: bold;
-      margin: 10px 0 5px;
+      font-size: 12.5px;
+      font-weight: 700;
+      margin: 12px 0 5px;
+      color: #333330;
     }
     input, textarea, select {
       width: 100%;
-      padding: 10px;
-      border: 1px solid #ccd4e2;
+      padding: 10px 12px;
+      border: 1px solid #d4d4cd;
       border-radius: 8px;
       font: inherit;
+      background: #ffffff;
+      color: #111111;
+      transition: border-color 0.15s ease;
     }
-    textarea { min-height: 70px; }
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: #111111;
+    }
+    textarea { min-height: 72px; }
+
+    /* Test attempt view */
     .row, .nav, .testbar {
       display: flex;
       align-items: center;
@@ -565,7 +465,7 @@
       gap: 10px;
     }
     .row {
-      padding: 11px 0;
+      padding: 12px 0;
       border-bottom: 1px solid var(--line);
     }
     .testbar {
@@ -573,224 +473,143 @@
       padding-bottom: 14px;
     }
     .timer, .warning {
-      padding: 8px;
-      border-radius: 7px;
-      background: #fff0e3;
-      color: #a14b00;
-      font-weight: bold;
+      padding: 8px 12px;
+      border-radius: 8px;
+      background: #f7f7f5;
+      color: #111111;
+      font-weight: 700;
+      border: 1px solid #e0e0da;
     }
-    .warning { font-size: 12px; margin: 15px 0; }
+    .warning {
+      font-size: 12px;
+      margin: 15px 0;
+      background: #fff8f0;
+      color: #8c4400;
+      border-color: #f7e0c9;
+    }
     .question {
-      font-size: 20px;
-      line-height: 1.5;
+      font-size: 18.5px;
+      font-weight: 600;
+      line-height: 1.55;
       margin: 22px 0;
+      color: #111111;
     }
     .option {
       display: block;
       width: 100%;
       text-align: left;
-      background: #fff;
+      background: #ffffff;
       color: var(--ink);
-      border: 1px solid var(--line);
+      border: 1.5px solid var(--line);
+      border-radius: 10px;
       margin: 9px 0;
+      padding: 12px 14px;
+      font-size: 14.5px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .option:hover {
+      border-color: #111111;
+      background: #fbfbf9;
     }
     .option.selected {
-      border-color: var(--p);
-      background: #f2f0ff;
+      border-color: #111111;
+      background: #111111;
+      color: #ffffff;
     }
-    .nav { margin-top: 22px; }
+    .nav { margin-top: 24px; }
     .item {
-      padding: 12px;
+      padding: 14px;
       margin: 10px 0;
-      background: #f8f9fc;
-      border-left: 3px solid var(--p);
+      background: #f8f8f6;
+      border-left: 3px solid #111111;
+      border-radius: 0 8px 8px 0;
     }
-    .score { font-size: 52px; font-weight: 800; color: var(--p); }
+    .score { font-size: 48px; font-weight: 800; color: #111111; }
     .center { text-align: center; }
     .tabs { display: flex; gap: 8px; margin: 16px 0; flex-wrap: wrap; }
     .hidden { display: none; }
 
+    /* Student Profile Modal */
+    .profile-card-top {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin: 18px 0 24px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--line);
+    }
+    .profile-avatar-large {
+      width: 82px;
+      height: 82px;
+      border-radius: 50%;
+      overflow: hidden;
+      background: #111111;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      font-weight: 800;
+      border: 2px solid #d4d4cd;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .profile-avatar-large img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
     @media (max-width: 800px) {
       .grid, .formgrid { grid-template-columns: 1fr; }
       .wide { grid-column: auto; }
-      .hero { padding: 27px; }
-      .hero i, .user { display: none; }
-      .profile-btn-text { display: none; }
+      .nav-links { display: none; }
     }
   </style>
 </head>
 <body>
   <header>
-    <div class="brand">PN <b>Neet Diw</b></div>
-    <div class="nav-right-container">
-      <span class="muted user" id="user"></span>
-      <button class="out" onclick="adminOpen()">Admin</button>
-      <button class="light" onclick="libraryOpen()">Notes & Videos</button>
-      <button class="light" onclick="loginOpen()" id="loginBtn">Student Login</button>
+    <div class="brand" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+      <span class="brand-badge">PN</span>
+      <span>Neet <b>Diw</b></span>
+    </div>
 
-      <!-- Profile & Features Icon Button in Navbar on Right Side -->
-      <button class="profile-nav-btn" id="profileNavBtn" onclick="toggleSidebar()" aria-label="Open Profile and All Features" title="Profile & All Features">
-        <div class="profile-avatar-pill guest" id="navAvatarPill">
-          <span id="navAvatarLetter">👤</span>
-          <span class="profile-status-dot" id="navStatusDot"></span>
+    <!-- Quick Navigation (Responsive) -->
+    <nav class="nav-links">
+      <button class="nav-link-btn" onclick="scrollToSchedule()">Test Schedule</button>
+      <button class="nav-link-btn" id="navLibraryBtn" onclick="libraryOpen()" style="display:none">Notes & Videos</button>
+      <button class="nav-link-btn" id="navCommunityBtn" onclick="communityOpen()" style="display:none">Community Chat</button>
+    </nav>
+
+    <!-- Top-Right Avatar & Three-Dot Menu (⋮) -->
+    <div class="header-right">
+      <div class="user-avatar-trigger" id="avatarTrigger" onclick="toggleMenu()" title="Account & Features">
+        <div class="avatar-circle" id="navAvatar">
+          <span class="nav-avatar-letter" id="navAvatarInitials">👤</span>
         </div>
-        <span class="profile-btn-text" id="navProfileName">Features</span>
-        <span class="profile-menu-icon">
-          <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-          </svg>
-        </span>
+      </div>
+
+      <button class="menu-dots-btn" id="menuBtn" onclick="toggleMenu()" aria-label="Account Menu" title="Account Menu">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+          <circle cx="12" cy="5" r="2.2"/>
+          <circle cx="12" cy="12" r="2.2"/>
+          <circle cx="12" cy="19" r="2.2"/>
+        </svg>
       </button>
+
+      <!-- Three-Dot Dropdown Menu Content -->
+      <div class="three-dot-menu" id="threeDotMenu" role="menu"></div>
     </div>
   </header>
-
-  <!-- Features Sidebar Backdrop Overlay -->
-  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
-
-  <!-- Features Sidebar Drawer -->
-  <aside class="features-sidebar" id="featuresSidebar" aria-label="Features and Profile Drawer">
-    <div class="sidebar-header">
-      <div class="sidebar-brand-badge">PN <b>Neet Diw</b></div>
-      <button class="sidebar-close-btn" onclick="closeSidebar()" aria-label="Close menu">✕</button>
-    </div>
-
-    <div class="sidebar-body">
-      <!-- User Profile Card -->
-      <div class="sidebar-user-card" id="sidebarUserCard">
-        <div class="sidebar-user-top">
-          <div class="sidebar-user-avatar" id="sidebarAvatar">👤</div>
-          <div class="sidebar-user-info">
-            <h4 class="sidebar-user-name" id="sidebarUserName">Guest Aspirant</h4>
-            <p class="sidebar-user-email" id="sidebarUserEmail">Sign in to track progress</p>
-          </div>
-        </div>
-        <div style="display:flex;align-items:center;justify-content:space-between">
-          <span class="sidebar-user-badge" id="sidebarUserBadge">👋 Guest</span>
-          <button class="sidebar-user-btn primary" id="sidebarAuthBtn" onclick="sidebarAuthAction()">Login / Register</button>
-        </div>
-      </div>
-
-      <!-- Core Features -->
-      <div>
-        <div class="sidebar-section-title">Core Learning & Tests</div>
-        <div class="sidebar-features-list">
-          <div class="sidebar-feature-item" onclick="sidebarFeature('tests')">
-            <div class="sidebar-feature-icon purple">📝</div>
-            <div class="sidebar-feature-text">
-              <div class="sidebar-feature-title">
-                <span>Chapter Tests</span>
-                <span class="sidebar-feature-badge">Timed</span>
-              </div>
-              <p class="sidebar-feature-desc">NEET Bio, Chem & Physics mock tests</p>
-            </div>
-            <span class="sidebar-feature-arrow">›</span>
-          </div>
-
-          <div class="sidebar-feature-item" onclick="sidebarFeature('results')">
-            <div class="sidebar-feature-icon green">📊</div>
-            <div class="sidebar-feature-text">
-              <div class="sidebar-feature-title">
-                <span>My Test Results</span>
-                <span class="sidebar-feature-badge">Analytics</span>
-              </div>
-              <p class="sidebar-feature-desc">Review answers, scores & question timings</p>
-            </div>
-            <span class="sidebar-feature-arrow">›</span>
-          </div>
-
-          <div class="sidebar-feature-item" onclick="sidebarFeature('library')">
-            <div class="sidebar-feature-icon blue">📚</div>
-            <div class="sidebar-feature-text">
-              <div class="sidebar-feature-title">
-                <span>Notes & Videos</span>
-                <span class="sidebar-feature-badge">Library</span>
-              </div>
-              <p class="sidebar-feature-desc">PDF revision guides & recorded lectures</p>
-            </div>
-            <span class="sidebar-feature-arrow">›</span>
-          </div>
-
-          <div class="sidebar-feature-item" onclick="sidebarFeature('live')">
-            <div class="sidebar-feature-icon red">🔴</div>
-            <div class="sidebar-feature-text">
-              <div class="sidebar-feature-title">
-                <span>Live Class Room</span>
-                <span class="sidebar-feature-badge live" id="sidebarLiveBadge">Live</span>
-              </div>
-              <p class="sidebar-feature-desc">Interactive video lectures & doubt sessions</p>
-            </div>
-            <span class="sidebar-feature-arrow">›</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Study Tools & Community -->
-      <div>
-        <div class="sidebar-section-title">Study Tools & Collaboration</div>
-        <div class="sidebar-features-list">
-          <div class="sidebar-feature-item" onclick="sidebarFeature('community')">
-            <div class="sidebar-feature-icon amber">💬</div>
-            <div class="sidebar-feature-text">
-              <div class="sidebar-feature-title">
-                <span>Doubt Community</span>
-                <span class="sidebar-feature-badge">Discussions</span>
-              </div>
-              <p class="sidebar-feature-desc">Ask doubts, share questions & peer answers</p>
-            </div>
-            <span class="sidebar-feature-arrow">›</span>
-          </div>
-
-          <div class="sidebar-feature-item" onclick="sidebarFeature('calendar')">
-            <div class="sidebar-feature-icon teal">📅</div>
-            <div class="sidebar-feature-text">
-              <div class="sidebar-feature-title">
-                <span>Study Calendar</span>
-                <span class="sidebar-feature-badge">Planner</span>
-              </div>
-              <p class="sidebar-feature-desc">Private daily study schedules & goals</p>
-            </div>
-            <span class="sidebar-feature-arrow">›</span>
-          </div>
-
-          <div class="sidebar-feature-item" id="sidebarAdminItem" onclick="sidebarFeature('admin')">
-            <div class="sidebar-feature-icon dark">⚙️</div>
-            <div class="sidebar-feature-text">
-              <div class="sidebar-feature-title">
-                <span>Admin Dashboard</span>
-                <span class="sidebar-feature-badge">Portal</span>
-              </div>
-              <p class="sidebar-feature-desc">Manage tests, questions, students & uploads</p>
-            </div>
-            <span class="sidebar-feature-arrow">›</span>
-          </div>
-
-          <div class="sidebar-feature-item" onclick="sidebarFeature('help')">
-            <div class="sidebar-feature-icon indigo">❓</div>
-            <div class="sidebar-feature-text">
-              <div class="sidebar-feature-title">
-                <span>Help & FAQs</span>
-                <span class="sidebar-feature-badge">Guide</span>
-              </div>
-              <p class="sidebar-feature-desc">How to attempt tests, focus rules & help</p>
-            </div>
-            <span class="sidebar-feature-arrow">›</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="sidebar-footer">
-      <span>NEET 2026/2027 Preparation</span>
-      <span style="color:#10b981;font-weight:700">● Online</span>
-    </div>
-  </aside>
 
   <main>
     <section class="hero">
       <div>
-        <h1>Learn by chapter. Test on schedule.</h1>
-        <p>Prepare for NEET with chapter-wise Biology, Chemistry and Physics tests, study notes, videos, and a clear practice schedule.</p>
-        <button onclick="startFirst()">Start a Test →</button>
+        <span class="tag">NEET 2026/2027</span>
+        <h1>Every small study session brings your NEET dream closer.</h1>
+        <p>Prepare for NEET with chapter-wise Biology, Chemistry and Physics tests, study notes, videos, and an honest practice schedule.</p>
+        <button onclick="startFirst()">Begin Your Practice →</button>
       </div>
       <i>🧬</i>
     </section>
@@ -801,48 +620,113 @@
     <section class="grid" id="cards"></section>
   </main>
 
+  <!-- Student / Admin Login Modal -->
   <div class="modal" id="login">
-    <div class="box" style="max-width:430px">
-      <button class="close" onclick="hide('login')">×</button>
-      <h2 id="loginTitle">Student Login</h2>
-      <p class="muted" id="loginInfo">Sign in to start a test.</p>
+    <div class="box" style="max-width:420px">
+      <button class="close" onclick="hide('login')">✕</button>
+      <h2 id="loginTitle" style="margin-top:0">Student Login</h2>
+      <p class="muted" id="loginInfo">Sign in to start a test or join community chat.</p>
       <div id="nameField">
         <label>Full name</label>
         <input id="name" placeholder="Your name">
       </div>
-      <label>Email</label>
-      <input id="email" type="email">
+      <label>Email address</label>
+      <input id="email" type="email" placeholder="student@example.com">
       <label>Password</label>
       <input id="password" type="password" placeholder="Minimum 6 characters">
-      <button style="width:100%;margin-top:16px" id="loginSubmit"></button>
-      <p class="muted" id="loginSwitch"></p>
+      <button style="width:100%;margin-top:16px" id="loginSubmit">Login</button>
+      <p class="muted" id="loginSwitch" style="font-size:13px;text-align:center;margin-top:16px"></p>
     </div>
   </div>
 
+  <!-- Student Profile Modal -->
+  <div class="modal" id="profileModal">
+    <div class="box" style="max-width:480px">
+      <button class="close" onclick="hide('profileModal')">✕</button>
+      <h2 style="margin-top:0">My Student Profile</h2>
+      <p class="muted" style="margin-top:0">Update your display name and profile picture for the platform and Community Chat.</p>
+
+      <div class="profile-card-top">
+        <div class="profile-avatar-large" id="profileAvatarLarge">
+          <span id="profileLargeLetter">👤</span>
+        </div>
+        <div>
+          <button class="light" type="button" onclick="$('profilePhotoInput').click()" style="padding:8px 14px">📷 Change Photo</button>
+          <input type="file" id="profilePhotoInput" accept="image/jpeg,image/png,image/webp,image/gif" style="display:none">
+          <p class="muted" style="font-size:11.5px;margin:6px 0 0">JPG, PNG, WebP or GIF (Max 5 MB)</p>
+        </div>
+      </div>
+
+      <label>Display Name</label>
+      <input id="profileNameInput" placeholder="Your display name">
+
+      <label>Email Address</label>
+      <input id="profileEmailDisplay" disabled style="background:#f7f7f5;color:#666662;cursor:not-allowed">
+
+      <label>Account Role</label>
+      <div id="profileRoleBadge" class="tag" style="padding:6px 12px;font-size:12px;margin-bottom:18px">🎓 NEET Student</div>
+
+      <div style="display:flex;gap:10px;margin-top:20px">
+        <button type="button" style="flex:1" id="saveProfileBtn" onclick="saveProfileChanges()">Save Profile</button>
+        <button type="button" class="out" onclick="hide('profileModal')">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div class="modal" id="settingsModal">
+    <div class="box" style="max-width:460px">
+      <button class="close" onclick="hide('settingsModal')">✕</button>
+      <h2 style="margin-top:0">⚙️ Settings</h2>
+      <p class="muted" style="margin-top:0">Personalize your NEET test experience.</p>
+
+      <div class="panel" style="margin-top:16px">
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
+          <input type="checkbox" id="settingFocusProtection" checked style="width:auto;height:auto">
+          <span><b>Focus Protection:</b> Auto-submit on tab switch or minimize</span>
+        </label>
+        <p class="muted" style="font-size:12px;margin:4px 0 14px 26px">Simulates strict NEET computer-based practice honesty.</p>
+
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
+          <input type="checkbox" id="settingSoundAlerts" checked style="width:auto;height:auto">
+          <span><b>Sound Warning:</b> Alert when 5 minutes remain in test</span>
+        </label>
+        <p class="muted" style="font-size:12px;margin:4px 0 0 26px">Helps build time awareness for fast question solving.</p>
+      </div>
+
+      <button style="width:100%;margin-top:16px" onclick="saveSettings()">Save Preferences</button>
+    </div>
+  </div>
+
+  <!-- Test Attempt & Result Modals -->
   <div class="modal" id="test">
     <div class="box" id="testBox"></div>
   </div>
 
   <div class="modal" id="results">
     <div class="box">
-      <button class="close" onclick="hide('results')">×</button>
-      <h2>My Results</h2>
-      <div id="resultsList"></div>
+      <button class="close" onclick="hide('results')">✕</button>
+      <h2>My Test Results</h2>
+      <p class="muted">Review past mock attempts and track your preparation accuracy.</p>
+      <div id="resultsList" style="margin-top:16px"></div>
     </div>
   </div>
 
+  <!-- Study Material Library Modal -->
   <div class="modal" id="library">
     <div class="box">
-      <button class="close" onclick="hide('library')">×</button>
+      <button class="close" onclick="hide('library')">✕</button>
       <h2>Notes & Video Library</h2>
-      <div id="resourceList"></div>
-      <div id="uploadLink" style="margin-top:18px"></div>
+      <p class="muted">High-yield revision notes and recorded lectures for Biology, Chemistry & Physics.</p>
+      <div id="resourceList" style="margin-top:18px"></div>
+      <div id="uploadLink" style="margin-top:20px"></div>
     </div>
   </div>
 
+  <!-- Admin Study Material Upload Modal (Strictly Admin-Only) -->
   <div class="modal" id="upload">
     <div class="box" style="max-width:480px">
-      <button class="close" onclick="hide('upload')">×</button>
+      <button class="close" onclick="hide('upload')">✕</button>
       <h2>Upload Study Material</h2>
       <label>Title</label>
       <input id="resourceTitle">
@@ -855,15 +739,16 @@
       </select>
       <label>PDF note or video file (up to 100 MB)</label>
       <input id="resourceFile" type="file" accept="application/pdf,video/mp4,video/webm,video/quicktime">
-      <button style="margin-top:15px" onclick="uploadResource()">Upload</button>
+      <button style="margin-top:15px" onclick="uploadResource()">Upload Material</button>
     </div>
   </div>
 
+  <!-- Admin Dashboard Modal (Strictly Admin-Only) -->
   <div class="modal" id="admin">
     <div class="box">
-      <button class="close" onclick="hide('admin')">×</button>
+      <button class="close" onclick="hide('admin')">✕</button>
       <h2>PN Neet Diw Admin Dashboard</h2>
-      <p class="muted">Create and schedule chapter-wise tests. Manage every test, question, student, and result.</p>
+      <p class="muted">Create chapter tests, schedule release dates, manage questions, and review student attempts.</p>
       <div class="tabs">
         <button onclick="adminTab('manage')">Tests & Questions</button>
         <button class="light" onclick="adminTab('reports')">Students & Results</button>
@@ -942,7 +827,7 @@
     const $ = id => document.getElementById(id),
           show = id => $(id).classList.add('show'),
           hide = id => $(id).classList.remove('show'),
-          esc = s => String(s).replace(/[&<>]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[c]));
+          esc = s => String(s || '').replace(/[&<>]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[c]));
 
     async function api(path, opt = {}) {
       let r = await fetch('/api/' + path, {
@@ -958,150 +843,286 @@
       return d;
     }
 
-    function toggleSidebar() {
-      const sidebar = $('featuresSidebar');
-      if (sidebar.classList.contains('open')) {
-        closeSidebar();
+    // Three-Dot Account Menu Management
+    function toggleMenu() {
+      const menu = $('threeDotMenu');
+      if (menu.classList.contains('open')) {
+        closeMenu();
       } else {
-        openSidebar();
+        renderThreeDotMenu();
+        menu.classList.add('open');
       }
     }
 
-    function openSidebar() {
-      $('featuresSidebar').classList.add('open');
-      $('sidebarOverlay').classList.add('open');
-      document.body.style.overflow = 'hidden';
-      updateSidebarUI();
+    function closeMenu() {
+      const menu = $('threeDotMenu');
+      if (menu) menu.classList.remove('open');
     }
 
-    function closeSidebar() {
-      $('featuresSidebar').classList.remove('open');
-      $('sidebarOverlay').classList.remove('open');
-      document.body.style.overflow = '';
-    }
-
-    function sidebarAuthAction() {
-      closeSidebar();
-      loginOpen();
-    }
-
-    function sidebarFeature(type) {
-      closeSidebar();
-      if (type === 'tests') {
-        const el = document.getElementById('scheduleArea') || document.getElementById('cards');
-        if (el) el.scrollIntoView({ behavior: 'smooth' });
-      } else if (type === 'results') {
-        resultsOpen();
-      } else if (type === 'library') {
-        libraryOpen();
-      } else if (type === 'live') {
-        if (user?.role === 'admin') {
-          if (typeof window.startLiveClass === 'function') {
-            window.startLiveClass();
-          } else {
-            alert('Live class module ready. Ensure camera and microphone permissions.');
-          }
-        } else {
-          if (typeof window.joinLiveClass === 'function') {
-            window.joinLiveClass();
-          } else {
-            const liveCard = document.getElementById('liveCard');
-            if (liveCard) {
-              liveCard.scrollIntoView({ behavior: 'smooth' });
-            } else {
-              alert('No live class is running right now. When a teacher goes live, it will appear here.');
-            }
-          }
-        }
-      } else if (type === 'community') {
-        if (typeof window.communityOpen === 'function') {
-          window.communityOpen();
-        } else {
-          alert('Community is loading...');
-        }
-      } else if (type === 'calendar') {
-        if (typeof window.calendarOpen === 'function') {
-          window.calendarOpen();
-        } else {
-          alert('Study calendar is loading...');
-        }
-      } else if (type === 'admin') {
-        adminOpen();
-      } else if (type === 'help') {
-        if (typeof window.helpOpen === 'function') {
-          window.helpOpen();
-        } else {
-          alert('Help module is loading...');
-        }
+    document.addEventListener('click', e => {
+      const headerRight = document.querySelector('.header-right');
+      if (headerRight && !headerRight.contains(e.target)) {
+        closeMenu();
       }
-    }
-
-    function updateSidebarUI() {
-      const pill = $('navAvatarPill');
-      const navLetter = $('navAvatarLetter');
-      const navDot = $('navStatusDot');
-      const navName = $('navProfileName');
-
-      const sAvatar = $('sidebarAvatar');
-      const sName = $('sidebarUserName');
-      const sEmail = $('sidebarUserEmail');
-      const sBadge = $('sidebarUserBadge');
-      const sAuthBtn = $('sidebarAuthBtn');
-
-      if (user) {
-        const firstLetter = (user.name || 'S').trim().charAt(0).toUpperCase();
-        const firstName = (user.name || 'Student').trim().split(' ')[0];
-
-        // Navbar
-        if (pill) pill.classList.remove('guest');
-        if (navLetter) navLetter.textContent = firstLetter;
-        if (navDot) navDot.classList.add('active');
-        if (navName) navName.textContent = firstName;
-
-        // Sidebar
-        if (sAvatar) sAvatar.textContent = firstLetter;
-        if (sName) sName.textContent = user.name;
-        if (sEmail) sEmail.textContent = user.email || 'NEET Candidate';
-        if (sBadge) {
-          sBadge.textContent = user.role === 'admin' ? '🛡️ Administrator' : '🎓 NEET Student';
-          sBadge.style.background = user.role === 'admin' ? 'rgba(239, 68, 68, 0.25)' : 'rgba(99, 102, 241, 0.25)';
-          sBadge.style.color = user.role === 'admin' ? '#fca5a5' : '#c7d2fe';
-        }
-        if (sAuthBtn) {
-          sAuthBtn.textContent = 'Logout';
-          sAuthBtn.className = 'sidebar-user-btn logout';
-        }
-      } else {
-        // Navbar
-        if (pill) pill.classList.add('guest');
-        if (navLetter) navLetter.textContent = '👤';
-        if (navDot) navDot.classList.remove('active');
-        if (navName) navName.textContent = 'Features';
-
-        // Sidebar
-        if (sAvatar) sAvatar.textContent = '👤';
-        if (sName) sName.textContent = 'Guest Aspirant';
-        if (sEmail) sEmail.textContent = 'Sign in to access tests & material';
-        if (sBadge) {
-          sBadge.textContent = '👋 Guest';
-          sBadge.style.background = 'rgba(255, 255, 255, 0.12)';
-          sBadge.style.color = '#e2e8f0';
-        }
-        if (sAuthBtn) {
-          sAuthBtn.textContent = 'Login / Register';
-          sAuthBtn.className = 'sidebar-user-btn primary';
-        }
-      }
-    }
-
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') closeSidebar();
     });
 
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        closeMenu();
+      }
+    });
+
+    function renderThreeDotMenu() {
+      const menu = $('threeDotMenu');
+      if (!menu) return;
+
+      if (!user) {
+        // When Logged Out: Only Login / Register and Help
+        menu.innerHTML = `
+          <div class="menu-header">
+            <span class="menu-header-title">Welcome to PN Neet Diw</span>
+            <span class="menu-header-sub">Chapter tests & NEET practice</span>
+          </div>
+          <div class="menu-divider"></div>
+          <button class="menu-item primary" onclick="closeMenu();loginOpen()">
+            <span class="menu-item-icon">🔑</span>
+            <span>Login / Register</span>
+          </button>
+          <div class="menu-divider"></div>
+          <button class="menu-item" onclick="closeMenu();if(typeof helpOpen==='function')helpOpen()">
+            <span class="menu-item-icon">❓</span>
+            <span>Help & Support</span>
+          </button>
+        `;
+      } else if (user.role === 'student') {
+        // When Student is Logged In: My Profile, Settings, My Results, My Study Calendar, Help & Support, Logout
+        const letter = (user.name || 'S').trim().charAt(0).toUpperCase();
+        const avatarImg = user.avatar
+          ? `<img src="${user.avatar}" class="menu-user-thumb" alt="${esc(user.name)}">`
+          : `<div class="menu-user-thumb-fallback">${letter}</div>`;
+
+        menu.innerHTML = `
+          <div class="menu-user-card" onclick="closeMenu();openProfileModal()">
+            ${avatarImg}
+            <div class="menu-user-details">
+              <div class="menu-user-name">${esc(user.name)}</div>
+              <div class="menu-user-badge">🎓 NEET Student</div>
+            </div>
+          </div>
+          <div class="menu-divider"></div>
+          <button class="menu-item" onclick="closeMenu();openProfileModal()">
+            <span class="menu-item-icon">👤</span>
+            <span>My Profile</span>
+          </button>
+          <button class="menu-item" onclick="closeMenu();openSettingsModal()">
+            <span class="menu-item-icon">⚙️</span>
+            <span>Settings</span>
+          </button>
+          <button class="menu-item" onclick="closeMenu();resultsOpen()">
+            <span class="menu-item-icon">📊</span>
+            <span>My Results</span>
+          </button>
+          <button class="menu-item" onclick="closeMenu();if(typeof calendarOpen==='function')calendarOpen()">
+            <span class="menu-item-icon">📅</span>
+            <span>My Study Calendar</span>
+          </button>
+          <button class="menu-item" onclick="closeMenu();if(typeof helpOpen==='function')helpOpen()">
+            <span class="menu-item-icon">❓</span>
+            <span>Help & Support</span>
+          </button>
+          <div class="menu-divider"></div>
+          <button class="menu-item logout" onclick="closeMenu();logoutUser()">
+            <span class="menu-item-icon">🚪</span>
+            <span>Logout</span>
+          </button>
+        `;
+      } else if (user.role === 'admin') {
+        // When Admin is Logged In
+        const letter = (user.name || 'A').trim().charAt(0).toUpperCase();
+        const avatarImg = user.avatar
+          ? `<img src="${user.avatar}" class="menu-user-thumb" alt="${esc(user.name)}">`
+          : `<div class="menu-user-thumb-fallback admin">${letter}</div>`;
+
+        menu.innerHTML = `
+          <div class="menu-user-card" onclick="closeMenu();openProfileModal()">
+            ${avatarImg}
+            <div class="menu-user-details">
+              <div class="menu-user-name">${esc(user.name)}</div>
+              <div class="menu-user-badge admin">🛡️ Administrator</div>
+            </div>
+          </div>
+          <div class="menu-divider"></div>
+          <button class="menu-item admin-highlight" onclick="closeMenu();adminOpen()">
+            <span class="menu-item-icon">🛡️</span>
+            <span>Admin Dashboard</span>
+          </button>
+          <button class="menu-item" onclick="closeMenu();openProfileModal()">
+            <span class="menu-item-icon">👤</span>
+            <span>My Profile</span>
+          </button>
+          <button class="menu-item" onclick="closeMenu();openSettingsModal()">
+            <span class="menu-item-icon">⚙️</span>
+            <span>Settings</span>
+          </button>
+          <button class="menu-item" onclick="closeMenu();libraryOpen()">
+            <span class="menu-item-icon">📚</span>
+            <span>Notes & Videos</span>
+          </button>
+          <button class="menu-item" onclick="closeMenu();if(typeof helpOpen==='function')helpOpen()">
+            <span class="menu-item-icon">❓</span>
+            <span>Help & Support</span>
+          </button>
+          <div class="menu-divider"></div>
+          <button class="menu-item logout" onclick="closeMenu();logoutUser()">
+            <span class="menu-item-icon">🚪</span>
+            <span>Logout</span>
+          </button>
+        `;
+      }
+    }
+
+    function updateNavAvatar() {
+      const avatarElem = $('navAvatar');
+      if (!avatarElem) return;
+
+      if (user) {
+        if (user.avatar) {
+          avatarElem.innerHTML = `<img src="${user.avatar}" alt="${esc(user.name)}" class="nav-avatar-img">`;
+        } else {
+          const letter = (user.name || 'S').trim().charAt(0).toUpperCase();
+          avatarElem.innerHTML = `<span class="nav-avatar-letter">${letter}</span>`;
+        }
+      } else {
+        avatarElem.innerHTML = `<span class="nav-avatar-letter">👤</span>`;
+      }
+    }
+
+    function scrollToSchedule() {
+      const el = document.getElementById('scheduleArea') || document.getElementById('cards');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Student Profile Modal & Updating
+    let selectedProfilePhoto = null;
+
+    function openProfileModal() {
+      if (!user) { loginOpen(); return; }
+
+      $('profileNameInput').value = user.name || '';
+      $('profileEmailDisplay').value = user.email || '';
+      $('profileRoleBadge').textContent = user.role === 'admin' ? '🛡️ Administrator' : '🎓 NEET Student';
+
+      renderProfileAvatarPreview(user.avatar);
+      selectedProfilePhoto = null;
+      $('profilePhotoInput').value = '';
+
+      show('profileModal');
+    }
+
+    function renderProfileAvatarPreview(avatarUrl) {
+      const box = $('profileAvatarLarge');
+      if (avatarUrl) {
+        box.innerHTML = `<img src="${avatarUrl}" alt="Profile avatar">`;
+      } else {
+        const letter = (user?.name || 'S').trim().charAt(0).toUpperCase();
+        box.innerHTML = `<span>${letter}</span>`;
+      }
+    }
+
+    $('profilePhotoInput').onchange = function () {
+      const file = this.files[0];
+      if (!file) return;
+
+      const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+      if (!validTypes.includes(file.type)) {
+        alert('Please choose a JPG, PNG, WebP, or GIF image.');
+        this.value = '';
+        return;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        alert('Profile photo size must be less than 5 MB.');
+        this.value = '';
+        return;
+      }
+
+      selectedProfilePhoto = file;
+      const previewUrl = URL.createObjectURL(file);
+      renderProfileAvatarPreview(previewUrl);
+    };
+
+    async function saveProfileChanges() {
+      const name = $('profileNameInput').value.trim();
+      if (!name) {
+        alert('Please enter a valid display name.');
+        return;
+      }
+
+      const saveBtn = $('saveProfileBtn');
+      saveBtn.disabled = true;
+      saveBtn.textContent = 'Saving...';
+
+      try {
+        const fd = new FormData();
+        fd.append('name', name);
+        if (selectedProfilePhoto) {
+          fd.append('avatar', selectedProfilePhoto);
+        }
+
+        const updated = await api('profile', {
+          method: 'PUT',
+          body: fd
+        });
+
+        user.name = updated.name;
+        user.avatar = updated.avatar;
+        localStorage.user = JSON.stringify(user);
+
+        updateNavAvatar();
+        renderThreeDotMenu();
+        hide('profileModal');
+        alert('Profile updated successfully!');
+      } catch (e) {
+        alert(e.message || 'Failed to update profile.');
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = 'Save Profile';
+      }
+    }
+
+    // Settings Modal
+    function openSettingsModal() {
+      show('settingsModal');
+    }
+
+    function saveSettings() {
+      localStorage.setItem('settings_focus', $('settingFocusProtection').checked);
+      localStorage.setItem('settings_sound', $('settingSoundAlerts').checked);
+      hide('settingsModal');
+      alert('Preferences saved.');
+    }
+
     function refreshUser() {
-      $('user').textContent = user ? 'Hi, ' + user.name : '';
-      $('loginBtn').textContent = user ? 'Logout' : 'Student Login';
-      updateSidebarUI();
+      updateNavAvatar();
+      renderThreeDotMenu();
+
+      const libBtn = $('navLibraryBtn');
+      const commBtn = $('navCommunityBtn');
+      if (libBtn) libBtn.style.display = user ? '' : 'none';
+      if (commBtn) commBtn.style.display = user ? '' : 'none';
+
+      // Strict role-based clean up
+      if (!user || user.role !== 'admin') {
+        const adminUpload = $('uploadLink');
+        if (adminUpload) adminUpload.innerHTML = '';
+      }
+    }
+
+    function logoutUser() {
+      localStorage.clear();
+      token = '';
+      user = null;
+      refreshUser();
+      load();
     }
 
     function when(v) {
@@ -1128,14 +1149,6 @@
     }
 
     function loginOpen() {
-      if (user) {
-        localStorage.clear();
-        token = '';
-        user = null;
-        refreshUser();
-        load();
-        return;
-      }
       register = false;
       loginMode();
       show('login');
@@ -1143,7 +1156,7 @@
 
     function loginMode() {
       $('loginTitle').textContent = register ? 'Student Registration' : 'Student Login';
-      $('loginInfo').textContent = register ? 'Create your student account.' : 'Sign in to start a test.';
+      $('loginInfo').textContent = register ? 'Create your student account.' : 'Sign in to access tests and community.';
       $('nameField').style.display = register ? 'block' : 'none';
       $('loginSubmit').textContent = register ? 'Create Account' : 'Login';
       $('loginSwitch').innerHTML = register
@@ -1175,6 +1188,7 @@
     };
 
     function adminOpen() {
+      // Strict Role Check: Only Admin can open
       if (user?.role === 'admin') {
         adminLoad();
         show('admin');
@@ -1314,6 +1328,8 @@
                 : ''}
             </article>`).join('')}</div>`
         : '<p class="muted">No study material has been uploaded yet.</p>';
+
+      // Strict role check: upload button ONLY for admin
       $('uploadLink').innerHTML = user?.role === 'admin'
         ? '<button onclick="show(\'upload\')">+ Upload Study Material</button>'
         : '';
@@ -1344,6 +1360,7 @@
     }
 
     async function adminLoad() {
+      if (user?.role !== 'admin') return;
       dashboard = await api('admin/dashboard');
       $('questionTest').innerHTML = dashboard.tests.map(t => `<option value="${t.id}">${esc(t.title)}</option>`).join('');
       renderContent();
@@ -1492,6 +1509,7 @@
           : '<p class="muted">No test attempts yet.</p>'}`;
     }
 
+    // Initialize UI
     refreshUser();
     load();
   </script>

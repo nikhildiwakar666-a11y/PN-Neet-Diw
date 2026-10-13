@@ -1,35 +1,795 @@
 (() => {
   const style = document.createElement('style');
-  style.textContent = '.utility-actions{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0}.chat-list{max-height:52vh;overflow:auto;padding:4px}.chat-message{margin:12px 0;padding:13px 15px;background:#f5f5f2;border-radius:14px;border:1px solid #e4e4df}.chat-message.mine{background:#e9e9e5}.chat-message p{line-height:1.6;white-space:pre-wrap;margin:7px 0}.chat-message small{color:var(--m)}.chat-photo{display:block;max-width:min(100%,360px);max-height:260px;object-fit:cover;border-radius:10px;margin:10px 0}.reply-thread{margin:10px 0 0 18px;padding-left:12px;border-left:2px solid #cfcfca}.reply-box{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap}.reply-box input{flex:1;min-width:160px}.chat-composer{position:sticky;bottom:0;background:#fff;padding-top:14px;border-top:1px solid var(--line)}.chat-composer textarea{min-height:64px}.photo-label{display:inline-block;padding:8px 0;color:var(--m);font-size:13px}.calendar-day{padding:12px;background:#f6f6f3;border-left:3px solid #111;margin:9px 0}.calendar-day.done{opacity:.55;border-color:#999;text-decoration:line-through}.faq{margin:10px 0;padding:14px;border:1px solid var(--line);border-radius:9px}.faq summary{font-weight:bold;cursor:pointer}.faq p{line-height:1.6;color:var(--m)}';
+  style.textContent = `
+    .chat-modal-box {
+      max-width: 760px;
+      width: 100%;
+      height: 86vh;
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+      overflow: hidden;
+      background: #ffffff;
+      border: 1px solid #e5e5e0;
+      border-radius: 18px;
+    }
+    .chat-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid #e5e5e0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #ffffff;
+      flex-shrink: 0;
+    }
+    .chat-header h3 {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 700;
+      color: #111111;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .chat-header-status {
+      font-size: 12px;
+      color: #555552;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .chat-header-status::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #111111;
+    }
+    .chat-guideline {
+      padding: 8px 18px;
+      background: #f7f7f5;
+      border-bottom: 1px solid #ebebe6;
+      font-size: 12px;
+      color: #737370;
+      flex-shrink: 0;
+    }
+    .chat-feed {
+      flex: 1;
+      overflow-y: auto;
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      background: #ffffff;
+    }
+    .chat-message-row {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      position: relative;
+    }
+    .chat-avatar-wrap {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      overflow: hidden;
+      background: #111111;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      flex-shrink: 0;
+      border: 1px solid #e5e5e0;
+    }
+    .chat-avatar-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .chat-bubble-container {
+      flex: 1;
+      min-width: 0;
+    }
+    .chat-bubble-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+      flex-wrap: wrap;
+    }
+    .chat-author-name {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #111111;
+    }
+    .chat-role-tag {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #111111;
+      color: #ffffff;
+    }
+    .chat-role-tag.student {
+      background: #f0f0ed;
+      color: #666662;
+    }
+    .chat-timestamp {
+      font-size: 11.5px;
+      color: #8c8c88;
+    }
+    .chat-bubble-body {
+      background: #f7f7f5;
+      border: 1px solid #e5e5e0;
+      border-radius: 12px;
+      padding: 11px 14px;
+      color: #111111;
+      font-size: 13.5px;
+      line-height: 1.55;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .chat-bubble-body.mine {
+      background: #f0f0ed;
+      border-color: #dcdcd6;
+    }
+    .chat-shared-photo {
+      display: block;
+      max-width: min(100%, 340px);
+      max-height: 240px;
+      object-fit: cover;
+      border-radius: 9px;
+      margin-top: 9px;
+      border: 1px solid #dcdcd6;
+      cursor: pointer;
+      transition: opacity 0.15s ease;
+    }
+    .chat-shared-photo:hover {
+      opacity: 0.92;
+    }
+    .chat-bubble-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 5px;
+      font-size: 12px;
+    }
+    .chat-action-btn {
+      background: none;
+      border: none;
+      color: #666662;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 2px 4px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      border-radius: 4px;
+    }
+    .chat-action-btn:hover {
+      color: #111111;
+      background: #f0f0ed;
+    }
+    .chat-action-btn.delete {
+      color: #c93b3b;
+    }
+    .chat-action-btn.delete:hover {
+      background: #fff0f0;
+      color: #b02a2a;
+    }
+
+    /* Threaded / Nested Replies */
+    .chat-thread-container {
+      margin-top: 10px;
+      padding-left: 14px;
+      border-left: 2px solid #e0e0da;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .chat-reply-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .chat-reply-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      overflow: hidden;
+      background: #333333;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .chat-reply-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .chat-reply-bubble {
+      flex: 1;
+      background: #fafaf8;
+      border: 1px solid #ebebe6;
+      border-radius: 10px;
+      padding: 9px 12px;
+      font-size: 13px;
+      line-height: 1.5;
+      color: #111111;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .chat-reply-bubble.mine {
+      background: #f0f0ed;
+    }
+
+    /* Composer Area */
+    .chat-composer-wrap {
+      border-top: 1px solid #e5e5e0;
+      background: #ffffff;
+      padding: 12px 18px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .chat-reply-target-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #f5f5f2;
+      border-left: 3px solid #111111;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      color: #444440;
+    }
+    .chat-reply-target-bar span b {
+      color: #111111;
+    }
+    .chat-reply-cancel-btn {
+      background: none;
+      border: none;
+      color: #888884;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      padding: 0 4px;
+    }
+    .chat-reply-cancel-btn:hover {
+      color: #111111;
+    }
+    .chat-image-preview-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 10px;
+      background: #f8f8f6;
+      border: 1px solid #e5e5e0;
+      border-radius: 8px;
+      max-width: 300px;
+    }
+    .chat-image-preview-thumb {
+      width: 44px;
+      height: 44px;
+      border-radius: 6px;
+      object-fit: cover;
+      border: 1px solid #dcdcd6;
+    }
+    .chat-image-preview-name {
+      flex: 1;
+      min-width: 0;
+      font-size: 11.5px;
+      color: #555550;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .chat-input-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+    }
+    .chat-textarea {
+      flex: 1;
+      min-height: 44px;
+      max-height: 120px;
+      padding: 10px 12px;
+      border: 1px solid #d4d4cd;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 13.5px;
+      line-height: 1.45;
+      resize: none;
+      color: #111111;
+      background: #ffffff;
+      transition: border-color 0.15s ease;
+    }
+    .chat-textarea:focus {
+      outline: none;
+      border-color: #111111;
+    }
+    .chat-attach-btn {
+      background: #f7f7f5;
+      border: 1px solid #dcdcd6;
+      color: #333330;
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      font-size: 17px;
+      transition: all 0.15s ease;
+    }
+    .chat-attach-btn:hover {
+      background: #eeeeea;
+      border-color: #111111;
+      color: #111111;
+    }
+    .chat-send-btn {
+      background: #111111;
+      color: #ffffff;
+      border: none;
+      height: 42px;
+      padding: 0 16px;
+      border-radius: 10px;
+      font-size: 13.5px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.15s ease;
+    }
+    .chat-send-btn:hover {
+      background: #333330;
+    }
+    .chat-send-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  `;
   document.head.appendChild(style);
 
-  function modal(title, content) { $('testBox').innerHTML = `<button class="close" onclick="hide('test')">×</button><h2>${title}</h2>${content}`; show('test'); }
-  function requireLogin(action) { if (!user) { loginOpen(); return false; } return true; }
+  let activeReplyTo = null; // { id, author, snippet }
+  let selectedChatFile = null;
+
+  function formatTime(iso) {
+    if (!iso) return '';
+    const d = new Date(iso);
+    return d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }) + ' · ' + d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+  }
+
+  function getAvatarHtml(name, avatarUrl, sizeClass = '') {
+    const letter = (name || 'S').trim().charAt(0).toUpperCase();
+    if (avatarUrl) {
+      return `<div class="chat-avatar-wrap ${sizeClass}"><img src="${avatarUrl}" alt="${esc(name)}"></div>`;
+    }
+    return `<div class="chat-avatar-wrap ${sizeClass}"><span>${letter}</span></div>`;
+  }
 
   window.communityOpen = async function () {
-    if (!requireLogin()) return;
-    modal('Student Community', `<p class="muted">Ask doubts, share study ideas, reply kindly, and keep the space respectful.</p><div class="chat-list" id="postList"></div><div class="chat-composer"><textarea id="postBody" placeholder="Write a message..."></textarea><label class="photo-label">Add photo <input id="postImage" type="file" accept="image/jpeg,image/png,image/webp,image/gif" style="width:auto"></label><button onclick="createPost()">Send Message</button></div>`);
-    await loadPosts();
-  };
-  function photo(image) { return image ? `<img class="chat-photo" src="${image}" alt="Community shared photo">` : ''; }
-  async function loadPosts() { const posts = await api('community'); $('postList').innerHTML = posts.length ? posts.map(post => `<article class="chat-message ${post.userId===user.id?'mine':''}"><b>${esc(post.author)}</b> <small>· ${new Date(post.createdAt).toLocaleString('en-IN')}</small>${post.body?`<p>${esc(post.body)}</p>`:''}${photo(post.image)}<div class="reply-thread">${post.comments.map(comment => `<div class="chat-message ${comment.userId===user.id?'mine':''}"><b>${esc(comment.author)}</b> <small>· ${new Date(comment.createdAt).toLocaleString('en-IN')}</small>${comment.body?`<p>${esc(comment.body)}</p>`:''}${photo(comment.image)}</div>`).join('')}</div><div class="reply-box"><input id="comment${post.id}" placeholder="Write a reply..."><input id="commentImage${post.id}" type="file" accept="image/jpeg,image/png,image/webp,image/gif" style="width:auto"><button class="light" onclick="addComment(${post.id})">Reply</button>${user.role==='admin'?`<button class="red" onclick="deletePost(${post.id})">Remove</button>`:''}</div></article>`).join('') : '<p class="muted">No messages yet. Say hello to start the community.</p>'; $('postList').scrollTop=0; }
-  window.createPost = async function () { try { const form=new FormData();form.append('body',$('postBody').value);if($('postImage').files[0])form.append('image',$('postImage').files[0]);await api('community',{method:'POST',body:form}); $('postBody').value='';$('postImage').value='';loadPosts(); } catch(error) { alert(error.message); } };
-  window.addComment = async function (id) { try { const form=new FormData();form.append('body',$('comment'+id).value);if($('commentImage'+id).files[0])form.append('image',$('commentImage'+id).files[0]);await api(`community/${id}/comments`,{method:'POST',body:form});loadPosts(); } catch(error) { alert(error.message); } };
-  window.deletePost = async function (id) { if(confirm('Remove this discussion?')) { await api('community/'+id,{method:'DELETE'});loadPosts(); } };
+    if (!user) {
+      loginOpen();
+      return;
+    }
 
+    $('testBox').innerHTML = `
+      <div class="chat-modal-box">
+        <div class="chat-header">
+          <div>
+            <h3>💬 NEET Community Chat</h3>
+            <span class="chat-header-status">Respectful Doubts & Discussion</span>
+          </div>
+          <button class="close" onclick="hide('test')" style="position:static">✕</button>
+        </div>
+        <div class="chat-guideline">
+          Ask doubts directly, reply to discuss concepts, attach questions, and support fellow NEET aspirants.
+        </div>
+        <div class="chat-feed" id="chatFeed">
+          <p class="muted" style="text-align:center;padding:20px">Loading chat messages...</p>
+        </div>
+        <div class="chat-composer-wrap">
+          <div id="replyTargetBar" style="display:none" class="chat-reply-target-bar">
+            <span id="replyTargetText"></span>
+            <button class="chat-reply-cancel-btn" onclick="cancelReply()">✕</button>
+          </div>
+          <div id="imagePreviewBar" style="display:none" class="chat-image-preview-bar">
+            <img id="imagePreviewThumb" class="chat-image-preview-thumb" src="" alt="Selected image">
+            <span id="imagePreviewName" class="chat-image-preview-name"></span>
+            <button class="chat-reply-cancel-btn" onclick="clearSelectedImage()">✕</button>
+          </div>
+          <div class="chat-input-row">
+            <textarea id="chatInput" class="chat-textarea" placeholder="Type your doubt or question... (Enter to send, Shift+Enter for newline)"></textarea>
+            <input type="file" id="chatFileInput" accept="image/jpeg,image/png,image/webp,image/gif" style="display:none">
+            <button type="button" class="chat-attach-btn" onclick="$('chatFileInput').click()" title="Attach image (JPG, PNG, WebP, GIF)">📷</button>
+            <button type="button" class="chat-send-btn" id="chatSendBtn" onclick="sendChatMessage()">Send ➤</button>
+          </div>
+        </div>
+      </div>
+    `;
+    show('test');
+
+    // Wire up image input change
+    const fileInput = $('chatFileInput');
+    if (fileInput) {
+      fileInput.onchange = handleImageSelect;
+    }
+
+    // Enter key submits (Shift+Enter for newline)
+    const textarea = $('chatInput');
+    if (textarea) {
+      textarea.onkeydown = e => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          sendChatMessage();
+        }
+      };
+      textarea.focus();
+    }
+
+    activeReplyTo = null;
+    selectedChatFile = null;
+
+    await loadChatMessages();
+  };
+
+  function handleImageSelect() {
+    const input = $('chatFileInput');
+    const file = input?.files[0];
+    if (!file) return;
+
+    const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+    if (!validTypes.includes(file.mimetype || file.type)) {
+      alert('Only JPG, PNG, WebP, and GIF images are allowed.');
+      input.value = '';
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      alert('Image size must be less than 10 MB.');
+      input.value = '';
+      return;
+    }
+
+    selectedChatFile = file;
+    const previewBar = $('imagePreviewBar');
+    const thumb = $('imagePreviewThumb');
+    const nameLabel = $('imagePreviewName');
+
+    if (previewBar && thumb && nameLabel) {
+      thumb.src = URL.createObjectURL(file);
+      nameLabel.textContent = file.name + ' (' + (file.size / 1024).toFixed(0) + ' KB)';
+      previewBar.style.display = 'flex';
+    }
+  }
+
+  window.clearSelectedImage = function () {
+    selectedChatFile = null;
+    const input = $('chatFileInput');
+    if (input) input.value = '';
+    const previewBar = $('imagePreviewBar');
+    if (previewBar) previewBar.style.display = 'none';
+  };
+
+  window.setReplyTarget = function (postId, authorName, textSnippet) {
+    activeReplyTo = { id: postId, author: authorName, snippet: textSnippet };
+    const bar = $('replyTargetBar');
+    const text = $('replyTargetText');
+    if (bar && text) {
+      text.innerHTML = `Replying to <b>${esc(authorName)}</b>: <i>${esc(textSnippet.slice(0, 50))}${textSnippet.length > 50 ? '...' : ''}</i>`;
+      bar.style.display = 'flex';
+    }
+    const input = $('chatInput');
+    if (input) {
+      input.focus();
+      input.placeholder = `Write a reply to ${authorName}...`;
+    }
+  };
+
+  window.cancelReply = function () {
+    activeReplyTo = null;
+    const bar = $('replyTargetBar');
+    if (bar) bar.style.display = 'none';
+    const input = $('chatInput');
+    if (input) input.placeholder = 'Type your doubt or question... (Enter to send, Shift+Enter for newline)';
+  };
+
+  async function loadChatMessages() {
+    try {
+      const posts = await api('community');
+      const feed = $('chatFeed');
+      if (!feed) return;
+
+      if (!posts.length) {
+        feed.innerHTML = `
+          <div style="text-align:center;padding:40px 20px;color:#888884">
+            <div style="font-size:36px;margin-bottom:10px">💬</div>
+            <b>No messages in Community yet</b>
+            <p style="font-size:13px;margin:6px 0">Be the first to ask a NEET biology, chemistry, or physics question!</p>
+          </div>
+        `;
+        return;
+      }
+
+      feed.innerHTML = posts.map(post => {
+        const isMine = post.userId === user?.id;
+        const isAdmin = user?.role === 'admin';
+        const roleTag = post.authorRole === 'admin'
+          ? `<span class="chat-role-tag">Teacher / Admin</span>`
+          : `<span class="chat-role-tag student">Student</span>`;
+
+        const imageHtml = post.image
+          ? `<img class="chat-shared-photo" src="${post.image}" alt="Shared image" onclick="viewChatPhoto('${post.image}')">`
+          : '';
+
+        const repliesHtml = (post.comments || []).map(comment => {
+          const commentIsMine = comment.userId === user?.id;
+          const commentRoleTag = comment.authorRole === 'admin'
+            ? `<span class="chat-role-tag" style="font-size:9px">Admin</span>`
+            : '';
+          const commentImageHtml = comment.image
+            ? `<img class="chat-shared-photo" src="${comment.image}" alt="Reply image" onclick="viewChatPhoto('${comment.image}')">`
+            : '';
+
+          return `
+            <div class="chat-reply-row">
+              <div class="chat-reply-avatar">
+                ${comment.authorAvatar ? `<img src="${comment.authorAvatar}" alt="${esc(comment.author)}">` : `<span>${(comment.author || 'S').charAt(0).toUpperCase()}</span>`}
+              </div>
+              <div class="chat-reply-bubble ${commentIsMine ? 'mine' : ''}">
+                <div class="chat-bubble-header">
+                  <span class="chat-author-name" style="font-size:12.5px">${esc(comment.author)}</span>
+                  ${commentRoleTag}
+                  <span class="chat-timestamp">${formatTime(comment.createdAt)}</span>
+                  ${isAdmin ? `<button class="chat-action-btn delete" onclick="deleteReply(${post.id}, ${comment.id})">✕</button>` : ''}
+                </div>
+                <div>${esc(comment.body)}</div>
+                ${commentImageHtml}
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        return `
+          <div class="chat-message-row" id="post-${post.id}">
+            ${getAvatarHtml(post.author, post.authorAvatar)}
+            <div class="chat-bubble-container">
+              <div class="chat-bubble-header">
+                <span class="chat-author-name">${esc(post.author)}</span>
+                ${roleTag}
+                <span class="chat-timestamp">${formatTime(post.createdAt)}</span>
+              </div>
+              <div class="chat-bubble-body ${isMine ? 'mine' : ''}">
+                <div>${esc(post.body)}</div>
+                ${imageHtml}
+              </div>
+              <div class="chat-bubble-actions">
+                <button class="chat-action-btn" onclick="setReplyTarget(${post.id}, '${esc(post.author).replace(/'/g, "\\'")}', '${esc(post.body).replace(/'/g, "\\'")}')">
+                  ↩ Reply ${post.comments?.length ? `(${post.comments.length})` : ''}
+                </button>
+                ${isAdmin ? `<button class="chat-action-btn delete" onclick="deleteMessage(${post.id})">🗑 Remove</button>` : ''}
+              </div>
+
+              ${post.comments?.length ? `<div class="chat-thread-container">${repliesHtml}</div>` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      feed.scrollTop = feed.scrollHeight;
+    } catch (e) {
+      const feed = $('chatFeed');
+      if (feed) feed.innerHTML = `<p class="muted" style="color:#ce3b3b;padding:20px">${esc(e.message)}</p>`;
+    }
+  }
+
+  window.sendChatMessage = async function () {
+    const input = $('chatInput');
+    const sendBtn = $('chatSendBtn');
+    const bodyText = (input?.value || '').trim();
+
+    if (!bodyText && !selectedChatFile) {
+      alert('Please enter a message or attach a photo.');
+      return;
+    }
+
+    try {
+      if (sendBtn) {
+        sendBtn.disabled = true;
+        sendBtn.textContent = 'Sending...';
+      }
+
+      const form = new FormData();
+      form.append('body', bodyText);
+      if (selectedChatFile) {
+        form.append('image', selectedChatFile);
+      }
+
+      if (activeReplyTo) {
+        // Send threaded reply
+        await api(`community/${activeReplyTo.id}/comments`, {
+          method: 'POST',
+          body: form
+        });
+      } else {
+        // Send direct message
+        await api('community', {
+          method: 'POST',
+          body: form
+        });
+      }
+
+      input.value = '';
+      clearSelectedImage();
+      cancelReply();
+      await loadChatMessages();
+    } catch (e) {
+      alert(e.message || 'Failed to send message.');
+    } finally {
+      if (sendBtn) {
+        sendBtn.disabled = false;
+        sendBtn.textContent = 'Send ➤';
+      }
+    }
+  };
+
+  window.deleteMessage = async function (id) {
+    if (confirm('Delete this community message and its replies?')) {
+      try {
+        await api('community/' + id, { method: 'DELETE' });
+        await loadChatMessages();
+      } catch (e) {
+        alert(e.message);
+      }
+    }
+  };
+
+  window.deleteReply = async function (postId, commentId) {
+    if (confirm('Delete this reply?')) {
+      try {
+        await api(`community/${postId}/comments/${commentId}`, { method: 'DELETE' });
+        await loadChatMessages();
+      } catch (e) {
+        alert(e.message);
+      }
+    }
+  };
+
+  window.viewChatPhoto = function (src) {
+    const lightbox = document.createElement('div');
+    lightbox.className = 'modal show';
+    lightbox.style.zIndex = '2000';
+    lightbox.innerHTML = `
+      <div style="position:relative;max-width:92vw;max-height:92vh;display:flex;align-items:center;justify-content:center">
+        <button class="close" style="top:-36px;right:0;color:#fff;background:#111" onclick="this.closest('.modal').remove()">✕</button>
+        <img src="${src}" style="max-width:90vw;max-height:85vh;object-fit:contain;border-radius:12px;background:#fff;box-shadow:0 10px 40px rgba(0,0,0,0.5)">
+      </div>
+    `;
+    lightbox.onclick = e => { if (e.target === lightbox) lightbox.remove(); };
+    document.body.appendChild(lightbox);
+  };
+
+  // Calendar feature
   window.calendarOpen = async function () {
-    if (!requireLogin()) return;
-    modal('My Study Calendar', `<p class="muted">Plan one focused study session at a time. Your calendar is private to your account.</p><div class="panel formgrid"><div><label>What will you study?</label><input id="planTitle" placeholder="Biology: Human Physiology revision"></div><div><label>Subject</label><select id="planSubject"><option>Biology</option><option>Chemistry</option><option>Physics</option><option>General</option></select></div><div><label>Start date and time</label><input id="planStart" type="datetime-local"></div><div><label>End date and time (optional)</label><input id="planEnd" type="datetime-local"></div><button class="wide" onclick="savePlan()">Add to My Calendar</button></div><div id="planList" style="margin-top:20px"></div>`);
+    if (!user) { loginOpen(); return; }
+    $('testBox').innerHTML = `
+      <button class="close" onclick="hide('test')">✕</button>
+      <h2>📅 My Study Calendar</h2>
+      <p class="muted">Plan your daily chapters and track revision sessions privately.</p>
+      <div class="panel formgrid" style="margin-top:16px">
+        <div>
+          <label>Topic / Chapter</label>
+          <input id="planTitle" placeholder="e.g. Biology: Cell Cycle Revision">
+        </div>
+        <div>
+          <label>Subject</label>
+          <select id="planSubject">
+            <option>Biology</option>
+            <option>Chemistry</option>
+            <option>Physics</option>
+            <option>General</option>
+          </select>
+        </div>
+        <div>
+          <label>Start Date & Time</label>
+          <input id="planStart" type="datetime-local">
+        </div>
+        <div>
+          <label>End Date & Time (Optional)</label>
+          <input id="planEnd" type="datetime-local">
+        </div>
+        <button class="wide" onclick="savePlan()">Add to My Study Calendar</button>
+      </div>
+      <div id="planList" style="margin-top:20px"></div>
+    `;
+    show('test');
     await loadPlans();
   };
-  async function loadPlans() { const plans = await api('study-plan'); $('planList').innerHTML = plans.length ? plans.map(plan => `<div class="calendar-day ${plan.done?'done':''}"><b>${esc(plan.title)}</b><br><small>${esc(plan.subject)} · ${new Date(plan.startAt).toLocaleString('en-IN')}${plan.endAt?' to '+new Date(plan.endAt).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}):''}</small><div style="margin-top:8px"><button class="light" onclick="completePlan(${plan.id},${!plan.done})">${plan.done?'Mark Pending':'Mark Completed'}</button> <button class="red" onclick="deletePlan(${plan.id})">Delete</button></div></div>`).join('') : '<p class="muted">No study sessions planned yet. Add your first one above.</p>'; }
-  window.savePlan = async function () { try { await api('study-plan',{method:'POST',body:JSON.stringify({title:$('planTitle').value,subject:$('planSubject').value,startAt:$('planStart').value?new Date($('planStart').value).toISOString():'',endAt:$('planEnd').value?new Date($('planEnd').value).toISOString():null})});$('planTitle').value='';$('planStart').value='';$('planEnd').value='';loadPlans();} catch(error){alert(error.message)} };
-  window.completePlan = async function(id,done){await api('study-plan/'+id,{method:'PUT',body:JSON.stringify({done})});loadPlans()};
-  window.deletePlan = async function(id){if(confirm('Delete this study session?')){await api('study-plan/'+id,{method:'DELETE'});loadPlans()}};
 
-  window.helpOpen = function () { if (!requireLogin()) return; modal('Help & Support', `<p class="muted">Everything you need to use PN Neet Diw with confidence.</p><details class="faq" open><summary>How do I take a test?</summary><p>Login, open Test Schedule, choose an available test, read the instructions, then start. All questions are visible together. Select answers, mark questions for review if needed, and submit when ready.</p></details><details class="faq"><summary>Where can I see my answers and score?</summary><p>Open My Results after login. Choose View Review to see correct answers, your selected answer, and time taken for each question.</p></details><details class="faq"><summary>How do scheduled tests and live classes work?</summary><p>Scheduled tests unlock automatically at their start time. When a teacher starts a live class, a LIVE NOW card appears for students. Join it from the home page; its recording is saved in Notes & Videos after the class ends.</p></details><details class="faq"><summary>How do Community and Calendar help me?</summary><p>Use Community for respectful doubt discussions and study tips. Use My Study Calendar to create your private daily study plan and mark completed sessions.</p></details><div class="panel" style="margin-top:18px"><b>Need help?</b><p class="muted">First check the answers above. If something is not working, refresh the page, login again, and ensure your internet connection is active for live classes.</p></div>`); };
+  async function loadPlans() {
+    const plans = await api('study-plan');
+    const list = $('planList');
+    if (!list) return;
+    list.innerHTML = plans.length ? plans.map(p => `
+      <div class="calendar-day ${p.done ? 'done' : ''}">
+        <b>${esc(p.title)}</b><br>
+        <small>${esc(p.subject)} · ${new Date(p.startAt).toLocaleString('en-IN')}${p.endAt ? ' to ' + new Date(p.endAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }) : ''}</small>
+        <div style="margin-top:8px">
+          <button class="light" onclick="completePlan(${p.id}, ${!p.done})">${p.done ? 'Mark Pending' : '✓ Mark Completed'}</button> 
+          <button class="red" onclick="deletePlan(${p.id})">Delete</button>
+        </div>
+      </div>
+    `).join('') : '<p class="muted">No study sessions planned yet. Set your daily NEET goals above.</p>';
+  }
 
-  const previousRefresh = window.refreshUser;
-  refreshUser = window.refreshUser = function () { previousRefresh(); const header = document.querySelector('header>div:last-child'); if (!header) return; if (!user) { ['communityButton','calendarButton','helpButton'].forEach(id=>document.getElementById(id)?.remove()); return; } if (document.getElementById('communityButton')) return; const actions = [['communityButton','Community','communityOpen()'],['calendarButton','My Calendar','calendarOpen()'],['helpButton','Help & Support','helpOpen()']]; actions.forEach(([id,label,action])=>{const button=document.createElement('button');button.id=id;button.className='light';button.textContent=label;button.setAttribute('onclick',action);header.appendChild(button)}); };
-  setTimeout(() => refreshUser(), 300);
+  window.savePlan = async function () {
+    try {
+      await api('study-plan', {
+        method: 'POST',
+        body: JSON.stringify({
+          title: $('planTitle').value,
+          subject: $('planSubject').value,
+          startAt: $('planStart').value ? new Date($('planStart').value).toISOString() : '',
+          endAt: $('planEnd').value ? new Date($('planEnd').value).toISOString() : null
+        })
+      });
+      $('planTitle').value = '';
+      $('planStart').value = '';
+      $('planEnd').value = '';
+      await loadPlans();
+    } catch (e) {
+      alert(e.message);
+    }
+  };
+
+  window.completePlan = async function (id, done) {
+    await api('study-plan/' + id, { method: 'PUT', body: JSON.stringify({ done }) });
+    loadPlans();
+  };
+
+  window.deletePlan = async function (id) {
+    if (confirm('Delete this study session?')) {
+      await api('study-plan/' + id, { method: 'DELETE' });
+      loadPlans();
+    }
+  };
+
+  // Help & Support feature
+  window.helpOpen = function () {
+    $('testBox').innerHTML = `
+      <button class="close" onclick="hide('test')">✕</button>
+      <h2>❓ NEET Practice Help & Guidance</h2>
+      <p class="muted">Instructions, focus security rules, and FAQs for PN Neet Diw.</p>
+      <details class="faq" open>
+        <summary>How do I start a NEET practice test?</summary>
+        <p>Log in with your student account, browse the Chapter-wise Test Schedule, and click "Start Test". All questions are presented with countdown timers and answer tracking.</p>
+      </details>
+      <details class="faq">
+        <summary>What is the focus-protection rule during tests?</summary>
+        <p>To simulate real exam pressure and honesty, switching tabs, minimizing your browser, or losing window focus will automatically submit your attempt.</p>
+      </details>
+      <details class="faq">
+        <summary>How do I view my results and question analysis?</summary>
+        <p>Click the three-dot menu (⋮) in the top-right corner and select <b>My Results</b>. You will see scores, correct answers, your chosen answers, and time spent on every question.</p>
+      </details>
+      <details class="faq">
+        <summary>How do I customize my profile and photo?</summary>
+        <p>Open the three-dot menu (⋮) and select <b>My Profile</b>. You can update your display name and upload a profile photo (JPG, PNG, WebP, GIF) which will appear beside your community messages.</p>
+      </details>
+    `;
+    show('test');
+  };
 })();
