@@ -98,7 +98,7 @@
         <div class="feature-grid">
           <article class="feature">
             <div class="icon">📚</div>
-            <h3>Chapter by Chapter</h3>
+            <h3>Learn with clarity. Practice with confidence.</h3>
             <p>Revise notes and lecture recordings at your own pace before taking a test.</p>
           </article>
           <article class="feature">
