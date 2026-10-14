@@ -8,6 +8,7 @@
     "build": "node -e \"console.log('Ready to run — no build step required.')\""
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.117.3",
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
