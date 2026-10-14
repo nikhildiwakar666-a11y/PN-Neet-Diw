@@ -83,3 +83,31 @@ Browser (Student / Teacher / Admin)
         └── Profile photos
 ```
 
+## Student Experience & Feature Workflow
+
+```text
+Student Portal
+│
+├── 📝 Mock Tests
+│   └── Browse Schedule → Start Attempt → Live Countdown Timer → Submit → In-depth Result Review
+│
+├── 📚 Notes & Videos (Library)
+│   └── Filter by Subject (Physics / Chemistry / Biology) / Format (PDF Notes or Video Lectures)
+│
+├── 💬 Community Chat
+│   └── Peer discussion, doubt clearance, photo attachments, and nested threaded replies
+│
+├── 🗓️ Study Calendar
+│   └── Daily study planner, subject scheduling, deadlines, and task completion checklists
+│
+├── ❓ Help & Support
+│   └── NEET syllabus guide, marking pattern (+4 / -1), exam time strategy, and support FAQ
+│
+├── 🔴 Join Live Class
+│   └── Real-time WebRTC live video broadcast with faculty, live status tag, and lecture replays
+│
+└── 👤 Profile & Settings
+    └── Display name, avatar photo upload, focus mode protection, and alert preferences
+```
+
+
