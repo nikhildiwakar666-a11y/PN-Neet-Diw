@@ -4,6 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>PN Neet Diw — NEET Preparation Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
       --p: #111111;
@@ -13,13 +16,17 @@
       --bg: #f7f7f5;
       --card-bg: #ffffff;
       --red: #c53030;
+      --red-bg: #fff0f0;
+      --green: #15803d;
+      --green-bg: #ecfdf5;
+      --radius: 12px;
     }
     * { box-sizing: border-box; }
     body {
       margin: 0;
       background: var(--bg);
       color: var(--ink);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       -webkit-font-smoothing: antialiased;
       min-height: 100vh;
       display: flex;
@@ -28,13 +35,13 @@
 
     /* Common Header */
     header {
-      height: 64px;
+      height: 68px;
       background: #ffffff;
       border-bottom: 1px solid var(--line);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 max(20px, calc((100% - 1140px)/2));
+      padding: 0 max(20px, calc((100% - 1180px)/2));
       position: sticky;
       top: 0;
       z-index: 100;
@@ -45,7 +52,7 @@
       letter-spacing: -0.02em;
       display: flex;
       align-items: center;
-      gap: 7px;
+      gap: 8px;
       cursor: pointer;
       user-select: none;
     }
@@ -53,65 +60,227 @@
       background: #111111;
       color: #ffffff;
       font-size: 13px;
-      padding: 3px 7px;
+      padding: 3px 8px;
       border-radius: 6px;
       font-weight: 800;
+      letter-spacing: 0.04em;
     }
     .brand b { color: #111111; }
 
     .nav-links {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
     .nav-link-btn {
       background: transparent;
       color: #444440;
       border: 1px solid transparent;
-      padding: 8px 13px;
+      padding: 7px 12px;
       border-radius: 8px;
       font-size: 13.5px;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
     .nav-link-btn:hover {
       background: #f0f0ed;
       color: #111111;
     }
+    .nav-link-btn.active {
+      background: #111111;
+      color: #ffffff;
+    }
 
-    /* Header Right & Three-Dot Menu */
+    /* Header Right & Admin Controls Menu */
     .header-right {
       display: flex;
       align-items: center;
       gap: 10px;
       position: relative;
     }
-    .user-avatar-trigger {
+
+    /* Professional Admin Controls Trigger Button */
+    .admin-controls-btn {
+      background: #111111;
+      color: #ffffff;
+      border: 1px solid #111111;
+      border-radius: 9px;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 700;
       display: flex;
       align-items: center;
+      gap: 7px;
       cursor: pointer;
+      transition: all 0.15s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+    .admin-controls-btn:hover {
+      background: #2c2c28;
+      border-color: #2c2c28;
+    }
+    .admin-controls-btn svg {
+      flex-shrink: 0;
+    }
+
+    /* Admin Controls Dropdown Menu */
+    .admin-controls-menu {
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      width: 320px;
+      max-width: 92vw;
+      background: #ffffff;
+      border: 1px solid #dcdcd6;
+      border-radius: 16px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
+      padding: 10px;
+      display: none;
+      flex-direction: column;
+      gap: 2px;
+      z-index: 1010;
+      animation: menuFadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .admin-controls-menu.open {
+      display: flex;
+    }
+    .admin-menu-header {
+      padding: 10px 14px 12px;
+      border-bottom: 1px solid #ebebe6;
+      margin-bottom: 6px;
+    }
+    .admin-menu-badge {
+      display: inline-block;
+      font-size: 10.5px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      background: #111111;
+      color: #ffffff;
+      padding: 2px 7px;
+      border-radius: 4px;
+      margin-bottom: 5px;
+    }
+    .admin-menu-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: #111111;
+      margin: 0;
+    }
+    .admin-menu-sub {
+      font-size: 12px;
+      color: var(--m);
+      margin: 3px 0 0;
+    }
+    .admin-menu-item {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 10px 13px;
+      border-radius: 9px;
+      background: transparent;
+      border: none;
+      color: #222220;
+      font-size: 13.5px;
+      font-weight: 600;
+      text-align: left;
+      width: 100%;
+      cursor: pointer;
+      transition: background 0.12s ease;
+    }
+    .admin-menu-item:hover {
+      background: #f5f5f2;
+      color: #111111;
+    }
+    .admin-menu-item-icon {
+      font-size: 16px;
+      width: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .admin-menu-item-text {
+      flex: 1;
+      min-width: 0;
+    }
+    .admin-menu-item-desc {
+      font-size: 11px;
+      color: #777773;
+      display: block;
+      margin-top: 1px;
+      font-weight: 400;
+    }
+
+    /* User Greeting & Three Dot Account Menu */
+    .nav-user-greeting {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      line-height: 1.25;
+      margin-right: 4px;
+    }
+    .nav-greeting-role {
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #777773;
+    }
+    .nav-greeting-name {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #111111;
+      white-space: nowrap;
+      max-width: 140px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .user-menu-btn {
+      background: #ffffff;
+      border: 1.5px solid #dcdcd6;
+      border-radius: 999px;
+      padding: 3px 10px 3px 4px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
       user-select: none;
     }
+    .user-menu-btn:hover {
+      background: #f7f7f5;
+      border-color: #111111;
+      transform: translateY(-1px);
+    }
+    .menu-dots-icon {
+      color: #666662;
+      flex-shrink: 0;
+      transition: color 0.15s ease;
+    }
+    .user-menu-btn:hover .menu-dots-icon {
+      color: #111111;
+    }
+
     .avatar-circle {
-      width: 36px;
-      height: 36px;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
       background: #111111;
       color: #ffffff;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 14px;
-      font-weight: 700;
-      border: 1.5px solid #d4d4cd;
+      font-size: 13px;
+      font-weight: 800;
       overflow: hidden;
       flex-shrink: 0;
-      transition: transform 0.15s ease;
-    }
-    .avatar-circle:hover {
-      transform: scale(1.04);
-      border-color: #111111;
     }
     .nav-avatar-img {
       width: 100%;
@@ -119,40 +288,22 @@
       object-fit: cover;
     }
 
-    .menu-dots-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: 8px;
-      background: transparent;
-      border: 1px solid #e0e0da;
-      color: #111111;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      padding: 0;
-      transition: all 0.15s ease;
-    }
-    .menu-dots-btn:hover {
-      background: #f0f0ed;
-      border-color: #111111;
-    }
-
     .three-dot-menu {
       position: absolute;
-      top: calc(100% + 8px);
+      top: calc(100% + 10px);
       right: 0;
-      width: 250px;
+      width: 270px;
+      max-width: 92vw;
       background: #ffffff;
       border: 1px solid #dcdcd6;
-      border-radius: 14px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      border-radius: 16px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
       padding: 8px;
       display: none;
       flex-direction: column;
-      gap: 3px;
-      z-index: 1000;
-      animation: menuFadeIn 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+      gap: 2px;
+      z-index: 1010;
+      animation: menuFadeIn 0.16s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .three-dot-menu.open {
       display: flex;
@@ -165,13 +316,14 @@
     .menu-user-card {
       padding: 10px 12px;
       background: #f7f7f5;
-      border-radius: 9px;
+      border-radius: 10px;
       display: flex;
       align-items: center;
       gap: 10px;
       cursor: pointer;
+      transition: background 0.12s ease;
     }
-    .menu-user-card:hover { background: #ededeb; }
+    .menu-user-card:hover { background: #ebebe7; }
     .menu-user-thumb {
       width: 34px;
       height: 34px;
@@ -231,13 +383,8 @@
       transition: background 0.12s ease;
     }
     .menu-item:hover { background: #f5f5f2; color: #111111; }
-    .menu-item.admin-highlight {
-      background: #111111;
-      color: #ffffff;
-    }
-    .menu-item.admin-highlight:hover { background: #2e2e2b; }
-    .menu-item.logout { color: #c53030; }
-    .menu-item.logout:hover { background: #fff0f0; color: #b02020; }
+    .menu-item.logout { color: var(--red); }
+    .menu-item.logout:hover { background: var(--red-bg); color: #b02020; }
     .menu-item-icon {
       font-size: 15px;
       width: 18px;
@@ -249,286 +396,216 @@
     /* Buttons & General */
     button {
       border: 0;
-      border-radius: 8px;
+      border-radius: 9px;
       background: var(--p);
       color: #ffffff;
-      padding: 10px 15px;
+      padding: 10px 16px;
       font-weight: 700;
       cursor: pointer;
-      font-size: 14px;
-      transition: background 0.15s ease;
+      font-size: 13.5px;
+      font-family: inherit;
+      transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
     }
-    button:hover:not(:disabled) { background: #2b2b28; }
+    button:hover:not(:disabled) {
+      background: #2b2b28;
+      transform: translateY(-1px);
+    }
+    button:active:not(:disabled) {
+      transform: translateY(0);
+    }
     button.light {
       background: #f0f0ed;
       color: #111111;
       border: 1px solid #e0e0da;
     }
-    button.light:hover { background: #e5e5e0; }
+    button.light:hover:not(:disabled) {
+      background: #e5e5e0;
+      border-color: #d0d0ca;
+    }
     button.out {
       color: #111111;
       background: #ffffff;
-      border: 1px solid var(--line);
+      border: 1.5px solid var(--line);
     }
-    button.out:hover { background: #f8f8f6; border-color: #111111; }
-    button.red {
-      color: var(--red);
-      background: #fff0f0;
-      border: 1px solid #ffdcdc;
-    }
-    button.red:hover { background: #ffe3e3; }
-    button:disabled { opacity: .45; cursor: not-allowed; }
-
-    /* ==========================================================================
-       MANDATORY LOGIN GATE (LANDING PAGE WHEN LOGGED OUT)
-       ========================================================================== */
-    #loginGateContainer {
-      display: flex;
-      flex: 1;
-      align-items: center;
-      justify-content: center;
-      padding: 40px 20px;
-    }
-    .gate-wrapper {
-      max-width: 980px;
-      width: 100%;
-      background: #ffffff;
-      border: 1px solid #e2e2dc;
-      border-radius: 20px;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.05);
-      overflow: hidden;
-      display: grid;
-      grid-template-columns: 1.15fr 1fr;
-    }
-    .gate-hero-side {
-      background: linear-gradient(145deg, #111111 0%, #1e1e1b 100%);
-      color: #ffffff;
-      padding: 44px 38px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-    .gate-brand-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .gate-badge {
-      background: #2b2b28;
-      color: #ffffff;
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      padding: 3px 8px;
-      border-radius: 999px;
-      width: fit-content;
-      margin: 14px 0 12px;
-    }
-    .gate-quote {
-      font-size: clamp(24px, 3.2vw, 32px);
-      font-weight: 800;
-      line-height: 1.3;
-      letter-spacing: -0.02em;
-      margin: 0 0 14px;
-    }
-    .gate-subtitle {
-      font-size: 14px;
-      line-height: 1.6;
-      color: #cfcfca;
-      margin: 0 0 24px;
-    }
-    .gate-notice-box {
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 12px;
-      padding: 14px 16px;
-      font-size: 12.5px;
-      line-height: 1.55;
-      color: #e5e5e0;
-      margin-bottom: 24px;
-    }
-    .gate-features-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      font-size: 13px;
-      color: #e0e0da;
-    }
-    .gate-feature-item {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-    }
-    .gate-check {
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: #ffffff;
-      color: #111111;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 11px;
-      font-weight: 900;
-      flex-shrink: 0;
-    }
-
-    .gate-form-side {
-      background: #ffffff;
-      padding: 44px 38px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-    .gate-tabs {
-      display: flex;
-      background: #f0f0ed;
-      border-radius: 10px;
-      padding: 4px;
-      margin-bottom: 24px;
-    }
-    .gate-tab-btn {
-      flex: 1;
-      background: transparent;
-      color: #666662;
-      border: none;
-      padding: 9px 12px;
-      border-radius: 8px;
-      font-size: 13.5px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-    .gate-tab-btn.active {
-      background: #ffffff;
-      color: #111111;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
-    }
-    .gate-form-title {
-      font-size: 20px;
-      font-weight: 800;
-      margin: 0 0 6px;
-      color: #111111;
-    }
-    .gate-form-desc {
-      font-size: 13px;
-      color: #666662;
-      margin: 0 0 20px;
-    }
-    .gate-error-banner {
-      display: none;
-      background: #fff0f0;
-      border: 1px solid #ffd8d8;
-      color: #c53030;
-      padding: 10px 14px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 600;
-      margin-bottom: 16px;
-    }
-    .gate-field {
-      margin-bottom: 15px;
-    }
-    .gate-field label {
-      display: block;
-      font-size: 12.5px;
-      font-weight: 700;
-      margin-bottom: 5px;
-      color: #222220;
-    }
-    .gate-field input {
-      width: 100%;
-      padding: 11px 13px;
-      border: 1.5px solid #dcdcd6;
-      border-radius: 9px;
-      font-size: 14px;
-      background: #ffffff;
-      color: #111111;
-      transition: border-color 0.15s ease;
-    }
-    .gate-field input:focus {
-      outline: none;
+    button.out:hover:not(:disabled) {
+      background: #f8f8f6;
       border-color: #111111;
     }
-    .gate-admin-hint {
-      font-size: 11.5px;
-      color: #777773;
-      margin: 4px 0 18px;
-      line-height: 1.5;
+    button.red {
+      color: var(--red);
+      background: var(--red-bg);
+      border: 1px solid #ffdcdc;
     }
-    .gate-submit-btn {
-      width: 100%;
-      padding: 13px;
-      border-radius: 9px;
-      background: #111111;
-      color: #ffffff;
-      font-size: 14.5px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background 0.15s ease;
+    button.red:hover:not(:disabled) {
+      background: #ffe3e3;
     }
-    .gate-submit-btn:hover {
-      background: #2b2b28;
-    }
-    .gate-switch-link {
-      font-size: 12.5px;
-      color: #666662;
-      text-align: center;
-      margin-top: 18px;
-    }
-    .gate-switch-link a {
-      color: #111111;
-      font-weight: 700;
-      text-decoration: underline;
-      cursor: pointer;
-    }
-
-    @media (max-width: 840px) {
-      .gate-wrapper { grid-template-columns: 1fr; }
-      .gate-hero-side { padding: 32px 24px; }
-      .gate-form-side { padding: 32px 24px; }
+    button:disabled {
+      opacity: .45;
+      cursor: not-allowed;
+      pointer-events: none;
     }
 
     /* ==========================================================================
-       DASHBOARD STYLES (STUDENT & ADMIN)
+       ROLE-BASED GREETING & INTRODUCTION BANNER
        ========================================================================== */
-    #studentDashboard, #adminDashboardView {
-      max-width: 1140px;
-      margin: auto;
-      padding: 36px 20px;
+    .role-greeting-banner {
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 28px 32px;
+      margin-bottom: 28px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+      position: relative;
+      overflow: hidden;
+    }
+    .role-greeting-banner::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 5px;
+      height: 100%;
+      background: #111111;
+    }
+    .role-greeting-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .role-pill-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #f0f0ed;
+      color: #111111;
+      padding: 4px 11px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      margin-bottom: 10px;
+      border: 1px solid #e2e2dc;
+    }
+    .role-greeting-title {
+      font-size: clamp(24px, 3.2vw, 32px);
+      font-weight: 800;
+      color: #111111;
+      margin: 0 0 6px;
+      letter-spacing: -0.02em;
+      line-height: 1.25;
+    }
+    .role-greeting-subtitle {
+      font-size: 15px;
+      color: #444440;
+      margin: 0 0 16px;
+      font-weight: 500;
+      line-height: 1.5;
+    }
+    .role-intro-box {
+      background: #f8f8f6;
+      border-radius: 12px;
+      padding: 14px 18px;
+      border: 1px solid #ebebe6;
+      border-left: 3px solid #111111;
+    }
+    .role-intro-text {
+      margin: 0;
+      font-size: 14px;
+      color: #555550;
+      line-height: 1.6;
+    }
+
+    /* Live Now Banner for Students */
+    .live-student-banner {
+      background: #111111;
+      color: #ffffff;
+      border-radius: 14px;
+      padding: 18px 24px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    }
+    .live-pulse-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #ef4444;
+      margin-right: 6px;
+      box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+      animation: pulse 1.6s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
+    .live-student-banner button {
+      background: #ffffff;
+      color: #111111;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+    .live-student-banner button:hover {
+      background: #f0f0ed;
+    }
+
+    /* Dashboard Layouts */
+    .dashboard-container {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 30px 20px 60px;
       width: 100%;
     }
-    .dashboard-header {
+
+    /* Section Headings */
+    .section-head {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 24px;
+      margin: 28px 0 16px;
     }
-    .head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin: 32px 0 16px;
-    }
-    .head h2 {
-      font-size: 22px;
+    .section-head h2 {
+      font-size: 20px;
       font-weight: 800;
       letter-spacing: -0.01em;
       margin: 0;
+      color: #111111;
     }
+
+    /* Cards & Grids */
     .grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
       gap: 18px;
     }
     .card, .panel {
       background: var(--card-bg);
       border: 1px solid var(--line);
       border-radius: 14px;
-      padding: 20px;
+      padding: 22px;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
     }
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+    }
+    .card h3 { margin: 12px 0 7px; font-size: 17px; font-weight: 700; color: #111111; }
     .tag {
       display: inline-block;
       background: #f0f0ed;
@@ -539,17 +616,102 @@
       font-weight: 700;
       letter-spacing: 0.02em;
     }
-    .card h3 { margin: 14px 0 7px; font-size: 17px; }
+    .tag.green { background: var(--green-bg); color: var(--green); }
+    .tag.red { background: var(--red-bg); color: var(--red); }
     .muted, .meta, small { color: var(--m); }
-    .meta { font-size: 13px; margin: 15px 0; line-height: 1.6; }
+    .meta { font-size: 13px; margin: 14px 0; line-height: 1.6; }
     .card button { width: 100%; }
+
+    /* Overview KPI Cards */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+    .kpi-card {
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px 18px;
+    }
+    .kpi-label {
+      font-size: 12px;
+      color: var(--m);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .kpi-value {
+      font-size: 28px;
+      font-weight: 800;
+      color: #111111;
+      margin: 6px 0 2px;
+    }
+    .kpi-desc {
+      font-size: 11.5px;
+      color: #777773;
+    }
+
+    /* Admin Management Tabs and Sections */
+    .admin-nav-strip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--line);
+    }
+    .admin-tab-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #555550;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .admin-tab-btn:hover {
+      background: #ededeb;
+      color: #111111;
+    }
+    .admin-tab-btn.active {
+      background: #111111;
+      color: #ffffff;
+    }
+
+    /* Live Stream Hub for Teacher and Admin */
+    .live-stream-box {
+      background: #111111;
+      color: #ffffff;
+      border-radius: 18px;
+      padding: 26px;
+      margin-bottom: 24px;
+    }
+    .live-stream-box p { color: #d7d7d2; }
+    .live-monitor-video {
+      width: 100%;
+      max-height: 480px;
+      background: #000000;
+      border-radius: 12px;
+      margin: 16px 0;
+      object-fit: contain;
+    }
 
     /* Modals */
     .modal {
       display: none;
       position: fixed;
       inset: 0;
-      z-index: 1005;
+      z-index: 1050;
       align-items: center;
       justify-content: center;
       background: rgba(17, 17, 17, 0.6);
@@ -560,18 +722,18 @@
     .box {
       position: relative;
       background: #ffffff;
-      width: min(860px, 100%);
+      width: min(880px, 100%);
       max-height: 92vh;
       overflow-y: auto;
       border-radius: 18px;
-      padding: 26px;
+      padding: 28px;
       border: 1px solid var(--line);
       box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
     }
     .close {
       position: absolute;
-      right: 16px;
-      top: 16px;
+      right: 18px;
+      top: 18px;
       border-radius: 50%;
       background: #f0f0ed;
       color: #111111;
@@ -584,6 +746,7 @@
       justify-content: center;
       cursor: pointer;
       padding: 0;
+      transition: all 0.15s ease;
     }
     .close:hover { background: #111111; color: #ffffff; }
 
@@ -602,26 +765,35 @@
     }
     input, textarea, select {
       width: 100%;
-      padding: 10px 12px;
-      border: 1px solid #d4d4cd;
-      border-radius: 8px;
+      padding: 11px 14px;
+      border: 1.5px solid #d4d4cd;
+      border-radius: 9px;
       font: inherit;
       background: #ffffff;
       color: #111111;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
     }
-    textarea { min-height: 72px; }
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: #111111;
+      box-shadow: 0 0 0 3px rgba(17, 17, 17, 0.08);
+    }
+    textarea { min-height: 76px; resize: vertical; }
 
-    .row, .nav, .testbar {
+    .row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 10px;
-    }
-    .row {
+      gap: 12px;
       padding: 12px 0;
       border-bottom: 1px solid var(--line);
     }
+    .row:last-child { border-bottom: none; }
     .testbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
       border-bottom: 1px solid var(--line);
       padding-bottom: 14px;
     }
@@ -662,7 +834,13 @@
     }
     .option:hover { border-color: #111111; background: #fbfbf9; }
     .option.selected { border-color: #111111; background: #111111; color: #ffffff; }
-    .nav { margin-top: 24px; }
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 24px;
+    }
     .item {
       padding: 14px;
       margin: 10px 0;
@@ -672,8 +850,112 @@
     }
     .score { font-size: 48px; font-weight: 800; color: #111111; }
     .center { text-align: center; }
-    .tabs { display: flex; gap: 8px; margin: 16px 0; flex-wrap: wrap; }
-    .hidden { display: none; }
+    /* Calendar Cards */
+    .calendar-card {
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin-bottom: 12px;
+      border-left: 4px solid #111111;
+      transition: all 0.15s ease;
+    }
+    .calendar-card.is-done {
+      border-left-color: #15803d;
+      background: #fcfdfc;
+    }
+
+    /* FAQ Cards */
+    .faq-card {
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px 18px;
+      transition: all 0.15s ease;
+    }
+    .faq-card summary {
+      cursor: pointer;
+      font-size: 15px;
+      color: #111111;
+      user-select: none;
+      outline: none;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .faq-card summary::-webkit-details-marker { display: none; }
+    .faq-card summary::after {
+      content: '▼';
+      font-size: 10px;
+      color: var(--m);
+      transition: transform 0.18s ease;
+    }
+    .faq-card[open] summary::after {
+      transform: rotate(180deg);
+    }
+    .faq-card p {
+      margin: 12px 0 0;
+      font-size: 13.5px;
+      color: #444440;
+      line-height: 1.6;
+      border-top: 1px solid #f0f0ed;
+      padding-top: 10px;
+    }
+
+    /* Filter Pills */
+    .filter-pills-bar {
+      display: flex;
+      gap: 8px;
+      margin: 12px 0 20px;
+      flex-wrap: wrap;
+    }
+    .filter-pill {
+      background: #ffffff;
+      color: #444440;
+      border: 1px solid var(--line);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .filter-pill:hover {
+      background: #f0f0ed;
+      color: #111111;
+    }
+    .filter-pill.active {
+      background: #111111;
+      color: #ffffff;
+      border-color: #111111;
+    }
+
+    /* Empty States */
+    .empty-state-card {
+      background: #ffffff;
+      border: 1px dashed var(--line);
+      border-radius: 16px;
+      padding: 40px 24px;
+      text-align: center;
+      margin: 16px 0;
+    }
+    .empty-state-icon {
+      font-size: 36px;
+      margin-bottom: 8px;
+      display: block;
+    }
+    .empty-state-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #111111;
+      margin: 0 0 4px;
+    }
+    .empty-state-desc {
+      font-size: 13px;
+      color: var(--m);
+      margin: 0;
+    }
 
     /* Student Profile Modal */
     .profile-card-top {
@@ -705,46 +987,461 @@
       object-fit: cover;
     }
 
-    @media (max-width: 800px) {
-      .grid, .formgrid { grid-template-columns: 1fr; }
-      .wide { grid-column: auto; }
-      .nav-links { display: none; }
+    /* ==========================================================================
+       MANDATORY FIRST PAGE: ROLE SELECTION SCREEN & ROLE AUTH
+       ========================================================================== */
+    #loginGateContainer {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      min-height: 100vh;
+      background: radial-gradient(ellipse at 50% 12%, #ffffff 0%, #f7f7f5 65%, #ecece6 100%);
+    }
+
+    .role-selection-wrapper {
+      max-width: 1100px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      animation: menuFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .landing-brand-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 24px;
+      font-weight: 800;
+      color: #111111;
+      margin-bottom: 16px;
+      cursor: default;
+    }
+    .landing-brand-badge .brand-badge {
+      font-size: 14px;
+      padding: 4px 10px;
+      border-radius: 7px;
+    }
+
+    .landing-heading {
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 800;
+      color: #111111;
+      letter-spacing: -0.025em;
+      margin: 0 0 10px;
+      line-height: 1.2;
+    }
+
+    .landing-subheading {
+      font-size: clamp(15px, 1.8vw, 17px);
+      color: #555550;
+      margin: 0 0 16px;
+      max-width: 580px;
+      font-weight: 500;
+      line-height: 1.55;
+    }
+
+    .landing-motto-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #ffffff;
+      border: 1.5px solid #e0e0da;
+      padding: 8px 20px;
+      border-radius: 999px;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #222220;
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+      margin-bottom: 40px;
+    }
+
+    /* Three Large Circular Role Cards */
+    .role-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 26px;
+      width: 100%;
+      max-width: 1040px;
+      margin-bottom: 26px;
+    }
+
+    .role-card {
+      background: #ffffff;
+      border: 1.5px solid #e4e4dd;
+      border-radius: 26px;
+      padding: 38px 26px 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      cursor: pointer;
+    }
+    .role-card:hover {
+      transform: translateY(-8px);
+      border-color: #111111;
+      box-shadow: 0 18px 44px rgba(0, 0, 0, 0.09);
+    }
+
+    /* Large Attractive Circles */
+    .role-circle-pod {
+      width: 132px;
+      height: 132px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #ffffff 0%, #f4f4f0 65%, #eaeae3 100%);
+      border: 3px solid #deded7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 22px;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.05), inset 0 2px 6px rgba(255, 255, 255, 0.9);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+    }
+    .role-card:hover .role-circle-pod {
+      transform: scale(1.08);
+      border-color: #111111;
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.1), inset 0 2px 8px rgba(255, 255, 255, 0.9);
+    }
+
+    .role-circle-icon {
+      font-size: 52px;
+      line-height: 1;
+      user-select: none;
+      filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.06));
+    }
+
+    .role-card-badge {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      background: #f0f0ed;
+      color: #555550;
+      padding: 3px 10px;
+      border-radius: 999px;
+      margin-bottom: 10px;
+      border: 1px solid #e4e4dd;
+    }
+
+    .role-card-title {
+      font-size: 21px;
+      font-weight: 800;
+      color: #111111;
+      margin: 0 0 10px;
+      letter-spacing: -0.01em;
+    }
+
+    .role-card-desc {
+      font-size: 14px;
+      color: #666662;
+      margin: 0 0 24px;
+      line-height: 1.55;
+      min-height: 44px;
+    }
+
+    .role-card-btn {
+      width: 100%;
+      padding: 12px 18px;
+      border-radius: 12px;
+      background: #111111;
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      transition: all 0.15s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    }
+    .role-card-btn:hover {
+      background: #2b2b28;
+    }
+
+    /* Role Auth Form Container (When a role card is clicked) */
+    .role-auth-wrapper {
+      max-width: 480px;
+      width: 100%;
+      background: #ffffff;
+      border: 1.5px solid #e2e2dc;
+      border-radius: 22px;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.07);
+      padding: 34px 30px;
+      display: flex;
+      flex-direction: column;
+      animation: menuFadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .auth-back-btn {
+      background: transparent;
+      border: none;
+      color: #666662;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 0;
+      margin-bottom: 20px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      align-self: flex-start;
+      transition: color 0.15s ease;
+    }
+    .auth-back-btn:hover {
+      color: #111111;
+      background: transparent;
+      transform: none;
+    }
+
+    .auth-role-hero {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 18px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #ebebe6;
+    }
+    .auth-role-avatar-circle {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #ffffff 0%, #f4f4f0 70%, #eaeae4 100%);
+      border: 2px solid #dcdcd6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      flex-shrink: 0;
+    }
+
+    .gate-tabs {
+      display: flex;
+      background: #f0f0ed;
+      border-radius: 10px;
+      padding: 4px;
+      margin-bottom: 20px;
+    }
+    .gate-tab-btn {
+      flex: 1;
+      background: transparent;
+      color: #666662;
+      border: none;
+      padding: 9px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .gate-tab-btn.active {
+      background: #ffffff;
+      color: #111111;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    }
+
+    .gate-error-banner {
+      display: none;
+      background: var(--red-bg);
+      border: 1px solid #ffd8d8;
+      color: var(--red);
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    .gate-field {
+      margin-bottom: 15px;
+    }
+    .gate-field label {
+      display: block;
+      font-size: 12.5px;
+      font-weight: 700;
+      margin-bottom: 5px;
+      color: #222220;
+    }
+    .gate-submit-btn {
+      width: 100%;
+      padding: 13px;
+      border-radius: 9px;
+      background: #111111;
+      color: #ffffff;
+      font-size: 14.5px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 6px;
+    }
+    .gate-switch-link {
+      font-size: 12.5px;
+      color: #666662;
+      text-align: center;
+      margin-top: 16px;
+    }
+    .gate-switch-link a {
+      color: #111111;
+      font-weight: 700;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    @media (max-width: 860px) {
+      .role-cards-grid { grid-template-columns: 1fr; max-width: 380px; gap: 20px; }
+      .role-circle-pod { width: 114px; height: 114px; }
+      .role-circle-icon { font-size: 46px; }
+      .role-card { padding: 30px 22px 26px; }
+      .role-auth-wrapper { padding: 28px 20px; }
+      .grid, .grid-2, .formgrid { grid-template-columns: 1fr; }
+      .nav-links { display: none !important; }
+      .nav-user-greeting { display: none !important; }
+      .role-greeting-banner { padding: 22px 18px; }
+      .admin-controls-menu { width: 92vw; right: 0; }
+      .three-dot-menu { width: 92vw; right: 0; }
+      .box { padding: 20px 16px; border-radius: 14px; }
+      .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 520px) {
+      header { height: 60px; padding: 0 14px; }
+      .brand { font-size: 17px; }
+      .admin-controls-btn span { display: none; }
+      .admin-controls-btn { padding: 8px 10px; }
+      .kpi-grid { grid-template-columns: 1fr; }
+      .landing-heading { font-size: 26px; }
+      .landing-subheading { font-size: 14.5px; }
+      .landing-motto-pill { font-size: 12px; padding: 7px 14px; }
     }
   </style>
 </head>
 <body>
-  <!-- Global Header -->
-  <header>
+  <!-- Global Header (Visible after login) -->
+  <header id="globalHeader" style="display:none">
     <div class="brand" onclick="brandHomeClick()">
       <span class="brand-badge">PN</span>
       <span>Neet <b>Diw</b></span>
     </div>
 
-    <!-- Student Navigation Links (Visible only when logged in) -->
-    <nav class="nav-links" id="mainNavLinks" style="display:none">
-      <button class="nav-link-btn" onclick="scrollToSchedule()">Test Schedule</button>
-      <button class="nav-link-btn" onclick="libraryOpen()">Notes & Videos</button>
-      <button class="nav-link-btn" onclick="communityOpen()">Community Chat</button>
-    </nav>
+    <!-- Role-Based Navigation Links (Visible when logged in) -->
+    <nav class="nav-links" id="mainNavLinks" style="display:none"></nav>
 
     <!-- Top-Right Actions -->
     <div class="header-right" id="headerRightArea">
-      <!-- In Logged Out state, subtle indicator -->
+      <!-- In Logged Out state -->
       <span class="tag" id="loggedOutBadge" style="display:none">Sign In Required</span>
 
-      <!-- In Logged In state: Avatar circle & Three-Dot Menu -->
+      <!-- In Logged In state: Admin Controls (Admin only) & Account Menu -->
       <div id="loggedInControls" style="display:none;align-items:center;gap:10px">
-        <div class="user-avatar-trigger" id="avatarTrigger" onclick="toggleMenu()" title="Account & Features">
+        <!-- 1. Admin Controls Button (STRICTLY Admin only) -->
+        <button class="admin-controls-btn" id="adminControlsBtn" onclick="toggleAdminControlsMenu()" aria-label="Admin Controls" title="Open Admin Controls" style="display:none">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M4 4h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM4 10h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM4 16h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4z"/>
+          </svg>
+          <span>Admin Controls</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+
+        <!-- Admin Controls Menu Dropdown -->
+        <div class="admin-controls-menu" id="adminControlsMenu" role="menu">
+          <div class="admin-menu-header">
+            <span class="admin-menu-badge">🛡️ Administrator</span>
+            <h3 class="admin-menu-title">Admin Controls</h3>
+            <p class="admin-menu-sub">Manage tests, live classes, students & platform</p>
+          </div>
+
+          <button class="admin-menu-item" onclick="openAdminSection('tests')">
+            <span class="admin-menu-item-icon">📝</span>
+            <div class="admin-menu-item-text">
+              <b>Manage Tests</b>
+              <span class="admin-menu-item-desc">Create, edit & configure chapter mock tests</span>
+            </div>
+          </button>
+
+          <button class="admin-menu-item" onclick="openAdminSection('questions')">
+            <span class="admin-menu-item-icon">❓</span>
+            <div class="admin-menu-item-text">
+              <b>Manage Questions</b>
+              <span class="admin-menu-item-desc">Add, edit & review NEET question banks</span>
+            </div>
+          </button>
+
+          <button class="admin-menu-item" onclick="openAdminSection('schedule')">
+            <span class="admin-menu-item-icon">📅</span>
+            <div class="admin-menu-item-text">
+              <b>Test Schedule</b>
+              <span class="admin-menu-item-desc">Set exam dates, start times & duration</span>
+            </div>
+          </button>
+
+          <button class="admin-menu-item" onclick="openAdminSection('resources')">
+            <span class="admin-menu-item-icon">📚</span>
+            <div class="admin-menu-item-text">
+              <b>Notes & Videos</b>
+              <span class="admin-menu-item-desc">Upload study PDFs & lecture recordings</span>
+            </div>
+          </button>
+
+          <button class="admin-menu-item" onclick="openAdminSection('results')">
+            <span class="admin-menu-item-icon">📊</span>
+            <div class="admin-menu-item-text">
+              <b>Student Results</b>
+              <span class="admin-menu-item-desc">Monitor student attempts, scores & accuracy</span>
+            </div>
+          </button>
+
+          <button class="admin-menu-item" onclick="openAdminSection('accounts')">
+            <span class="admin-menu-item-icon">👥</span>
+            <div class="admin-menu-item-text">
+              <b>Student Accounts</b>
+              <span class="admin-menu-item-desc">Manage registered students & role permissions</span>
+            </div>
+          </button>
+
+          <button class="admin-menu-item" onclick="openAdminSection('community')">
+            <span class="admin-menu-item-icon">💬</span>
+            <div class="admin-menu-item-text">
+              <b>Community Moderation</b>
+              <span class="admin-menu-item-desc">Review doubts & moderate student messages</span>
+            </div>
+          </button>
+
+          <button class="admin-menu-item" onclick="openAdminSection('live')">
+            <span class="admin-menu-item-icon">🔴</span>
+            <div class="admin-menu-item-text">
+              <b>Live Classes</b>
+              <span class="admin-menu-item-desc">Start or end live streams & save recordings</span>
+            </div>
+          </button>
+
+          <button class="admin-menu-item" onclick="openAdminSection('settings')">
+            <span class="admin-menu-item-icon">⚙️</span>
+            <div class="admin-menu-item-text">
+              <b>Website Settings</b>
+              <span class="admin-menu-item-desc">Focus protection, exam rules & alert timers</span>
+            </div>
+          </button>
+        </div>
+
+        <!-- 2. User Greeting (Name & Role Pill) -->
+        <div class="nav-user-greeting" id="navUserGreeting" style="display:none">
+          <span class="nav-greeting-role" id="navGreetingRole">NEET Aspirant</span>
+          <span class="nav-greeting-name" id="navGreetingName">Student</span>
+        </div>
+
+        <!-- 3. User Avatar & Professional Menu Icon Button -->
+        <button class="user-menu-btn" id="userMenuBtn" onclick="toggleUserMenu()" aria-label="Account Menu" title="Open Account Menu">
           <div class="avatar-circle" id="navAvatar">
             <span class="nav-avatar-letter" id="navAvatarInitials">👤</span>
           </div>
-        </div>
-
-        <button class="menu-dots-btn" id="menuBtn" onclick="toggleMenu()" aria-label="Account Menu" title="Account Menu">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-            <circle cx="12" cy="5" r="2.2"/>
-            <circle cx="12" cy="12" r="2.2"/>
-            <circle cx="12" cy="19" r="2.2"/>
+          <svg class="menu-dots-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <circle cx="12" cy="5" r="2"/>
+            <circle cx="12" cy="12" r="2"/>
+            <circle cx="12" cy="19" r="2"/>
           </svg>
         </button>
 
@@ -754,203 +1451,475 @@
   </header>
 
   <!-- ==========================================================================
-       1. MANDATORY LOGIN GATE (ONLY VISIBLE WHEN LOGGED OUT)
+       LOGIN GATE (VISIBLE ONLY WHEN LOGGED OUT)
        ========================================================================== -->
   <main id="loginGateContainer">
-    <div class="gate-wrapper">
-      <!-- Left Hero & Motivation Side -->
-      <div class="gate-hero-side">
-        <div>
-          <div class="gate-brand-row">
-            <span class="brand-badge">PN</span>
-            <span style="font-size:18px;font-weight:800;letter-spacing:-0.01em">Neet <b>Diw</b></span>
-          </div>
-          <div class="gate-badge">NEET 2026/2027 Aspirant Portal</div>
-          <h1 class="gate-quote">“Your NEET journey starts with one focused step.”</h1>
-          <p class="gate-subtitle">A focused practice and testing platform designed to help dedicated medical aspirants prepare with confidence.</p>
+    <!-- MANDATORY FIRST PAGE: THREE CIRCULAR ROLE CARDS -->
+    <div class="role-selection-wrapper" id="roleSelectionScreen">
+      <div class="landing-brand-badge">
+        <span class="brand-badge">PN</span>
+        <span>Neet <b>Diw</b></span>
+      </div>
+      <h1 class="landing-heading">Welcome to PN Neet Diw</h1>
+      <p class="landing-subheading">Choose your role to continue your learning journey.</p>
+      <div class="landing-motto-pill">
+        ✨ <span>“Every focused step today brings you closer to your goal.”</span>
+      </div>
 
-          <div class="gate-notice-box">
-            <b>🔒 Member-Only Access Notice:</b><br>
-            Students can access chapter tests, study material notes, lecture videos, score analytics, doubt community chat, study calendar, and live classes only after signing in.
+      <!-- Three Large Circular Role Cards in a Centered Row -->
+      <div class="role-cards-grid">
+        <!-- 1. Student Login -->
+        <article class="role-card" onclick="openRoleAuth('student')">
+          <div class="role-circle-pod">
+            <span class="role-circle-icon">🎓</span>
+          </div>
+          <span class="role-card-badge">NEET Aspirant</span>
+          <h2 class="role-card-title">Student Login</h2>
+          <p class="role-card-desc">“Practice, learn, and track your progress.”</p>
+          <button type="button" class="role-card-btn" onclick="event.stopPropagation();openRoleAuth('student')">
+            <span>Continue as Student</span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+        </article>
+
+        <!-- 2. Teacher Login -->
+        <article class="role-card" onclick="openRoleAuth('teacher')">
+          <div class="role-circle-pod">
+            <span class="role-circle-icon">👨‍🏫</span>
+          </div>
+          <span class="role-card-badge">Faculty & Mentor</span>
+          <h2 class="role-card-title">Teacher Login</h2>
+          <p class="role-card-desc">“Teach, guide, and conduct live classes.”</p>
+          <button type="button" class="role-card-btn" onclick="event.stopPropagation();openRoleAuth('teacher')">
+            <span>Continue as Teacher</span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+        </article>
+
+        <!-- 3. Admin Login -->
+        <article class="role-card" onclick="openRoleAuth('admin')">
+          <div class="role-circle-pod">
+            <span class="role-circle-icon">🛡️</span>
+          </div>
+          <span class="role-card-badge">Platform Admin</span>
+          <h2 class="role-card-title">Admin Login</h2>
+          <p class="role-card-desc">“Manage the complete learning platform.”</p>
+          <button type="button" class="role-card-btn" onclick="event.stopPropagation();openRoleAuth('admin')">
+            <span>Continue as Admin</span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+        </article>
+      </div>
+
+      <p class="muted" style="font-size:12.5px;margin:10px 0 0">
+        🔒 Role-authenticated portal. Access permissions are strictly managed for student, faculty, and administrative security.
+      </p>
+    </div>
+
+    <!-- TAILORED ROLE LOGIN & REGISTRATION CONTAINER -->
+    <div class="role-auth-wrapper" id="roleAuthContainer" style="display:none">
+      <button type="button" class="auth-back-btn" onclick="backToRoleSelection()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        <span>Back to Role Selection</span>
+      </button>
+
+      <div class="auth-role-hero">
+        <div class="auth-role-avatar-circle" id="authRoleIcon">🎓</div>
+        <div>
+          <span class="role-card-badge" id="authRoleBadge" style="margin-bottom:4px">Student Portal</span>
+          <h2 style="margin:2px 0 0;font-size:20px;font-weight:800;color:#111111" id="authRoleTitle">Student Sign In</h2>
+        </div>
+      </div>
+      <p style="margin:0 0 18px;font-size:13.5px;color:#555550" id="authRoleDesc">Practice chapter mock tests, view results, and ask doubts.</p>
+
+      <div class="gate-tabs" id="authTabsBar">
+        <button type="button" class="gate-tab-btn active" id="tabRoleSignIn" onclick="setAuthMode('login')">Sign In</button>
+        <button type="button" class="gate-tab-btn" id="tabRoleRegister" onclick="setAuthMode('register')">Create Account</button>
+      </div>
+
+      <div class="gate-error-banner" id="authErrorBanner"></div>
+
+      <form id="authForm" onsubmit="handleAuthSubmit(event)">
+        <div class="gate-field" id="authNameField" style="display:none">
+          <label>Full Name</label>
+          <input id="authName" placeholder="e.g. Rahul Sharma" autocomplete="name">
+        </div>
+
+        <div class="gate-field">
+          <label>Email Address</label>
+          <input id="authEmail" type="email" placeholder="student@example.com" required autocomplete="email">
+        </div>
+
+        <div class="gate-field">
+          <label>Password</label>
+          <input id="authPassword" type="password" placeholder="Minimum 6 characters" required autocomplete="current-password">
+        </div>
+
+        <button type="submit" class="gate-submit-btn" id="authSubmitBtn">Sign In to Dashboard →</button>
+      </form>
+
+      <div class="gate-switch-link" id="authSwitchPrompt"></div>
+    </div>
+  </main>
+
+  <!-- ==========================================================================
+       ROLE DASHBOARDS (AFTER LOGIN)
+       ========================================================================== -->
+  <main class="dashboard-container" id="dashboardMainArea" style="display:none">
+    <!-- Universal Role Greeting & Introduction Banner -->
+    <div class="role-greeting-banner" id="roleGreetingBanner">
+      <div class="role-greeting-top">
+        <div>
+          <div class="role-pill-badge" id="roleGreetingBadge">🎓 NEET Aspirant</div>
+          <h1 class="role-greeting-title" id="roleGreetingTitle">Welcome back 👋</h1>
+          <p class="role-greeting-subtitle" id="roleGreetingSubtitle">Keep moving forward—your effort today builds tomorrow’s confidence.</p>
+        </div>
+      </div>
+      <div class="role-intro-box">
+        <p class="role-intro-text" id="roleIntroText">PN Neet Diw is your focused space to practise, learn from every result, connect with fellow aspirants, and prepare with confidence.</p>
+      </div>
+    </div>
+
+    <!-- 1. STUDENT DASHBOARD VIEW -->
+    <div id="studentDashboardView" style="display:none">
+      <!-- Live class banner for student (Only visible when teacher is live) -->
+      <div class="live-student-banner" id="studentLiveBanner" style="display:none">
+        <div>
+          <span style="font-size:12px;font-weight:800;letter-spacing:0.04em;color:#fca5a5">
+            <span class="live-pulse-dot"></span>LIVE BROADCAST NOW
+          </span>
+          <h3 style="margin:4px 0 2px;font-size:18px" id="studentLiveTitle">NEET Live Class</h3>
+          <p style="margin:0;font-size:13px;color:#d4d4cd" id="studentLiveTeacher">Teacher is currently broadcasting live.</p>
+        </div>
+        <button onclick="joinLiveClass()">Join Live Class →</button>
+      </div>
+
+      <!-- Quick Action Tools for Students -->
+      <div class="kpi-grid">
+        <div class="kpi-card" onclick="scrollToSchedule()" style="cursor:pointer">
+          <div class="kpi-label">📅 Test Schedule</div>
+          <div class="kpi-value" id="studentTestCount">3</div>
+          <div class="kpi-desc">Chapter mock tests</div>
+        </div>
+        <div class="kpi-card" onclick="libraryOpen()" style="cursor:pointer">
+          <div class="kpi-label">📚 Notes & Videos</div>
+          <div class="kpi-value" id="studentResourceCount">0</div>
+          <div class="kpi-desc">PDFs & recorded lectures</div>
+        </div>
+        <div class="kpi-card" onclick="resultsOpen()" style="cursor:pointer">
+          <div class="kpi-label">📊 My Results</div>
+          <div class="kpi-value" id="studentAttemptCount">0</div>
+          <div class="kpi-desc">Test score breakdown</div>
+        </div>
+        <div class="kpi-card" onclick="communityOpen()" style="cursor:pointer">
+          <div class="kpi-label">💬 Community Chat</div>
+          <div class="kpi-value">Active</div>
+          <div class="kpi-desc">Ask doubts with peers</div>
+        </div>
+        <div class="kpi-card" onclick="calendarOpen()" style="cursor:pointer">
+          <div class="kpi-label">🗓️ Study Calendar</div>
+          <div class="kpi-value">Planner</div>
+          <div class="kpi-desc">Daily revision goals</div>
+        </div>
+      </div>
+
+      <!-- Test Schedule Section -->
+      <div class="section-head" id="scheduleHead">
+        <h2>Chapter-wise Test Schedule</h2>
+        <div style="display:flex;gap:8px">
+          <button class="light" onclick="resultsOpen()">My Results & Review</button>
+          <button class="out" onclick="calendarOpen()">My Study Calendar</button>
+        </div>
+      </div>
+
+      <!-- Subject Filter Pills for Student Tests -->
+      <div class="filter-pills-bar">
+        <button class="filter-pill test-filter-pill active" data-sub="all" onclick="filterTestsBySubject('all')">All Subjects</button>
+        <button class="filter-pill test-filter-pill" data-sub="biology" onclick="filterTestsBySubject('biology')">🧬 Biology</button>
+        <button class="filter-pill test-filter-pill" data-sub="chemistry" onclick="filterTestsBySubject('chemistry')">🧪 Chemistry</button>
+        <button class="filter-pill test-filter-pill" data-sub="physics" onclick="filterTestsBySubject('physics')">⚡ Physics</button>
+      </div>
+
+      <section class="grid" id="cards"></section>
+    </div>
+
+    <!-- 2. TEACHER DASHBOARD VIEW -->
+    <div id="teacherDashboardView" style="display:none">
+      <!-- Live Class Control Center Card -->
+      <div class="live-stream-box">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+          <div>
+            <span class="tag" style="background:#262624;color:#f0f0ed">🔴 Faculty Live Broadcast Center</span>
+            <h2 style="margin:8px 0 4px;font-size:24px">Live Interactive NEET Class</h2>
+            <p style="margin:0;font-size:14px">Stream live camera and audio to students. Recordings are automatically saved to Notes & Videos upon ending.</p>
+          </div>
+          <div id="teacherLiveStatusTag">
+            <span class="tag green">● Ready to stream</span>
           </div>
         </div>
 
-        <div class="gate-features-list">
-          <div class="gate-feature-item">
-            <span class="gate-check">✓</span>
-            <span>Chapter-wise timed Biology, Chemistry & Physics mock tests</span>
+        <div id="teacherLiveActiveArea" style="display:none;margin-top:20px">
+          <p style="color:#dcf2dc;font-weight:700" id="teacherLiveHeading">● You are broadcasting live.</p>
+          <video class="live-monitor-video" id="teacherHostVideo" autoplay muted playsinline></video>
+          <div style="display:flex;gap:10px;align-items:center">
+            <button class="red" onclick="endLiveClass()">⏹ End Live Class & Upload Recording</button>
           </div>
-          <div class="gate-feature-item">
-            <span class="gate-check">✓</span>
-            <span>Comprehensive PDF revision notes & recorded lecture library</span>
+        </div>
+
+        <div id="teacherLiveStartArea" style="margin-top:20px;background:#1e1e1c;padding:18px;border-radius:12px">
+          <label style="color:#e0e0dc;margin-top:0">Live Class Title</label>
+          <input id="teacherClassTitle" placeholder="e.g. Biology: Photosynthesis & Cellular Respiration Discussion" style="background:#2a2a28;border-color:#444440;color:#ffffff;margin-bottom:14px">
+          <button onclick="startLiveClassFromHub()" style="background:#ffffff;color:#111111;font-weight:800">🔴 Start Live Class Now</button>
+        </div>
+      </div>
+
+      <!-- Quick Teacher Actions -->
+      <div class="grid" style="margin-top:24px">
+        <div class="card">
+          <span class="tag">📚 Study Material</span>
+          <h3>Saved Class Recordings & Notes</h3>
+          <p class="meta">Manage and upload PDF notes or revision videos for your NEET students.</p>
+          <button class="light" onclick="libraryOpen()">Open Notes & Videos</button>
+        </div>
+        <div class="card">
+          <span class="tag">💬 Doubt Clearing</span>
+          <h3>Community Doubts & Discussions</h3>
+          <p class="meta">Answer student doubts, review attached question photos, and guide aspirants.</p>
+          <button class="light" onclick="communityOpen()">Open Community Chat</button>
+        </div>
+        <div class="card">
+          <span class="tag">👤 Faculty Profile</span>
+          <h3>Profile & Preferences</h3>
+          <p class="meta">Update your faculty display name, photo, and notification settings.</p>
+          <button class="light" onclick="openProfileModal()">Update Profile</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. ADMIN DASHBOARD VIEW -->
+    <div id="adminDashboardView" style="display:none">
+      <!-- Admin Top Strip with Single Admin Controls Menu Trigger -->
+      <div class="panel" style="background:#111111;color:#ffffff;border-radius:16px;padding:22px;margin-bottom:24px">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px">
+          <div>
+            <span class="tag" style="background:#262624;color:#f0f0ed">Platform Administrator</span>
+            <h2 style="font-size:22px;margin:6px 0 2px">Admin Command Center</h2>
+            <p style="color:#d7d7d2;margin:0;font-size:13.5px">Everything is organized under your clean Admin Controls menu.</p>
           </div>
-          <div class="gate-feature-item">
-            <span class="gate-check">✓</span>
-            <span>Per-question time tracking, accuracy review & explanations</span>
-          </div>
-          <div class="gate-feature-item">
-            <span class="gate-check">✓</span>
-            <span>Live interactive doubt chat with question photo sharing</span>
-          </div>
-          <div class="gate-feature-item">
-            <span class="gate-check">✓</span>
-            <span>Private daily study planner & revision calendar</span>
+          <div style="display:flex;align-items:center;gap:10px">
+            <button class="admin-controls-btn" onclick="toggleAdminControlsMenu()" style="background:#ffffff;color:#111111;border-color:#ffffff">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M4 4h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM4 10h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM4 16h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4z"/>
+              </svg>
+              <span>Admin Controls</span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
           </div>
         </div>
       </div>
 
-      <!-- Right Login & Register Form Side -->
-      <div class="gate-form-side">
-        <div class="gate-tabs">
-          <button type="button" class="gate-tab-btn active" id="tabSignIn" onclick="setAuthMode('login')">Sign In</button>
-          <button type="button" class="gate-tab-btn" id="tabRegister" onclick="setAuthMode('register')">Create Account</button>
+      <!-- Quick KPI Overview Cards -->
+      <div class="kpi-grid">
+        <div class="kpi-card" onclick="openAdminSection('tests')" style="cursor:pointer">
+          <div class="kpi-label">📝 Tests</div>
+          <div class="kpi-value" id="kpiTestCount">0</div>
+          <div class="kpi-desc">Mock tests configured</div>
         </div>
+        <div class="kpi-card" onclick="openAdminSection('accounts')" style="cursor:pointer">
+          <div class="kpi-label">👥 Users & Students</div>
+          <div class="kpi-value" id="kpiUserCount">0</div>
+          <div class="kpi-desc">Registered accounts</div>
+        </div>
+        <div class="kpi-card" onclick="openAdminSection('results')" style="cursor:pointer">
+          <div class="kpi-label">📊 Test Attempts</div>
+          <div class="kpi-value" id="kpiAttemptCount">0</div>
+          <div class="kpi-desc">Completed mock attempts</div>
+        </div>
+        <div class="kpi-card" onclick="openAdminSection('resources')" style="cursor:pointer">
+          <div class="kpi-label">📚 Notes & Videos</div>
+          <div class="kpi-value" id="kpiResourceCount">0</div>
+          <div class="kpi-desc">Uploaded study files</div>
+        </div>
+        <div class="kpi-card" onclick="openAdminSection('live')" style="cursor:pointer">
+          <div class="kpi-label">🔴 Live Classes</div>
+          <div class="kpi-value" id="kpiLiveStatus">Idle</div>
+          <div class="kpi-desc">Broadcast status</div>
+        </div>
+      </div>
 
-        <h2 class="gate-form-title" id="authTitle">Student Login</h2>
-        <p class="gate-form-desc" id="authDesc">Sign in with your email to unlock your tests and study materials.</p>
+      <!-- Admin Tab Switcher Strip -->
+      <div class="admin-nav-strip">
+        <button class="admin-tab-btn active" id="tabAdminTestsBtn" onclick="switchAdminActiveSection('tests')">📝 Manage Tests</button>
+        <button class="admin-tab-btn" id="tabAdminQuestionsBtn" onclick="switchAdminActiveSection('questions')">❓ Manage Questions</button>
+        <button class="admin-tab-btn" id="tabAdminScheduleBtn" onclick="switchAdminActiveSection('schedule')">📅 Test Schedule</button>
+        <button class="admin-tab-btn" id="tabAdminResourcesBtn" onclick="switchAdminActiveSection('resources')">📚 Notes & Videos</button>
+        <button class="admin-tab-btn" id="tabAdminResultsBtn" onclick="switchAdminActiveSection('results')">📊 Student Results</button>
+        <button class="admin-tab-btn" id="tabAdminAccountsBtn" onclick="switchAdminActiveSection('accounts')">👥 Student Accounts</button>
+        <button class="admin-tab-btn" id="tabAdminCommunityBtn" onclick="switchAdminActiveSection('community')">💬 Community</button>
+        <button class="admin-tab-btn" id="tabAdminLiveBtn" onclick="switchAdminActiveSection('live')">🔴 Live Classes</button>
+        <button class="admin-tab-btn" id="tabAdminSettingsBtn" onclick="switchAdminActiveSection('settings')">⚙️ Settings</button>
+      </div>
 
-        <div class="gate-error-banner" id="authErrorBanner"></div>
-
-        <form id="authForm" onsubmit="handleAuthSubmit(event)">
-          <div class="gate-field" id="authNameField" style="display:none">
-            <label>Full Name</label>
-            <input id="authName" placeholder="e.g. Rahul Sharma" autocomplete="name">
+      <!-- SECTION 1 & 2: MANAGE TESTS & QUESTIONS -->
+      <div id="adminSectionTests">
+        <div class="formgrid">
+          <div class="panel">
+            <h3 id="testHeading" style="margin-top:0">Create a scheduled test</h3>
+            <input id="editTest" type="hidden">
+            <label>Test title</label>
+            <input id="testTitle" placeholder="e.g. NEET Biology: Cell Structure">
+            <label>Subject</label>
+            <select id="testSubject">
+              <option>Biology</option>
+              <option>Chemistry</option>
+              <option>Physics</option>
+            </select>
+            <label>Chapter</label>
+            <input id="testChapter" placeholder="e.g. Cytology & Cell Division">
+            <label>Duration in minutes</label>
+            <input id="testDuration" type="number" min="1" value="15">
+            <label>Scheduled start date and time (leave blank for instant practice)</label>
+            <input id="testStart" type="datetime-local">
+            <label><input id="testActive" type="checkbox" checked style="width:auto"> Show test to students</label>
+            <div style="display:flex;gap:10px;margin-top:16px">
+              <button onclick="saveTest()">Save Test</button>
+              <button class="out" onclick="resetTest()">Reset Form</button>
+            </div>
           </div>
 
-          <div class="gate-field">
-            <label>Email Address</label>
-            <input id="authEmail" type="email" placeholder="student@example.com" required autocomplete="email">
+          <div class="panel" id="adminSectionQuestions">
+            <h3 id="questionHeading" style="margin-top:0">Add a question</h3>
+            <input id="editQuestion" type="hidden">
+            <label>Target Test</label>
+            <select id="questionTest"></select>
+            <label>Question statement</label>
+            <textarea id="questionText" placeholder="Enter question statement..."></textarea>
+            <label>Option A</label>
+            <input id="oa">
+            <label>Option B</label>
+            <input id="ob">
+            <label>Option C</label>
+            <input id="oc">
+            <label>Option D</label>
+            <input id="od">
+            <label>Correct answer</label>
+            <select id="answer">
+              <option value="0">Option A</option>
+              <option value="1">Option B</option>
+              <option value="2">Option C</option>
+              <option value="3">Option D</option>
+            </select>
+            <div style="display:flex;gap:10px;margin-top:16px">
+              <button onclick="saveQuestion()">Save Question</button>
+              <button class="out" onclick="resetQuestion()">Reset</button>
+            </div>
           </div>
 
-          <div class="gate-field">
-            <label>Password</label>
-            <input id="authPassword" type="password" placeholder="Minimum 6 characters" required autocomplete="current-password">
+          <div class="panel wide">
+            <h3 style="margin-top:0">Existing Tests and Questions</h3>
+            <div id="content"></div>
           </div>
+        </div>
+      </div>
 
-          <p class="gate-admin-hint" id="authAdminHint">
-            Teacher or Administrator? Sign in with your administrator email and password above to open the Admin Dashboard.
-          </p>
+      <!-- SECTION 3: TEST SCHEDULE -->
+      <div id="adminSectionSchedule" class="hidden">
+        <div class="panel">
+          <h3 style="margin-top:0">📅 Test Schedule Management</h3>
+          <p class="muted">Review all active and upcoming mock tests along with start dates.</p>
+          <div id="adminScheduleList"></div>
+        </div>
+      </div>
 
-          <button type="submit" class="gate-submit-btn" id="authSubmitBtn">Sign In to Dashboard →</button>
-        </form>
+      <!-- SECTION 4: NOTES & VIDEOS -->
+      <div id="adminSectionResources" class="hidden">
+        <div class="panel">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+            <div>
+              <h3 style="margin:0">📚 Study Material & Recordings</h3>
+              <p class="muted" style="margin:4px 0 0">Upload new study PDF or recorded lecture video (up to 100 MB).</p>
+            </div>
+            <button onclick="show('upload')">+ Upload New Material</button>
+          </div>
+          <div id="adminResourceList"></div>
+        </div>
+      </div>
 
-        <div class="gate-switch-link" id="authSwitchPrompt">
-          New student? <a onclick="setAuthMode('register')">Create a free student account</a>
+      <!-- SECTION 5: STUDENT RESULTS -->
+      <div id="adminSectionResults" class="hidden">
+        <div class="panel">
+          <h3 style="margin-top:0">📊 Student Attempt Reports & Scores</h3>
+          <p class="muted">Real-time log of mock test submissions.</p>
+          <div id="adminAttemptsList"></div>
+        </div>
+      </div>
+
+      <!-- SECTION 6: STUDENT ACCOUNTS & ROLES -->
+      <div id="adminSectionAccounts" class="hidden">
+        <div class="panel">
+          <h3 style="margin-top:0">👥 User Accounts & Role Permissions</h3>
+          <p class="muted">Manage registered student, teacher, and administrator accounts.</p>
+          <div id="adminUsersList"></div>
+        </div>
+      </div>
+
+      <!-- SECTION 7: COMMUNITY MODERATION -->
+      <div id="adminSectionCommunity" class="hidden">
+        <div class="panel">
+          <h3 style="margin-top:0">💬 Community Doubt Moderation</h3>
+          <p class="muted">Moderate student doubt queries and thread replies.</p>
+          <button style="margin-bottom:16px" onclick="communityOpen()">Open Full Community Chat & Moderate</button>
+          <div id="adminCommunityOverview"></div>
+        </div>
+      </div>
+
+      <!-- SECTION 8: LIVE CLASSES -->
+      <div id="adminSectionLive" class="hidden">
+        <div class="panel">
+          <h3 style="margin-top:0">🔴 Live Class Broadcast Control</h3>
+          <p class="muted">Start or terminate a platform live stream. Stream recordings are automatically saved to Notes & Videos upon conclusion.</p>
+          <div style="margin:20px 0;background:#f7f7f5;padding:18px;border-radius:12px;border:1px solid #e0e0da">
+            <label style="margin-top:0">Class Title</label>
+            <input id="adminClassTitle" placeholder="e.g. Master Class: High-Yield NEET Chemistry Mechanisms" style="margin-bottom:12px">
+            <button onclick="startAdminLiveClass()">🔴 Start Live Broadcast</button>
+          </div>
+          <div id="adminLiveClassStatusBox"></div>
+        </div>
+      </div>
+
+      <!-- SECTION 9: WEBSITE SETTINGS -->
+      <div id="adminSectionSettings" class="hidden">
+        <div class="panel" style="max-width:600px">
+          <h3 style="margin-top:0">⚙️ Website & Exam Settings</h3>
+          <p class="muted">Configure focus honesty and test alert parameters.</p>
+          <div style="margin-top:18px">
+            <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
+              <input type="checkbox" id="adminSettingFocus" checked style="width:auto;height:auto">
+              <span><b>Strict Focus Protection:</b> Auto-submit tests on tab switch, minimize, or focus loss.</span>
+            </label>
+            <p class="muted" style="font-size:12px;margin:4px 0 16px 26px">Ensures student practice simulates real proctored examination honesty.</p>
+
+            <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
+              <input type="checkbox" id="adminSettingSound" checked style="width:auto;height:auto">
+              <span><b>5-Minute Countdown Warning:</b> Alert student when 5 minutes remain in test.</span>
+            </label>
+          </div>
+          <button style="margin-top:20px" onclick="saveSettings()">Save Preferences</button>
         </div>
       </div>
     </div>
   </main>
 
   <!-- ==========================================================================
-       2. STUDENT DASHBOARD (ONLY VISIBLE FOR AUTHENTICATED STUDENTS)
-       ========================================================================== -->
-  <div id="studentDashboard" style="display:none">
-    <div id="studentHeroSection"></div>
-
-    <div class="head">
-      <h2>Chapter-wise Test Schedule</h2>
-      <button class="light" onclick="resultsOpen()">My Results</button>
-    </div>
-    <section class="grid" id="cards"></section>
-  </div>
-
-  <!-- ==========================================================================
-       3. ADMIN DASHBOARD VIEW (ONLY VISIBLE FOR AUTHENTICATED ADMIN)
-       ========================================================================== -->
-  <div id="adminDashboardView" style="display:none">
-    <div class="panel" style="background:#111111;color:#ffffff;border-radius:18px;padding:30px;margin-bottom:24px">
-      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px">
-        <div>
-          <span class="tag" style="background:#262624;color:#f0f0ed">Administrator Portal</span>
-          <h1 style="font-size:28px;margin:8px 0 4px">PN Neet Diw Admin Dashboard</h1>
-          <p style="color:#d7d7d2;margin:0;font-size:14px">Manage chapter tests, question banks, scheduled timings, student accounts, and study materials.</p>
-        </div>
-        <div style="display:flex;gap:10px">
-          <button class="light" onclick="libraryOpen()">Study Material</button>
-          <button class="red" onclick="logoutUser()">Logout</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="tabs">
-      <button id="adminTabManageBtn" onclick="switchAdminTab('manage')">Tests & Questions</button>
-      <button id="adminTabReportsBtn" class="light" onclick="switchAdminTab('reports')">Students & Attempt Reports</button>
-    </div>
-
-    <div id="adminManageSection">
-      <div class="formgrid">
-        <div class="panel">
-          <h3 id="testHeading">Create a scheduled test</h3>
-          <input id="editTest" type="hidden">
-          <label>Test title</label>
-          <input id="testTitle" placeholder="Human Physiology Test">
-          <label>Subject</label>
-          <select id="testSubject">
-            <option>Biology</option>
-            <option>Chemistry</option>
-            <option>Physics</option>
-          </select>
-          <label>Chapter</label>
-          <input id="testChapter" placeholder="Human Physiology">
-          <label>Duration in minutes</label>
-          <input id="testDuration" type="number" min="1" value="30">
-          <label>Scheduled start date and time (leave blank for instant practice)</label>
-          <input id="testStart" type="datetime-local">
-          <label><input id="testActive" type="checkbox" checked style="width:auto"> Show to students</label>
-          <button style="margin-top:14px" onclick="saveTest()">Save Test</button>
-          <button class="out" onclick="resetTest()">Reset</button>
-        </div>
-
-        <div class="panel">
-          <h3 id="questionHeading">Add a question</h3>
-          <input id="editQuestion" type="hidden">
-          <label>Test</label>
-          <select id="questionTest"></select>
-          <label>Question</label>
-          <textarea id="questionText"></textarea>
-          <label>Option A</label>
-          <input id="oa">
-          <label>Option B</label>
-          <input id="ob">
-          <label>Option C</label>
-          <input id="oc">
-          <label>Option D</label>
-          <input id="od">
-          <label>Correct answer</label>
-          <select id="answer">
-            <option value="0">A</option>
-            <option value="1">B</option>
-            <option value="2">C</option>
-            <option value="3">D</option>
-          </select>
-          <button style="margin-top:14px" onclick="saveQuestion()">Save Question</button>
-          <button class="out" onclick="resetQuestion()">Reset</button>
-        </div>
-
-        <div class="panel wide">
-          <h3>Existing tests and questions</h3>
-          <div id="content"></div>
-        </div>
-      </div>
-    </div>
-
-    <div id="adminReportsSection" class="hidden">
-      <div class="panel">
-        <div id="reportContent"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ==========================================================================
        MODALS: PROFILE, SETTINGS, TEST TAKING, RESULTS, LIBRARY, UPLOAD
        ========================================================================== -->
 
-  <!-- Student Profile Modal -->
+  <!-- Profile Modal -->
   <div class="modal" id="profileModal">
     <div class="box" style="max-width:480px">
       <button class="close" onclick="hide('profileModal')">✕</button>
-      <h2 style="margin-top:0">My Student Profile</h2>
-      <p class="muted" style="margin-top:0">Update your display name and profile picture for the platform and Community Chat.</p>
+      <h2 style="margin-top:0">My Profile</h2>
+      <p class="muted" style="margin-top:0">Update your display name and photo.</p>
 
       <div class="profile-card-top">
         <div class="profile-avatar-large" id="profileAvatarLarge">
@@ -1030,13 +1999,13 @@
     </div>
   </div>
 
-  <!-- Admin Study Material Upload Modal (Strictly Admin-Only) -->
+  <!-- Upload Modal (Teacher & Admin Only) -->
   <div class="modal" id="upload">
     <div class="box" style="max-width:480px">
       <button class="close" onclick="hide('upload')">✕</button>
       <h2>Upload Study Material</h2>
       <label>Title</label>
-      <input id="resourceTitle">
+      <input id="resourceTitle" placeholder="e.g. Human Physiology Summary Notes">
       <label>Subject</label>
       <select id="resourceSubject">
         <option>Biology</option>
@@ -1046,7 +2015,7 @@
       </select>
       <label>PDF note or video file (up to 100 MB)</label>
       <input id="resourceFile" type="file" accept="application/pdf,video/mp4,video/webm,video/quicktime">
-      <button style="margin-top:15px" onclick="uploadResource()">Upload Material</button>
+      <button style="margin-top:15px;width:100%" onclick="uploadResource()">Upload Material</button>
     </div>
   </div>
 
@@ -1055,11 +2024,13 @@
         user = JSON.parse(localStorage.user || 'null'),
         tests = [],
         dashboard = {},
+        adminUsers = [],
         test = null,
         answers = {},
         timer,
         ended = true,
-        authMode = 'login'; // 'login' or 'register'
+        authMode = 'login',
+        activeAdminTab = 'tests';
 
     const $ = id => document.getElementById(id),
           show = id => $(id).classList.add('show'),
@@ -1078,7 +2049,6 @@
       let d = await r.json();
       if (!r.ok) {
         if (r.status === 401) {
-          // Token expired or invalid: immediately return to login gate
           logoutUser();
         }
         throw Error(d.error || 'Request failed');
@@ -1087,27 +2057,85 @@
     }
 
     // =========================================================================
-    // MANDATORY LOGIN GATE CONTROLS
     // =========================================================================
+    // MANDATORY FIRST PAGE: ROLE SELECTION & LOGIN CONTROLS
+    // =========================================================================
+    let currentAuthRole = 'student'; // 'student' | 'teacher' | 'admin'
+
+    function openRoleAuth(role) {
+      currentAuthRole = role;
+      $('roleSelectionScreen').style.display = 'none';
+      $('roleAuthContainer').style.display = 'flex';
+
+      if (role === 'student') {
+        $('authRoleBadge').textContent = '🎓 Student Portal';
+        $('authRoleIcon').textContent = '🎓';
+        $('authRoleTitle').textContent = 'Student Login & Registration';
+        $('authRoleDesc').textContent = '“Practice, learn, and track your progress.”';
+        $('authTabsBar').style.display = 'flex';
+        $('tabRoleSignIn').textContent = 'Sign In';
+        $('tabRoleRegister').textContent = 'Create Student Account';
+        $('authEmail').placeholder = 'student@example.com';
+        setAuthMode('login');
+      } else if (role === 'teacher') {
+        $('authRoleBadge').textContent = '👨‍🏫 Faculty / Teacher Portal';
+        $('authRoleIcon').textContent = '👨‍🏫';
+        $('authRoleTitle').textContent = 'Teacher Login';
+        $('authRoleDesc').textContent = '“Teach, guide, and conduct live classes.”';
+        $('authTabsBar').style.display = 'flex';
+        $('tabRoleSignIn').textContent = 'Faculty Sign In';
+        $('tabRoleRegister').textContent = 'Faculty Register';
+        $('authEmail').placeholder = 'teacher@pnneetdiw.com';
+        setAuthMode('login');
+      } else if (role === 'admin') {
+        $('authRoleBadge').textContent = '🛡️ Administrator Console';
+        $('authRoleIcon').textContent = '🛡️';
+        $('authRoleTitle').textContent = 'Admin Sign In';
+        $('authRoleDesc').textContent = '“Manage the complete learning platform.”';
+        $('authTabsBar').style.display = 'none'; // Strictly only Admin Login! No register tab
+        $('authEmail').placeholder = 'admin@pnneetdiw.com';
+        setAuthMode('login');
+      }
+      hideAuthError();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function backToRoleSelection() {
+      $('roleAuthContainer').style.display = 'none';
+      $('roleSelectionScreen').style.display = 'flex';
+      hideAuthError();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
     function setAuthMode(mode) {
       authMode = mode;
       const isRegister = mode === 'register';
 
-      $('tabSignIn').classList.toggle('active', !isRegister);
-      $('tabRegister').classList.toggle('active', isRegister);
-
-      $('authTitle').textContent = isRegister ? 'Student Registration' : 'Student Login';
-      $('authDesc').textContent = isRegister
-        ? 'Create your free student account to start practicing NEET tests.'
-        : 'Sign in with your email to unlock your tests and study materials.';
+      const tabSignIn = $('tabRoleSignIn');
+      const tabRegister = $('tabRoleRegister');
+      if (tabSignIn) tabSignIn.classList.toggle('active', !isRegister);
+      if (tabRegister) tabRegister.classList.toggle('active', isRegister);
 
       $('authNameField').style.display = isRegister ? 'block' : 'none';
-      $('authSubmitBtn').textContent = isRegister ? 'Create Account & Start Practice →' : 'Sign In to Dashboard →';
-      $('authAdminHint').style.display = isRegister ? 'none' : 'block';
 
-      $('authSwitchPrompt').innerHTML = isRegister
-        ? 'Already registered? <a onclick="setAuthMode(\'login\')">Sign in here</a>'
-        : 'New student? <a onclick="setAuthMode(\'register\')">Create a free student account</a>';
+      let submitLabel = 'Sign In to Dashboard →';
+      if (isRegister) {
+        submitLabel = currentAuthRole === 'teacher' ? 'Register as Faculty →' : 'Create Account & Start Practice →';
+      }
+      $('authSubmitBtn').textContent = submitLabel;
+
+      const switchPrompt = $('authSwitchPrompt');
+      if (currentAuthRole === 'admin') {
+        switchPrompt.innerHTML = '';
+      } else if (currentAuthRole === 'teacher') {
+        switchPrompt.innerHTML = isRegister
+          ? 'Already registered as faculty? <a onclick="setAuthMode(\'login\')">Sign in here</a>'
+          : 'New faculty member? <a onclick="setAuthMode(\'register\')">Register a faculty account</a>';
+      } else {
+        switchPrompt.innerHTML = isRegister
+          ? 'Already registered? <a onclick="setAuthMode(\'login\')">Sign in here</a>'
+          : 'New student? <a onclick="setAuthMode(\'register\')">Create a free student account</a>';
+      }
 
       hideAuthError();
     }
@@ -1146,8 +2174,8 @@
 
       try {
         const payload = authMode === 'register'
-          ? { name, email, password }
-          : { email, password };
+          ? { name, email, password, role: currentAuthRole }
+          : { email, password, expectedRole: currentAuthRole };
 
         const d = await api(authMode === 'register' ? 'register' : 'login', {
           method: 'POST',
@@ -1159,63 +2187,156 @@
         localStorage.token = token;
         localStorage.user = JSON.stringify(user);
 
-        // Transition views according to role
         applyViewState();
       } catch (err) {
         showAuthError(err.message || 'Login failed. Please check credentials.');
       } finally {
         submitBtn.disabled = false;
-        submitBtn.textContent = authMode === 'register' ? 'Create Account & Start Practice →' : 'Sign In to Dashboard →';
+        let submitLabel = 'Sign In to Dashboard →';
+        if (authMode === 'register') {
+          submitLabel = currentAuthRole === 'teacher' ? 'Register as Faculty →' : 'Create Account & Start Practice →';
+        }
+        submitBtn.textContent = submitLabel;
       }
     }
 
     // =========================================================================
-    // ROLE-BASED VIEW ROUTING
+    // ROLE-BASED VIEW ROUTING & GREETING
     // =========================================================================
     function applyViewState() {
       const isLoggedIn = !!(token && user);
 
       if (!isLoggedIn) {
-        // STATE 1: LOGGED OUT -> MANDATORY LOGIN GATE ONLY
+        // STATE 1: LOGGED OUT -> MANDATORY FIRST PAGE ONLY
+        const header = $('globalHeader');
+        if (header) header.style.display = 'none';
+
         $('loginGateContainer').style.display = 'flex';
-        $('studentDashboard').style.display = 'none';
+        $('roleSelectionScreen').style.display = 'flex';
+        $('roleAuthContainer').style.display = 'none';
+
+        $('dashboardMainArea').style.display = 'none';
+        $('studentDashboardView').style.display = 'none';
+        $('teacherDashboardView').style.display = 'none';
         $('adminDashboardView').style.display = 'none';
         $('mainNavLinks').style.display = 'none';
         $('loggedOutBadge').style.display = 'inline-block';
         $('loggedInControls').style.display = 'none';
+        $('adminControlsBtn').style.display = 'none';
 
-        // Close any modals
         ['test', 'results', 'library', 'upload', 'profileModal', 'settingsModal'].forEach(hide);
-        setAuthMode('login');
-      } else if (user.role === 'admin') {
-        // STATE 2: ADMIN LOGGED IN -> DIRECT ADMIN DASHBOARD VIEW ONLY
-        $('loginGateContainer').style.display = 'none';
-        $('studentDashboard').style.display = 'none';
-        $('adminDashboardView').style.display = 'block';
-        $('mainNavLinks').style.display = 'none';
-        $('loggedOutBadge').style.display = 'none';
-        $('loggedInControls').style.display = 'flex';
-
-        updateNavAvatar();
-        renderThreeDotMenu();
-        adminLoad();
-      } else {
-        // STATE 3: STUDENT LOGGED IN -> STUDENT DASHBOARD ONLY
-        $('loginGateContainer').style.display = 'none';
-        $('studentDashboard').style.display = 'block';
-        $('adminDashboardView').style.display = 'none';
-        $('mainNavLinks').style.display = 'flex';
-        $('loggedOutBadge').style.display = 'none';
-        $('loggedInControls').style.display = 'flex';
-
-        updateNavAvatar();
-        renderThreeDotMenu();
-
-        if (typeof window.renderStudentDashboardHero === 'function') {
-          window.renderStudentDashboardHero();
-        }
-        load();
+        return;
       }
+
+      // STATE 2: LOGGED IN -> SHOW GLOBAL HEADER & DASHBOARD
+      const header = $('globalHeader');
+      if (header) header.style.display = 'flex';
+
+      $('loginGateContainer').style.display = 'none';
+      $('dashboardMainArea').style.display = 'block';
+      $('loggedOutBadge').style.display = 'none';
+      $('loggedInControls').style.display = 'flex';
+
+      // Setup Role-Based Navigation Links
+      renderHeaderNavLinks();
+
+      // Setup Universal Role Greeting & Introduction
+      renderRoleGreeting();
+
+      // Setup Profile Avatar & Menu
+      updateNavAvatar();
+      renderThreeDotMenu();
+
+      // Hide or Show Admin Controls Button (STRICTLY Admin only)
+      if (user.role === 'admin') {
+        $('adminControlsBtn').style.display = 'flex';
+      } else {
+        $('adminControlsBtn').style.display = 'none';
+        closeAdminControlsMenu();
+      }
+
+      // Route to correct role dashboard
+      if (user.role === 'admin') {
+        $('studentDashboardView').style.display = 'none';
+        $('teacherDashboardView').style.display = 'none';
+        $('adminDashboardView').style.display = 'block';
+        adminLoad();
+      } else if (user.role === 'teacher') {
+        $('studentDashboardView').style.display = 'none';
+        $('teacherDashboardView').style.display = 'block';
+        $('adminDashboardView').style.display = 'none';
+        renderTeacherDashboard();
+      } else {
+        // Default role: student
+        $('studentDashboardView').style.display = 'block';
+        $('teacherDashboardView').style.display = 'none';
+        $('adminDashboardView').style.display = 'none';
+        loadStudentDashboard();
+      }
+    }
+
+    // Role-based greeting & introduction
+    function renderRoleGreeting() {
+      if (!user) return;
+      const firstName = (user.name || 'User').trim();
+      const badge = $('roleGreetingBadge');
+      const title = $('roleGreetingTitle');
+      const subtitle = $('roleGreetingSubtitle');
+      const intro = $('roleIntroText');
+
+      if (user.role === 'admin') {
+        badge.innerHTML = '🛡️ Platform Administrator';
+        title.innerHTML = `Welcome, ${esc(firstName)} 👋`;
+        subtitle.innerHTML = 'Everything is under your control. Manage, guide, and grow your learning community.';
+        intro.innerHTML = 'Build a stronger learning experience by managing tests, resources, live sessions, students, and community activity from one place.';
+      } else if (user.role === 'teacher') {
+        badge.innerHTML = '👨‍🏫 Faculty / Teacher';
+        title.innerHTML = `Welcome, ${esc(firstName)} 👋`;
+        subtitle.innerHTML = 'Your guidance can make every learner’s journey stronger.';
+        intro.innerHTML = 'Guide students through focused learning, live sessions, study material, and meaningful academic support.';
+      } else {
+        badge.innerHTML = '🎓 NEET Aspirant';
+        title.innerHTML = `Welcome back, ${esc(firstName)} 👋`;
+        subtitle.innerHTML = 'Keep moving forward—your effort today builds tomorrow’s confidence.';
+        intro.innerHTML = 'PN Neet Diw is your focused space to practise, learn from every result, connect with fellow aspirants, and prepare with confidence.';
+      }
+    }
+
+    // Header nav links based on role
+    function renderHeaderNavLinks() {
+      const container = $('mainNavLinks');
+      if (!container || !user) return;
+      container.style.display = 'flex';
+
+      if (user.role === 'admin') {
+        container.innerHTML = `
+          <button class="nav-link-btn" onclick="scrollToSection('adminDashboardView')">📊 Overview</button>
+          <button class="nav-link-btn" onclick="openAdminSection('live')">🔴 Live Classes</button>
+          <button class="nav-link-btn" onclick="openAdminSection('resources')">📚 Notes & Videos</button>
+          <button class="nav-link-btn" onclick="openAdminSection('community')">💬 Community</button>
+        `;
+      } else if (user.role === 'teacher') {
+        container.innerHTML = `
+          <button class="nav-link-btn" onclick="scrollToSection('teacherLiveActiveArea')">🔴 Live Classes</button>
+          <button class="nav-link-btn" onclick="libraryOpen()">📚 Saved Recordings</button>
+          <button class="nav-link-btn" onclick="communityOpen()">💬 Community</button>
+          <button class="nav-link-btn" onclick="openProfileModal()">👤 Faculty Profile</button>
+        `;
+      } else {
+        container.innerHTML = `
+          <button class="nav-link-btn" onclick="scrollToSchedule()">📅 Test Schedule</button>
+          <button class="nav-link-btn" onclick="libraryOpen()">📚 Notes & Videos</button>
+          <button class="nav-link-btn" onclick="resultsOpen()">📊 My Results</button>
+          <button class="nav-link-btn" onclick="communityOpen()">💬 Community Chat</button>
+          <button class="nav-link-btn" onclick="calendarOpen()">🗓️ Study Calendar</button>
+          <button class="nav-link-btn" onclick="helpOpen()">❓ Help & Support</button>
+        `;
+      }
+    }
+
+    function scrollToSection(id) {
+      const el = $(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
     }
 
     function logoutUser() {
@@ -1223,7 +2344,9 @@
       localStorage.removeItem('user');
       token = '';
       user = null;
-      closeMenu();
+      closeUserMenu();
+      closeAdminControlsMenu();
+      if ($('navUserGreeting')) $('navUserGreeting').style.display = 'none';
       $('authEmail').value = '';
       $('authPassword').value = '';
       $('authName').value = '';
@@ -1237,37 +2360,104 @@
     }
 
     function scrollToSchedule() {
-      const el = document.getElementById('cards');
+      const el = $('scheduleHead') || $('cards');
       if (el) el.scrollIntoView({ behavior: 'smooth' });
     }
 
     // =========================================================================
-    // THREE-DOT ACCOUNT MENU
+    // ADMIN CONTROLS DROPDOWN MENU (STRICTLY ADMIN ONLY)
     // =========================================================================
-    function toggleMenu() {
+    function toggleAdminControlsMenu() {
+      if (user?.role !== 'admin') return;
+      const menu = $('adminControlsMenu');
+      closeUserMenu();
+      menu.classList.toggle('open');
+    }
+
+    function closeAdminControlsMenu() {
+      const menu = $('adminControlsMenu');
+      if (menu) menu.classList.remove('open');
+    }
+
+    function openAdminSection(section) {
+      closeAdminControlsMenu();
+      if (user?.role !== 'admin') return;
+      switchAdminActiveSection(section);
+      $('adminDashboardView').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function switchAdminActiveSection(section) {
+      activeAdminTab = section;
+
+      // Update button highlights
+      const tabMap = {
+        tests: 'tabAdminTestsBtn',
+        questions: 'tabAdminQuestionsBtn',
+        schedule: 'tabAdminScheduleBtn',
+        resources: 'tabAdminResourcesBtn',
+        results: 'tabAdminResultsBtn',
+        accounts: 'tabAdminAccountsBtn',
+        community: 'tabAdminCommunityBtn',
+        live: 'tabAdminLiveBtn',
+        settings: 'tabAdminSettingsBtn'
+      };
+
+      Object.values(tabMap).forEach(btnId => {
+        const btn = $(btnId);
+        if (btn) btn.classList.remove('active');
+      });
+      if (tabMap[section] && $(tabMap[section])) {
+        $(tabMap[section]).classList.add('active');
+      }
+
+      // Hide all panels
+      $('adminSectionTests').classList.toggle('hidden', section !== 'tests' && section !== 'questions');
+      $('adminSectionSchedule').classList.toggle('hidden', section !== 'schedule');
+      $('adminSectionResources').classList.toggle('hidden', section !== 'resources');
+      $('adminSectionResults').classList.toggle('hidden', section !== 'results');
+      $('adminSectionAccounts').classList.toggle('hidden', section !== 'accounts');
+      $('adminSectionCommunity').classList.toggle('hidden', section !== 'community');
+      $('adminSectionLive').classList.toggle('hidden', section !== 'live');
+      $('adminSectionSettings').classList.toggle('hidden', section !== 'settings');
+
+      if (section === 'questions') {
+        const qEl = $('adminSectionQuestions');
+        if (qEl) qEl.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    // =========================================================================
+    // USER ACCOUNT MENU
+    // =========================================================================
+    function toggleUserMenu() {
       const menu = $('threeDotMenu');
+      closeAdminControlsMenu();
       if (menu.classList.contains('open')) {
-        closeMenu();
+        closeUserMenu();
       } else {
         renderThreeDotMenu();
         menu.classList.add('open');
       }
     }
 
-    function closeMenu() {
+    function closeUserMenu() {
       const menu = $('threeDotMenu');
       if (menu) menu.classList.remove('open');
     }
 
     document.addEventListener('click', e => {
-      const headerRight = document.getElementById('headerRightArea');
+      const headerRight = $('headerRightArea');
       if (headerRight && !headerRight.contains(e.target)) {
-        closeMenu();
+        closeUserMenu();
+        closeAdminControlsMenu();
       }
     });
 
     document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') closeMenu();
+      if (e.key === 'Escape') {
+        closeUserMenu();
+        closeAdminControlsMenu();
+      }
     });
 
     function renderThreeDotMenu() {
@@ -1277,85 +2467,104 @@
       const letter = (user.name || 'U').trim().charAt(0).toUpperCase();
       const avatarImg = user.avatar
         ? `<img src="${user.avatar}" class="menu-user-thumb" alt="${esc(user.name)}">`
-        : `<div class="menu-user-thumb-fallback ${user.role==='admin'?'admin':''}">${letter}</div>`;
+        : `<div class="menu-user-thumb-fallback">${letter}</div>`;
 
-      if (user.role === 'admin') {
-        menu.innerHTML = `
-          <div class="menu-user-card" onclick="closeMenu();openProfileModal()">
-            ${avatarImg}
-            <div class="menu-user-details">
-              <div class="menu-user-name">${esc(user.name)}</div>
-              <div class="menu-user-badge">🛡️ Administrator</div>
-            </div>
+      let roleLabel = '🎓 NEET Aspirant';
+      if (user.role === 'admin') roleLabel = '🛡️ Administrator';
+      else if (user.role === 'teacher') roleLabel = '👨‍🏫 Faculty / Teacher';
+
+      menu.innerHTML = `
+        <div class="menu-user-card" onclick="closeUserMenu();openProfileModal()">
+          ${avatarImg}
+          <div class="menu-user-details">
+            <div class="menu-user-name">${esc(user.name)}</div>
+            <div class="menu-user-badge">${roleLabel}</div>
           </div>
-          <div class="menu-divider"></div>
-          <button class="menu-item admin-highlight" onclick="closeMenu();window.scrollTo({top:0,behavior:'smooth'})">
-            <span class="menu-item-icon">🛡️</span>
-            <span>Admin Dashboard</span>
-          </button>
-          <button class="menu-item" onclick="closeMenu();openProfileModal()">
-            <span class="menu-item-icon">👤</span>
-            <span>My Profile</span>
-          </button>
-          <button class="menu-item" onclick="closeMenu();openSettingsModal()">
-            <span class="menu-item-icon">⚙️</span>
-            <span>Settings</span>
-          </button>
-          <button class="menu-item" onclick="closeMenu();libraryOpen()">
-            <span class="menu-item-icon">📚</span>
-            <span>Manage Notes & Videos</span>
-          </button>
-          <button class="menu-item" onclick="closeMenu();if(typeof startLiveClass==='function')startLiveClass()">
-            <span class="menu-item-icon">🔴</span>
-            <span>Start Live Stream</span>
-          </button>
-          <button class="menu-item" onclick="closeMenu();if(typeof helpOpen==='function')helpOpen()">
-            <span class="menu-item-icon">❓</span>
-            <span>Help & Support</span>
-          </button>
-          <div class="menu-divider"></div>
-          <button class="menu-item logout" onclick="closeMenu();logoutUser()">
-            <span class="menu-item-icon">🚪</span>
-            <span>Logout</span>
-          </button>
-        `;
-      } else {
-        menu.innerHTML = `
-          <div class="menu-user-card" onclick="closeMenu();openProfileModal()">
-            ${avatarImg}
-            <div class="menu-user-details">
-              <div class="menu-user-name">${esc(user.name)}</div>
-              <div class="menu-user-badge">🎓 NEET Student</div>
-            </div>
-          </div>
-          <div class="menu-divider"></div>
-          <button class="menu-item" onclick="closeMenu();openProfileModal()">
-            <span class="menu-item-icon">👤</span>
-            <span>My Profile</span>
-          </button>
-          <button class="menu-item" onclick="closeMenu();openSettingsModal()">
-            <span class="menu-item-icon">⚙️</span>
-            <span>Settings</span>
-          </button>
-          <button class="menu-item" onclick="closeMenu();resultsOpen()">
-            <span class="menu-item-icon">📊</span>
-            <span>My Results</span>
-          </button>
-          <button class="menu-item" onclick="closeMenu();if(typeof calendarOpen==='function')calendarOpen()">
+        </div>
+        <div class="menu-divider"></div>
+
+        ${user.role === 'student' ? `
+          <button class="menu-item" onclick="closeUserMenu();scrollToSchedule()">
             <span class="menu-item-icon">📅</span>
-            <span>My Study Calendar</span>
+            <span>Test Schedule</span>
           </button>
-          <button class="menu-item" onclick="closeMenu();if(typeof helpOpen==='function')helpOpen()">
+          <button class="menu-item" onclick="closeUserMenu();libraryOpen()">
+            <span class="menu-item-icon">📚</span>
+            <span>Notes & Videos</span>
+          </button>
+          <button class="menu-item" onclick="closeUserMenu();resultsOpen()">
+            <span class="menu-item-icon">📊</span>
+            <span>My Results & Review</span>
+          </button>
+          <button class="menu-item" onclick="closeUserMenu();communityOpen()">
+            <span class="menu-item-icon">💬</span>
+            <span>Community Chat</span>
+          </button>
+          <button class="menu-item" onclick="closeUserMenu();calendarOpen()">
+            <span class="menu-item-icon">🗓️</span>
+            <span>Study Calendar</span>
+          </button>
+          <button class="menu-item" onclick="closeUserMenu();helpOpen()">
             <span class="menu-item-icon">❓</span>
             <span>Help & Support</span>
           </button>
           <div class="menu-divider"></div>
-          <button class="menu-item logout" onclick="closeMenu();logoutUser()">
-            <span class="menu-item-icon">🚪</span>
-            <span>Logout</span>
+        ` : ''}
+
+        ${user.role === 'teacher' ? `
+          <button class="menu-item" onclick="closeUserMenu();scrollToSection('teacherLiveActiveArea')">
+            <span class="menu-item-icon">🔴</span>
+            <span>Live Broadcast Center</span>
           </button>
-        `;
-      }
+          <button class="menu-item" onclick="closeUserMenu();libraryOpen()">
+            <span class="menu-item-icon">📚</span>
+            <span>Saved Class Recordings</span>
+          </button>
+          <button class="menu-item" onclick="closeUserMenu();communityOpen()">
+            <span class="menu-item-icon">💬</span>
+            <span>Community Doubts</span>
+          </button>
+          <div class="menu-divider"></div>
+        ` : ''}
+
+        ${user.role === 'admin' ? `
+          <button class="menu-item" onclick="closeUserMenu();toggleAdminControlsMenu()">
+            <span class="menu-item-icon">🛡️</span>
+            <span>Admin Controls</span>
+          </button>
+          <button class="menu-item" onclick="closeUserMenu();openAdminSection('tests')">
+            <span class="menu-item-icon">📝</span>
+            <span>Manage Tests</span>
+          </button>
+          <button class="menu-item" onclick="closeUserMenu();openAdminSection('resources')">
+            <span class="menu-item-icon">📚</span>
+            <span>Notes & Videos</span>
+          </button>
+          <button class="menu-item" onclick="closeUserMenu();openAdminSection('results')">
+            <span class="menu-item-icon">📊</span>
+            <span>Student Results</span>
+          </button>
+          <button class="menu-item" onclick="closeUserMenu();openAdminSection('accounts')">
+            <span class="menu-item-icon">👥</span>
+            <span>Student Accounts</span>
+          </button>
+          <div class="menu-divider"></div>
+        ` : ''}
+
+        <button class="menu-item" onclick="closeUserMenu();openProfileModal()">
+          <span class="menu-item-icon">👤</span>
+          <span>My Profile</span>
+        </button>
+        <button class="menu-item" onclick="closeUserMenu();openSettingsModal()">
+          <span class="menu-item-icon">⚙️</span>
+          <span>Settings</span>
+        </button>
+        <div class="menu-divider"></div>
+        <button class="menu-item logout" onclick="closeUserMenu();logoutUser()">
+          <span class="menu-item-icon">🚪</span>
+          <span>Sign Out</span>
+        </button>
+      `;
     }
 
     function updateNavAvatar() {
@@ -1368,24 +2577,584 @@
         const letter = (user.name || 'U').trim().charAt(0).toUpperCase();
         avatarElem.innerHTML = `<span class="nav-avatar-letter">${letter}</span>`;
       }
+
+      const navGreeting = $('navUserGreeting');
+      if (navGreeting) {
+        navGreeting.style.display = 'flex';
+        $('navGreetingName').textContent = (user.name || 'User').trim().split(' ')[0];
+        let rolePill = 'Aspirant';
+        if (user.role === 'admin') rolePill = 'Admin';
+        else if (user.role === 'teacher') rolePill = 'Faculty';
+        $('navGreetingRole').textContent = rolePill;
+      }
     }
 
     // =========================================================================
-    // STUDENT PROFILE & SETTINGS
+    // STUDENT DASHBOARD DATA & ACTIONS
     // =========================================================================
+    let currentSubjectFilter = 'all';
+
+    function when(v) {
+      return v ? new Date(v).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }) : 'Available now';
+    }
+
+    async function loadStudentDashboard() {
+      if (!token || user?.role !== 'student') return;
+      try {
+        tests = await api('tests');
+        $('studentTestCount').textContent = tests.length;
+
+        renderStudentTestCards();
+
+        // Check resources count
+        const r = await api('resources');
+        $('studentResourceCount').textContent = r.length;
+
+        // Check attempts count
+        const a = await api('my-results');
+        $('studentAttemptCount').textContent = a.length;
+
+        // Check live class status for student
+        checkStudentLiveStatus();
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    function filterTestsBySubject(sub) {
+      currentSubjectFilter = sub;
+      const pills = document.querySelectorAll('.test-filter-pill');
+      pills.forEach(p => p.classList.toggle('active', p.getAttribute('data-sub') === sub));
+      renderStudentTestCards();
+    }
+
+    function renderStudentTestCards() {
+      const filtered = currentSubjectFilter === 'all'
+        ? tests
+        : tests.filter(t => (t.subject || '').toLowerCase() === currentSubjectFilter.toLowerCase());
+
+      const container = $('cards');
+      if (!container) return;
+
+      if (!filtered.length) {
+        container.innerHTML = `
+          <div class="empty-state-card wide" style="grid-column:1/-1">
+            <span class="empty-state-icon">📝</span>
+            <h4 class="empty-state-title">No Mock Tests Found</h4>
+            <p class="empty-state-desc">There are no mock tests available under "${esc(currentSubjectFilter)}" right now.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(t => {
+        let locked = t.startAt && Date.now() < new Date(t.startAt);
+        return `<article class="card">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px">
+            <span class="tag">${esc(t.subject)} · ${esc(t.chapter || 'General')}</span>
+            <span style="font-size:11px;font-weight:700;color:var(--m)">${t.duration} MIN</span>
+          </div>
+          <h3 style="margin:8px 0 6px">${esc(t.title)}</h3>
+          <div class="meta" style="margin:12px 0 16px">
+            📚 Chapter: <b>${esc(t.chapter || 'General')}</b><br>
+            📝 Questions: <b>${t.question_count} questions</b><br>
+            📅 Schedule: <b>${when(t.startAt)}</b>
+          </div>
+          <button ${locked ? 'disabled' : ''} onclick="start(${t.id})">
+            ${locked ? '🔒 Opens ' + new Date(t.startAt).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}) : 'Start Practice Test →'}
+          </button>
+        </article>`;
+      }).join('');
+    }
+
+    async function checkStudentLiveStatus() {
+      if (user?.role !== 'student') return;
+      try {
+        const live = await api('live-class');
+        const banner = $('studentLiveBanner');
+        if (live && live.active) {
+          $('studentLiveTitle').textContent = live.title || 'NEET Live Interactive Session';
+          $('studentLiveTeacher').textContent = `Teacher: ${live.teacher || 'Faculty'} · Started at ${new Date(live.startedAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}`;
+          banner.style.display = 'flex';
+        } else {
+          banner.style.display = 'none';
+        }
+      } catch (_) {}
+    }
+
+    // =========================================================================
+    // TEACHER DASHBOARD LOGIC
+    // =========================================================================
+    async function renderTeacherDashboard() {
+      if (!token || user?.role !== 'teacher') return;
+      try {
+        const live = await api('live-class');
+        const isLive = live && live.active;
+
+        $('teacherLiveActiveArea').style.display = isLive ? 'block' : 'none';
+        $('teacherLiveStartArea').style.display = isLive ? 'none' : 'block';
+
+        if (isLive) {
+          $('teacherLiveStatusTag').innerHTML = `<span class="tag red"><span class="live-pulse-dot"></span>BROADCASTING LIVE</span>`;
+          $('teacherLiveHeading').textContent = `● Live Now: ${live.title || 'NEET Session'} (Host: ${live.teacher})`;
+        } else {
+          $('teacherLiveStatusTag').innerHTML = `<span class="tag green">● Ready to stream</span>`;
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    async function startLiveClassFromHub() {
+      const title = $('teacherClassTitle').value.trim() || 'NEET Live Lecture';
+      if (typeof window.startLiveClass === 'function') {
+        window.startLiveClassWithTitle(title);
+      }
+    }
+
+    window.startLiveClassWithTitle = async function (title) {
+      try {
+        const cameraStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        await api('admin/live-class/start', { method: 'POST', body: JSON.stringify({ title }) });
+
+        const videoEl = $('teacherHostVideo');
+        if (videoEl) {
+          videoEl.srcObject = cameraStream;
+          videoEl.play();
+        }
+
+        renderTeacherDashboard();
+        alert('You are now live! Students can see the broadcast banner.');
+      } catch (err) {
+        alert(err.message || 'Camera and mic permissions needed to start live stream.');
+      }
+    };
+
+    // =========================================================================
+    // ADMIN DASHBOARD LOGIC
+    // =========================================================================
+    async function adminLoad() {
+      if (user?.role !== 'admin') return;
+      try {
+        dashboard = await api('admin/dashboard');
+
+        // Update Overview KPIs
+        $('kpiTestCount').textContent = dashboard.tests?.length || 0;
+        $('kpiUserCount').textContent = dashboard.students?.length || 0;
+        $('kpiAttemptCount').textContent = dashboard.attempts?.length || 0;
+
+        // Load resources count
+        const resList = await api('resources');
+        $('kpiResourceCount').textContent = resList.length;
+
+        // Load live status
+        const live = await api('live-class');
+        $('kpiLiveStatus').textContent = live?.active ? 'LIVE NOW' : 'Offline';
+
+        // Populate test selectors
+        $('questionTest').innerHTML = dashboard.tests.map(t => `<option value="${t.id}">${esc(t.title)}</option>`).join('');
+
+        renderAdminContent();
+        renderAdminSchedule();
+        renderAdminResources(resList);
+        renderAdminReports();
+        loadAdminUsers();
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    function renderAdminContent() {
+      $('content').innerHTML = dashboard.tests.map(t => `
+        <div class="item">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:8px">
+            <div>
+              <b style="font-size:16px">${esc(t.title)}</b><br>
+              <small>${esc(t.subject)} · ${esc(t.chapter || 'General')} · ${t.duration} min · ${when(t.startAt)} · ${t.active ? 'Visible' : 'Hidden'}</small>
+            </div>
+            <div>
+              <button class="light" style="padding:6px 12px;font-size:12px" onclick="editTest(${t.id})">Edit Test</button> 
+              <button class="red" style="padding:6px 12px;font-size:12px" onclick="removeTest(${t.id})">Delete</button>
+            </div>
+          </div>
+          <div style="margin-top:12px">
+            <b>Questions (${t.questions.length}):</b>
+            ${t.questions.map(q => `
+              <div class="row">
+                <small style="max-width:70%">${esc(q.question)}</small>
+                <span>
+                  <button class="out" style="padding:5px 9px;font-size:11.5px" onclick="editQuestion(${q.id})">Edit</button> 
+                  <button class="red" style="padding:5px 9px;font-size:11.5px" onclick="removeQuestion(${q.id})">Delete</button>
+                </span>
+              </div>`).join('') || '<p class="muted" style="margin:4px 0">No questions added yet.</p>'}
+          </div>
+        </div>`).join('') || '<p class="muted">No mock tests created yet.</p>';
+    }
+
+    function renderAdminSchedule() {
+      const container = $('adminScheduleList');
+      if (!container) return;
+      container.innerHTML = dashboard.tests?.map(t => `
+        <div class="row">
+          <div>
+            <b>${esc(t.title)}</b><br>
+            <small>${esc(t.subject)} · ${esc(t.chapter || 'General')} · Duration: ${t.duration} min</small>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px">
+            <span class="tag ${t.active ? 'green' : ''}">${t.active ? 'Active' : 'Inactive'}</span>
+            <span style="font-size:13px">${when(t.startAt)}</span>
+            <button class="light" style="padding:6px 10px;font-size:12px" onclick="editTest(${t.id});openAdminSection('tests')">Edit Schedule</button>
+          </div>
+        </div>
+      `).join('') || '<p class="muted">No tests scheduled.</p>';
+    }
+
+    function renderAdminResources(list) {
+      const container = $('adminResourceList');
+      if (!container) return;
+      container.innerHTML = list.length ? `<div class="grid">${list.map(x => `
+        <article class="card">
+          <span class="tag">${x.type === 'note' ? 'PDF Note' : 'Video'} · ${esc(x.subject)}</span>
+          <h3>${esc(x.title)}</h3>
+          ${x.type === 'video'
+            ? `<video controls preload="metadata" style="width:100%;border-radius:8px" src="${x.url}"></video>`
+            : `<a href="${x.url}" target="_blank" download><button class="light">Download Note</button></a>`}
+          <button class="red" style="margin-top:10px" onclick="deleteResource(${x.id})">Delete</button>
+        </article>`).join('')}</div>` : '<p class="muted">No study materials uploaded yet.</p>';
+    }
+
+    function renderAdminReports() {
+      $('adminAttemptsList').innerHTML = (dashboard.attempts || []).length
+        ? (dashboard.attempts || []).map(a => `
+            <div class="row">
+              <div>
+                <b>${esc(a.student)}</b><br>
+                <small>${esc(a.test)} · ${new Date(a.createdAt).toLocaleString('en-IN')}</small>
+              </div>
+              <span class="tag">${a.score}/${a.total} · ${Math.round(a.score / a.total * 100)}%</span>
+            </div>`).join('')
+        : '<p class="muted">No student test attempts recorded yet.</p>';
+    }
+
+    async function loadAdminUsers() {
+      try {
+        adminUsers = await api('admin/users');
+        $('kpiUserCount').textContent = adminUsers.length;
+        const container = $('adminUsersList');
+        if (!container) return;
+
+        container.innerHTML = adminUsers.map(u => `
+          <div class="row">
+            <div>
+              <b>${esc(u.name)}</b> <span class="tag ${u.role === 'admin' ? 'red' : (u.role === 'teacher' ? 'green' : '')}">${u.role.toUpperCase()}</span><br>
+              <small>${esc(u.email)} · Registered ${new Date(u.createdAt).toLocaleDateString('en-IN')}</small>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <select onchange="updateUserRole(${u.id}, this.value)" style="padding:6px 10px;font-size:12px;width:auto">
+                <option value="student" ${u.role === 'student' ? 'selected' : ''}>Student</option>
+                <option value="teacher" ${u.role === 'teacher' ? 'selected' : ''}>Teacher / Faculty</option>
+                <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>Admin</option>
+              </select>
+            </div>
+          </div>
+        `).join('');
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    async function updateUserRole(id, role) {
+      try {
+        await api(`admin/users/${id}/role`, {
+          method: 'PUT',
+          body: JSON.stringify({ role })
+        });
+        alert('User role updated successfully.');
+        loadAdminUsers();
+      } catch (e) {
+        alert(e.message || 'Failed to update user role.');
+        loadAdminUsers();
+      }
+    }
+
+    async function startAdminLiveClass() {
+      const title = $('adminClassTitle').value.trim() || 'Administrator Live Stream';
+      if (typeof window.startLiveClass === 'function') {
+        window.startLiveClass();
+      }
+    }
+
+    // Manage Tests CRUD
+    function resetTest() {
+      $('editTest').value = '';
+      $('testTitle').value = '';
+      $('testSubject').value = 'Biology';
+      $('testChapter').value = '';
+      $('testDuration').value = 15;
+      $('testStart').value = '';
+      $('testActive').checked = true;
+      $('testHeading').textContent = 'Create a scheduled test';
+    }
+
+    function editTest(id) {
+      let t = dashboard.tests.find(x => x.id === id);
+      if (!t) return;
+      $('editTest').value = id;
+      $('testTitle').value = t.title;
+      $('testSubject').value = t.subject;
+      $('testChapter').value = t.chapter || '';
+      $('testDuration').value = t.duration;
+      $('testStart').value = t.startAt ? new Date(t.startAt).toISOString().slice(0, 16) : '';
+      $('testActive').checked = t.active;
+      $('testHeading').textContent = 'Edit test: ' + t.title;
+    }
+
+    async function saveTest() {
+      try {
+        let id = $('editTest').value,
+            start = $('testStart').value,
+            b = {
+              title: $('testTitle').value,
+              subject: $('testSubject').value,
+              chapter: $('testChapter').value,
+              duration: +$('testDuration').value,
+              startAt: start ? new Date(start).toISOString() : null,
+              active: $('testActive').checked
+            };
+        await api(id ? 'admin/tests/' + id : 'admin/tests', {
+          method: id ? 'PUT' : 'POST',
+          body: JSON.stringify(b)
+        });
+        resetTest();
+        await adminLoad();
+        alert('Test saved successfully.');
+      } catch (e) {
+        alert(e.message);
+      }
+    }
+
+    async function removeTest(id) {
+      if (confirm('Delete this test and all its questions?')) {
+        await api('admin/tests/' + id, { method: 'DELETE' });
+        adminLoad();
+      }
+    }
+
+    // Questions CRUD
+    function resetQuestion() {
+      $('editQuestion').value = '';
+      ['questionText', 'oa', 'ob', 'oc', 'od'].forEach(x => $(x).value = '');
+      $('answer').value = '0';
+      $('questionHeading').textContent = 'Add a question';
+    }
+
+    function editQuestion(id) {
+      let q = dashboard.tests.flatMap(t => t.questions).find(x => x.id === id);
+      if (!q) return;
+      $('editQuestion').value = id;
+      $('questionTest').value = q.testId;
+      $('questionText').value = q.question;
+      ['oa', 'ob', 'oc', 'od'].forEach((x, i) => $(x).value = q.options[i]);
+      $('answer').value = q.answer;
+      $('questionHeading').textContent = 'Edit question';
+    }
+
+    async function saveQuestion() {
+      try {
+        let id = $('editQuestion').value,
+            b = {
+              testId: +$('questionTest').value,
+              question: $('questionText').value,
+              options: [$('oa').value, $('ob').value, $('oc').value, $('od').value],
+              answer: +$('answer').value
+            };
+        await api(id ? 'admin/questions/' + id : 'admin/questions', {
+          method: id ? 'PUT' : 'POST',
+          body: JSON.stringify(b)
+        });
+        resetQuestion();
+        await adminLoad();
+        alert('Question saved.');
+      } catch (e) {
+        alert(e.message);
+      }
+    }
+
+    async function removeQuestion(id) {
+      if (confirm('Delete this question?')) {
+        await api('admin/questions/' + id, { method: 'DELETE' });
+        adminLoad();
+      }
+    }
+
+    // =========================================================================
+    // STUDY MATERIAL (NOTES & VIDEOS)
+    // =========================================================================
+    let allResources = [];
+    let currentLibraryFilter = 'all';
+
+    async function libraryOpen() {
+      if (!user) { logoutUser(); return; }
+      try {
+        allResources = await api('resources');
+        const canManage = user?.role === 'admin' || user?.role === 'teacher';
+
+        renderLibraryList();
+
+        $('uploadLink').innerHTML = canManage
+          ? '<button onclick="show(\'upload\')">+ Upload Study Material / Video</button>'
+          : '';
+        show('library');
+      } catch (e) {
+        alert(e.message);
+      }
+    }
+
+    function filterLibrary(sub) {
+      currentLibraryFilter = sub;
+      const pills = document.querySelectorAll('.lib-filter-pill');
+      pills.forEach(p => p.classList.toggle('active', p.getAttribute('data-lib') === sub));
+      renderLibraryList();
+    }
+
+    function renderLibraryList() {
+      const container = $('resourceList');
+      if (!container) return;
+
+      const filtered = currentLibraryFilter === 'all'
+        ? allResources
+        : currentLibraryFilter === 'videos'
+          ? allResources.filter(x => x.type === 'video')
+          : currentLibraryFilter === 'notes'
+            ? allResources.filter(x => x.type === 'note')
+            : allResources.filter(x => (x.subject || '').toLowerCase() === currentLibraryFilter.toLowerCase());
+
+      const canManage = user?.role === 'admin' || user?.role === 'teacher';
+
+      if (!filtered.length) {
+        container.innerHTML = `
+          <div class="empty-state-card">
+            <span class="empty-state-icon">📚</span>
+            <h4 class="empty-state-title">No Study Materials Found</h4>
+            <p class="empty-state-desc">Revision notes and lecture recordings will appear here.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = `
+        <div class="filter-pills-bar">
+          <button class="filter-pill lib-filter-pill ${currentLibraryFilter === 'all' ? 'active' : ''}" data-lib="all" onclick="filterLibrary('all')">All Material</button>
+          <button class="filter-pill lib-filter-pill ${currentLibraryFilter === 'biology' ? 'active' : ''}" data-lib="biology" onclick="filterLibrary('biology')">Biology</button>
+          <button class="filter-pill lib-filter-pill ${currentLibraryFilter === 'chemistry' ? 'active' : ''}" data-lib="chemistry" onclick="filterLibrary('chemistry')">Chemistry</button>
+          <button class="filter-pill lib-filter-pill ${currentLibraryFilter === 'physics' ? 'active' : ''}" data-lib="physics" onclick="filterLibrary('physics')">Physics</button>
+          <button class="filter-pill lib-filter-pill ${currentLibraryFilter === 'videos' ? 'active' : ''}" data-lib="videos" onclick="filterLibrary('videos')">🎥 Videos Only</button>
+          <button class="filter-pill lib-filter-pill ${currentLibraryFilter === 'notes' ? 'active' : ''}" data-lib="notes" onclick="filterLibrary('notes')">📄 Notes Only</button>
+        </div>
+        <div class="grid">${filtered.map(x => `
+          <article class="card">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+              <span class="tag">${x.type === 'note' ? '📄 PDF Note' : '🎥 Video'} · ${esc(x.subject)}</span>
+              <small class="muted">${new Date(x.createdAt).toLocaleDateString('en-IN')}</small>
+            </div>
+            <h3>${esc(x.title)}</h3>
+            ${x.type === 'video'
+              ? `<video controls preload="metadata" style="width:100%;border-radius:10px;margin:8px 0" src="${x.url}"></video>`
+              : `<a href="${x.url}" target="_blank" download style="text-decoration:none"><button class="light" style="margin:10px 0 0">⬇ Download PDF Note</button></a>`}
+            ${canManage
+              ? `<button class="red" style="margin-top:10px" onclick="deleteResource(${x.id})">Delete Material</button>`
+              : ''}
+          </article>`).join('')}</div>
+      `;
+    }
+
+    async function uploadResource() {
+      let f = $('resourceFile').files[0];
+      if (!f) return alert('Select a file first.');
+      let fd = new FormData();
+      fd.append('title', $('resourceTitle').value);
+      fd.append('subject', $('resourceSubject').value);
+      fd.append('file', f);
+      try {
+        await api('admin/resources', { method: 'POST', body: fd });
+        hide('upload');
+        $('resourceTitle').value = '';
+        $('resourceFile').value = '';
+        libraryOpen();
+        if (user?.role === 'admin') adminLoad();
+      } catch (e) {
+        alert(e.message);
+      }
+    }
+
+    async function deleteResource(id) {
+      if (confirm('Delete this study material?')) {
+        await api('admin/resources/' + id, { method: 'DELETE' });
+        libraryOpen();
+        if (user?.role === 'admin') adminLoad();
+      }
+    }
+
+    // =========================================================================
+    // RESULTS & REVIEW
+    // =========================================================================
+    async function resultsOpen() {
+      if (!user) { logoutUser(); return; }
+      try {
+        let r = await api('my-results');
+        const container = $('resultsList');
+        if (!container) return;
+
+        if (!r.length) {
+          container.innerHTML = `
+            <div class="empty-state-card">
+              <span class="empty-state-icon">📊</span>
+              <h4 class="empty-state-title">No Test Attempts Yet</h4>
+              <p class="empty-state-desc">Take a chapter mock test from the schedule to track your scores and analyze mistakes here.</p>
+              <button style="margin-top:16px" onclick="hide('results');scrollToSchedule()">Browse Test Schedule →</button>
+            </div>
+          `;
+        } else {
+          container.innerHTML = r.map(x => {
+            const pct = Math.round((x.score / x.total) * 100);
+            const tagClass = pct >= 75 ? 'green' : (pct < 40 ? 'red' : '');
+            return `
+              <div class="row" style="padding:14px 0">
+                <div>
+                  <span class="tag" style="font-size:11px">${esc(x.subject || 'Mock Exam')}</span>
+                  <b style="display:block;font-size:15px;margin:4px 0 2px">${esc(x.title)}</b>
+                  <small class="muted">Attempted on ${new Date(x.createdAt).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}</small>
+                </div>
+                <div style="display:flex;align-items:center;gap:12px">
+                  <span class="tag ${tagClass}" style="font-size:13px;padding:5px 12px">${x.score}/${x.total} · ${pct}%</span>
+                  <button class="light" style="padding:7px 14px;font-size:13px;font-weight:700" onclick="viewReview(${x.id})">Review Answers →</button>
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+        show('results');
+      } catch (e) {
+        alert(e.message);
+      }
+    }
+
+    // Profile Management
     let selectedProfilePhoto = null;
 
     function openProfileModal() {
       if (!user) { logoutUser(); return; }
-
       $('profileNameInput').value = user.name || '';
       $('profileEmailDisplay').value = user.email || '';
-      $('profileRoleBadge').textContent = user.role === 'admin' ? '🛡️ Administrator' : '🎓 NEET Student';
+
+      let roleLabel = '🎓 NEET Student';
+      if (user.role === 'admin') roleLabel = '🛡️ Administrator';
+      else if (user.role === 'teacher') roleLabel = '👨‍🏫 Faculty / Teacher';
+      $('profileRoleBadge').textContent = roleLabel;
 
       renderProfileAvatarPreview(user.avatar);
       selectedProfilePhoto = null;
       $('profilePhotoInput').value = '';
-
       show('profileModal');
     }
 
@@ -1402,19 +3171,6 @@
     $('profilePhotoInput').onchange = function () {
       const file = this.files[0];
       if (!file) return;
-
-      const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
-      if (!validTypes.includes(file.type)) {
-        alert('Please choose a JPG, PNG, WebP, or GIF image.');
-        this.value = '';
-        return;
-      }
-      if (file.size > 5 * 1024 * 1024) {
-        alert('Profile photo size must be less than 5 MB.');
-        this.value = '';
-        return;
-      }
-
       selectedProfilePhoto = file;
       renderProfileAvatarPreview(URL.createObjectURL(file));
     };
@@ -1445,6 +3201,7 @@
 
         updateNavAvatar();
         renderThreeDotMenu();
+        renderRoleGreeting();
         hide('profileModal');
         alert('Profile updated successfully!');
       } catch (e) {
@@ -1466,354 +3223,7 @@
       alert('Preferences saved.');
     }
 
-    // =========================================================================
-    // STUDENT TESTS & RESULTS
-    // =========================================================================
-    function when(v) {
-      return v ? new Date(v).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }) : 'Available now';
-    }
-
-    async function load() {
-      if (!token) return;
-      try {
-        tests = await api('tests');
-        $('cards').innerHTML = tests.map(t => {
-          let locked = t.startAt && Date.now() < new Date(t.startAt);
-          return `<article class="card">
-            <span class="tag">${esc(t.subject)} · ${esc(t.chapter || 'General')}</span>
-            <h3>${esc(t.title)}</h3>
-            <div class="meta">
-              📚 ${esc(t.chapter || 'General')}<br>
-              📝 ${t.question_count} questions · ⏱ ${t.duration} min<br>
-              📅 ${when(t.startAt)}
-            </div>
-            <button ${locked ? 'disabled' : ''} onclick="start(${t.id})">
-              ${locked ? 'Scheduled' : 'Start Test'}
-            </button>
-          </article>`;
-        }).join('') || '<p class="muted">No tests are available right now.</p>';
-      } catch (e) {
-        console.error(e);
-      }
-    }
-
-    function startFirst() {
-      let t = tests.find(x => !x.startAt || new Date(x.startAt) <= Date.now());
-      if (t) start(t.id);
-      else alert('No test is open right now. Please check the schedule.');
-    }
-
-    async function start(id) {
-      if (!user) { logoutUser(); return; }
-      let meta = tests.find(x => x.id === id);
-      if (meta?.startAt && new Date(meta.startAt) > Date.now()) {
-        return alert('This test opens on ' + when(meta.startAt));
-      }
-      try {
-        test = await api('tests/' + id);
-        if (!test.questions.length) return alert('This test has no questions yet.');
-        answers = {};
-        test.i = 0;
-        test.left = test.duration * 60;
-        ended = false;
-        show('test');
-        renderQuestion();
-        clearInterval(timer);
-        timer = setInterval(() => {
-          if (--test.left <= 0) finish('Time over');
-          else $('timer').textContent = format(test.left);
-        }, 1000);
-      } catch (e) {
-        alert(e.message);
-      }
-    }
-
-    function format(s) {
-      return '⏱ ' + Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
-    }
-
-    function renderQuestion() {
-      let q = test.questions[test.i];
-      $('testBox').innerHTML = `
-        <div class="testbar">
-          <div>
-            <b>${esc(test.title)}</b>
-            <div class="muted">Question ${test.i + 1} of ${test.questions.length}</div>
-          </div>
-          <span class="timer" id="timer">${format(test.left)}</span>
-        </div>
-        <div class="warning">Warning: changing tab/window or minimizing the browser automatically submits this test.</div>
-        <div class="question">${test.i + 1}. ${esc(q.question)}</div>
-        ${q.options.map((x, i) => `
-          <button class="option ${answers[q.id] === i ? 'selected' : ''}" onclick="answers[${q.id}]=${i};renderQuestion()">
-            <b>${'ABCD'[i]}.</b> ${esc(x)}
-          </button>
-        `).join('')}
-        <div class="nav">
-          <button class="out" ${test.i ? '' : 'disabled'} onclick="test.i--;renderQuestion()">← Previous</button>
-          ${test.i === test.questions.length - 1
-            ? '<button onclick="finish(\'Submitted\')">Submit Test</button>'
-            : '<button onclick="test.i++;renderQuestion()">Next →</button>'}
-        </div>`;
-    }
-
-    async function finish(reason) {
-      if (ended) return;
-      ended = true;
-      clearInterval(timer);
-      try {
-        let r = await api('attempts', {
-          method: 'POST',
-          body: JSON.stringify({ testId: test.id, answers })
-        });
-        $('testBox').innerHTML = `
-          <div class="center">
-            <span class="tag">${esc(reason)}</span>
-            <h2>Test Complete</h2>
-            <div class="score">${r.score}/${r.total}</div>
-            <p class="muted">Score: ${Math.round(r.score / r.total * 100)}%</p>
-            <button onclick="hide('test')">Back to Dashboard</button>
-          </div>`;
-      } catch (e) {
-        alert(e.message);
-        hide('test');
-      }
-    }
-
-    document.addEventListener('visibilitychange', () => {
-      if (!ended && document.hidden) finish('Focus change: auto-submitted');
-    });
-
-    window.addEventListener('blur', () => {
-      if (!ended) setTimeout(() => {
-        if (!ended) finish('Focus change: auto-submitted');
-      }, 150);
-    });
-
-    async function resultsOpen() {
-      if (!user) { logoutUser(); return; }
-      try {
-        let r = await api('my-results');
-        $('resultsList').innerHTML = r.length
-          ? r.map(x => `
-              <div class="row">
-                <span><b>${esc(x.title)}</b><br><small>${new Date(x.createdAt).toLocaleString('en-IN')}</small></span>
-                <span class="tag">${x.score}/${x.total} · ${Math.round(x.score / x.total * 100)}%</span>
-              </div>`).join('')
-          : '<p class="muted">No completed tests yet.</p>';
-        show('results');
-      } catch (e) {
-        alert(e.message);
-      }
-    }
-
-    async function libraryOpen() {
-      if (!user) { logoutUser(); return; }
-      try {
-        let r = await api('resources');
-        $('resourceList').innerHTML = r.length
-          ? `<div class="grid">${r.map(x => `
-              <article class="card">
-                <span class="tag">${x.type === 'note' ? 'PDF Note' : 'Video'} · ${esc(x.subject)}</span>
-                <h3>${esc(x.title)}</h3>
-                ${x.type === 'video'
-                  ? `<video controls preload="metadata" style="width:100%;border-radius:8px" src="${x.url}"></video>`
-                  : `<a href="${x.url}" target="_blank" download><button>Download Note</button></a>`}
-                ${user?.role === 'admin'
-                  ? `<button class="red" style="margin-top:10px" onclick="deleteResource(${x.id})">Delete</button>`
-                  : ''}
-              </article>`).join('')}</div>`
-          : '<p class="muted">No study material has been uploaded yet.</p>';
-
-        $('uploadLink').innerHTML = user?.role === 'admin'
-          ? '<button onclick="show(\'upload\')">+ Upload Study Material</button>'
-          : '';
-        show('library');
-      } catch (e) {
-        alert(e.message);
-      }
-    }
-
-    async function uploadResource() {
-      let f = $('resourceFile').files[0];
-      if (!f) return alert('Select a file first.');
-      let fd = new FormData();
-      fd.append('title', $('resourceTitle').value);
-      fd.append('subject', $('resourceSubject').value);
-      fd.append('file', f);
-      try {
-        await api('admin/resources', { method: 'POST', body: fd });
-        hide('upload');
-        libraryOpen();
-      } catch (e) {
-        alert(e.message);
-      }
-    }
-
-    async function deleteResource(id) {
-      if (confirm('Delete this study material?')) {
-        await api('admin/resources/' + id, { method: 'DELETE' });
-        libraryOpen();
-      }
-    }
-
-    // =========================================================================
-    // ADMIN DASHBOARD MANAGEMENT
-    // =========================================================================
-    async function adminLoad() {
-      if (user?.role !== 'admin') return;
-      try {
-        dashboard = await api('admin/dashboard');
-        $('questionTest').innerHTML = dashboard.tests.map(t => `<option value="${t.id}">${esc(t.title)}</option>`).join('');
-        renderAdminContent();
-        renderAdminReports();
-      } catch (e) {
-        console.error(e);
-      }
-    }
-
-    function switchAdminTab(tab) {
-      const isManage = tab === 'manage';
-      $('adminManageSection').classList.toggle('hidden', !isManage);
-      $('adminReportsSection').classList.toggle('hidden', isManage);
-      $('adminTabManageBtn').className = isManage ? '' : 'light';
-      $('adminTabReportsBtn').className = isManage ? 'light' : '';
-    }
-
-    function renderAdminContent() {
-      $('content').innerHTML = dashboard.tests.map(t => `
-        <div class="item">
-          <b>${esc(t.title)}</b><br>
-          <small>${esc(t.subject)} · ${esc(t.chapter || 'General')} · ${t.duration} min · ${when(t.startAt)} · ${t.active ? 'Visible' : 'Hidden'}</small><br>
-          <button class="light" onclick="editTest(${t.id})">Edit Test</button> 
-          <button class="red" onclick="removeTest(${t.id})">Delete Test</button>
-          ${t.questions.map(q => `
-            <div class="row">
-              <small>${esc(q.question)}</small>
-              <span>
-                <button class="out" onclick="editQuestion(${q.id})">Edit</button> 
-                <button class="red" onclick="removeQuestion(${q.id})">Delete</button>
-              </span>
-            </div>`).join('')}
-        </div>`).join('');
-    }
-
-    function resetTest() {
-      $('editTest').value = '';
-      $('testTitle').value = '';
-      $('testSubject').value = 'Biology';
-      $('testChapter').value = '';
-      $('testDuration').value = 30;
-      $('testStart').value = '';
-      $('testActive').checked = true;
-      $('testHeading').textContent = 'Create a scheduled test';
-    }
-
-    function editTest(id) {
-      let t = dashboard.tests.find(x => x.id === id);
-      $('editTest').value = id;
-      $('testTitle').value = t.title;
-      $('testSubject').value = t.subject;
-      $('testChapter').value = t.chapter || '';
-      $('testDuration').value = t.duration;
-      $('testStart').value = t.startAt ? new Date(t.startAt).toISOString().slice(0, 16) : '';
-      $('testActive').checked = t.active;
-      $('testHeading').textContent = 'Edit test';
-    }
-
-    async function saveTest() {
-      try {
-        let id = $('editTest').value,
-            start = $('testStart').value,
-            b = {
-              title: $('testTitle').value,
-              subject: $('testSubject').value,
-              chapter: $('testChapter').value,
-              duration: +$('testDuration').value,
-              startAt: start ? new Date(start).toISOString() : null,
-              active: $('testActive').checked
-            };
-        await api(id ? 'admin/tests/' + id : 'admin/tests', {
-          method: id ? 'PUT' : 'POST',
-          body: JSON.stringify(b)
-        });
-        resetTest();
-        await adminLoad();
-      } catch (e) {
-        alert(e.message);
-      }
-    }
-
-    async function removeTest(id) {
-      if (confirm('Delete this test and all its questions?')) {
-        await api('admin/tests/' + id, { method: 'DELETE' });
-        adminLoad();
-      }
-    }
-
-    function resetQuestion() {
-      $('editQuestion').value = '';
-      ['questionText', 'oa', 'ob', 'oc', 'od'].forEach(x => $(x).value = '');
-      $('answer').value = '0';
-      $('questionHeading').textContent = 'Add a question';
-    }
-
-    function editQuestion(id) {
-      let q = dashboard.tests.flatMap(t => t.questions).find(x => x.id === id);
-      $('editQuestion').value = id;
-      $('questionTest').value = q.testId;
-      $('questionText').value = q.question;
-      ['oa', 'ob', 'oc', 'od'].forEach((x, i) => $(x).value = q.options[i]);
-      $('answer').value = q.answer;
-      $('questionHeading').textContent = 'Edit question';
-    }
-
-    async function saveQuestion() {
-      try {
-        let id = $('editQuestion').value,
-            b = {
-              testId: +$('questionTest').value,
-              question: $('questionText').value,
-              options: [$('oa').value, $('ob').value, $('oc').value, $('od').value],
-              answer: +$('answer').value
-            };
-        await api(id ? 'admin/questions/' + id : 'admin/questions', {
-          method: id ? 'PUT' : 'POST',
-          body: JSON.stringify(b)
-        });
-        resetQuestion();
-        await adminLoad();
-      } catch (e) {
-        alert(e.message);
-      }
-    }
-
-    async function removeQuestion(id) {
-      if (confirm('Delete this question?')) {
-        await api('admin/questions/' + id, { method: 'DELETE' });
-        adminLoad();
-      }
-    }
-
-    function renderAdminReports() {
-      $('reportContent').innerHTML = `
-        <h3>Registered Students (${dashboard.students?.length || 0})</h3>
-        ${(dashboard.students || []).map(s => `
-          <div class="row">
-            <span>${esc(s.name)}<br><small>${esc(s.email)}</small></span>
-            <small>${new Date(s.createdAt).toLocaleDateString('en-IN')}</small>
-          </div>`).join('') || '<p class="muted">No students registered yet.</p>'}
-        <h3 style="margin-top:28px">Recent Test Attempts</h3>
-        ${(dashboard.attempts || []).length
-          ? (dashboard.attempts || []).map(a => `
-              <div class="row">
-                <span><b>${esc(a.student)}</b><br><small>${esc(a.test)} · ${new Date(a.createdAt).toLocaleString('en-IN')}</small></span>
-                <span class="tag">${a.score}/${a.total}</span>
-              </div>`).join('')
-          : '<p class="muted">No test attempts yet.</p>'}`;
-    }
-
-    // Initialize application state on page load
+    // Initialize application state
     applyViewState();
   </script>
 </body>

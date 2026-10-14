@@ -682,17 +682,21 @@
     document.body.appendChild(lightbox);
   };
 
-  // Calendar feature
+  // Modern Study Calendar feature
   window.calendarOpen = async function () {
-    if (!user) { loginOpen(); return; }
+    if (!user) { applyViewState(); return; }
     $('testBox').innerHTML = `
       <button class="close" onclick="hide('test')">✕</button>
-      <h2>📅 My Study Calendar</h2>
-      <p class="muted">Plan your daily chapters and track revision sessions privately.</p>
-      <div class="panel formgrid" style="margin-top:16px">
-        <div>
-          <label>Topic / Chapter</label>
-          <input id="planTitle" placeholder="e.g. Biology: Cell Cycle Revision">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+        <span class="tag">Daily Revision Tracker</span>
+      </div>
+      <h2 style="margin:0 0 6px;font-size:24px">🗓️ My Study Calendar</h2>
+      <p class="muted" style="margin:0 0 20px">Organize daily chapter targets, revision milestones, and track completion privately.</p>
+
+      <div class="panel formgrid" style="margin-top:16px;background:#fcfcfb">
+        <div class="wide">
+          <label style="margin-top:0">Study Topic or Chapter Goal</label>
+          <input id="planTitle" placeholder="e.g. Biology: Photosynthesis & Calvin Cycle Notes">
         </div>
         <div>
           <label>Subject</label>
@@ -700,55 +704,79 @@
             <option>Biology</option>
             <option>Chemistry</option>
             <option>Physics</option>
-            <option>General</option>
+            <option>General Revision</option>
           </select>
         </div>
         <div>
-          <label>Start Date & Time</label>
+          <label>Target Date & Time</label>
           <input id="planStart" type="datetime-local">
         </div>
-        <div>
-          <label>End Date & Time (Optional)</label>
-          <input id="planEnd" type="datetime-local">
+        <div class="wide" style="margin-top:8px">
+          <button style="width:100%;font-weight:700" onclick="savePlan()">+ Add Study Target to Calendar</button>
         </div>
-        <button class="wide" onclick="savePlan()">Add to My Study Calendar</button>
       </div>
-      <div id="planList" style="margin-top:20px"></div>
+
+      <div class="section-head" style="margin:24px 0 12px">
+        <h3 style="margin:0;font-size:17px">Scheduled Study Sessions</h3>
+      </div>
+      <div id="planList"></div>
     `;
     show('test');
     await loadPlans();
   };
 
   async function loadPlans() {
-    const plans = await api('study-plan');
-    const list = $('planList');
-    if (!list) return;
-    list.innerHTML = plans.length ? plans.map(p => `
-      <div class="calendar-day ${p.done ? 'done' : ''}">
-        <b>${esc(p.title)}</b><br>
-        <small>${esc(p.subject)} · ${new Date(p.startAt).toLocaleString('en-IN')}${p.endAt ? ' to ' + new Date(p.endAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }) : ''}</small>
-        <div style="margin-top:8px">
-          <button class="light" onclick="completePlan(${p.id}, ${!p.done})">${p.done ? 'Mark Pending' : '✓ Mark Completed'}</button> 
-          <button class="red" onclick="deletePlan(${p.id})">Delete</button>
+    try {
+      const plans = await api('study-plan');
+      const list = $('planList');
+      if (!list) return;
+
+      if (!plans.length) {
+        list.innerHTML = `
+          <div style="text-align:center;padding:30px 20px;background:#f8f8f6;border-radius:12px;border:1px dashed var(--line)">
+            <p class="muted" style="margin:0">No revision targets planned yet. Set your first NEET goal above!</p>
+          </div>
+        `;
+        return;
+      }
+
+      list.innerHTML = plans.map(p => `
+        <div class="calendar-card ${p.done ? 'is-done' : ''}">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap">
+            <div>
+              <span class="tag ${p.done ? 'green' : ''}">${p.done ? '✓ Completed' : '○ Scheduled'} · ${esc(p.subject)}</span>
+              <h4 style="margin:8px 0 4px;font-size:16px;color:#111;text-decoration:${p.done ? 'line-through' : 'none'}">${esc(p.title)}</h4>
+              <small class="muted">📅 ${new Date(p.startAt).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}</small>
+            </div>
+            <div style="display:flex;gap:8px">
+              <button class="light" style="padding:6px 12px;font-size:12.5px" onclick="completePlan(${p.id}, ${!p.done})">
+                ${p.done ? 'Mark as Pending' : '✓ Mark Done'}
+              </button>
+              <button class="red" style="padding:6px 12px;font-size:12.5px" onclick="deletePlan(${p.id})">Delete</button>
+            </div>
+          </div>
         </div>
-      </div>
-    `).join('') : '<p class="muted">No study sessions planned yet. Set your daily NEET goals above.</p>';
+      `).join('');
+    } catch (_) {}
   }
 
   window.savePlan = async function () {
+    const title = $('planTitle')?.value.trim();
+    const start = $('planStart')?.value;
+    if (!title) return alert('Please enter a chapter topic or goal.');
+    if (!start) return alert('Please select a target date and time.');
+
     try {
       await api('study-plan', {
         method: 'POST',
         body: JSON.stringify({
-          title: $('planTitle').value,
-          subject: $('planSubject').value,
-          startAt: $('planStart').value ? new Date($('planStart').value).toISOString() : '',
-          endAt: $('planEnd').value ? new Date($('planEnd').value).toISOString() : null
+          title,
+          subject: $('planSubject')?.value || 'General',
+          startAt: new Date(start).toISOString()
         })
       });
       $('planTitle').value = '';
       $('planStart').value = '';
-      $('planEnd').value = '';
       await loadPlans();
     } catch (e) {
       alert(e.message);
@@ -761,34 +789,50 @@
   };
 
   window.deletePlan = async function (id) {
-    if (confirm('Delete this study session?')) {
+    if (confirm('Delete this study target?')) {
       await api('study-plan/' + id, { method: 'DELETE' });
       loadPlans();
     }
   };
 
-  // Help & Support feature
+  // Modern Help & Support feature
   window.helpOpen = function () {
     $('testBox').innerHTML = `
       <button class="close" onclick="hide('test')">✕</button>
-      <h2>❓ NEET Practice Help & Guidance</h2>
-      <p class="muted">Instructions, focus security rules, and FAQs for PN Neet Diw.</p>
-      <details class="faq" open>
-        <summary>How do I start a NEET practice test?</summary>
-        <p>Log in with your student account, browse the Chapter-wise Test Schedule, and click "Start Test". All questions are presented with countdown timers and answer tracking.</p>
-      </details>
-      <details class="faq">
-        <summary>What is the focus-protection rule during tests?</summary>
-        <p>To simulate real exam pressure and honesty, switching tabs, minimizing your browser, or losing window focus will automatically submit your attempt.</p>
-      </details>
-      <details class="faq">
-        <summary>How do I view my results and question analysis?</summary>
-        <p>Click the three-dot menu (⋮) in the top-right corner and select <b>My Results</b>. You will see scores, correct answers, your chosen answers, and time spent on every question.</p>
-      </details>
-      <details class="faq">
-        <summary>How do I customize my profile and photo?</summary>
-        <p>Open the three-dot menu (⋮) and select <b>My Profile</b>. You can update your display name and upload a profile photo (JPG, PNG, WebP, GIF) which will appear beside your community messages.</p>
-      </details>
+      <span class="tag">Support & Guidance</span>
+      <h2 style="margin:10px 0 6px;font-size:24px">❓ NEET Practice Help & Guidance</h2>
+      <p class="muted" style="margin:0 0 22px">Official instructions, exam rules, and helpful FAQs for PN Neet Diw.</p>
+
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <details class="faq-card" open>
+          <summary><b>How do I start a timed NEET mock test?</b></summary>
+          <p>Go to your Student Dashboard, browse the Chapter-wise Test Schedule, and click <b>Start Test →</b>. Review the exam instructions and click <b>Start Test Now</b> to initiate the realistic countdown timer.</p>
+        </details>
+
+        <details class="faq-card">
+          <summary><b>What is the strict Focus Protection rule?</b></summary>
+          <p>To simulate actual NEET examination computer-based test honesty, switching browser tabs, minimizing the window, or losing window focus automatically submits your test attempt immediately.</p>
+        </details>
+
+        <details class="faq-card">
+          <summary><b>How do I review answers and view my score analytics?</b></summary>
+          <p>Click <b>My Results</b> in the navigation bar or under the user menu. Click <b>Review Answers</b> on any attempt to inspect question-by-question breakdown, correct answers (highlighted in green), and your selected choices.</p>
+        </details>
+
+        <details class="faq-card">
+          <summary><b>How do I join a teacher's Live Class?</b></summary>
+          <p>When a teacher starts broadcasting, a live broadcast card appears on your student dashboard. Simply click <b>Join Live Class →</b> to connect via interactive WebRTC.</p>
+        </details>
+
+        <details class="faq-card">
+          <summary><b>How do I update my profile and photo?</b></summary>
+          <p>Click your avatar circle in the top right corner and choose <b>My Profile</b>. You can update your display name and upload a JPG, PNG, WebP, or GIF avatar up to 5 MB.</p>
+        </details>
+      </div>
+
+      <div style="margin-top:24px;text-align:center">
+        <button style="padding:10px 24px" onclick="hide('test')">Close Guidance</button>
+      </div>
     `;
     show('test');
   };
