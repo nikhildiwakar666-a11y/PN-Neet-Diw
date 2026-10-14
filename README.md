@@ -110,4 +110,42 @@ Student Portal
     └── Display name, avatar photo upload, focus mode protection, and alert preferences
 ```
 
+## Live Class Architecture & Lifecycle
+
+```text
+Teacher / Faculty
+   │
+   ▼
+1. Start Live Class
+   │  • Faculty enters topic title
+   │  • Server updates active state & broadcasts via Socket.IO
+   │
+   ▼
+2. Camera + Microphone Stream
+   │  • Browser requests navigator.mediaDevices.getUserMedia()
+   │  • Local video stream renders in Faculty Studio
+   │  • Browser MediaRecorder automatically starts recording
+   │
+   ▼
+3. Students Join Through WebRTC
+   │  • Live badge pulses in Student Dashboard
+   │  • Student clicks "Join Live Class"
+   │  • Socket.IO handles signalling (Offer / Answer / ICE Candidates)
+   │  • Direct peer-to-peer low-latency video stream established
+   │
+   ▼
+4. End Class
+   │  • Faculty clicks "⏹ End Class & Save Recording"
+   │  • Socket emits "live:ended" to disconnect all peers
+   │  • MediaRecorder stops and compiles video chunks into WebM Blob
+   │
+   ▼
+5. Recording Uploads to Notes & Videos
+      • Browser uploads recording via POST /api/admin/live-class/end
+      • Saved into uploads/ directory
+      • Auto-indexed in data.json under "Live Class" category
+      • Immediately available in student "Notes & Videos" for on-demand replay
+```
+
+
 
