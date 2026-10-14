@@ -147,5 +147,43 @@ Teacher / Faculty
       • Immediately available in student "Notes & Videos" for on-demand replay
 ```
 
+## Admin Controls & Management Console
+
+```text
+Admin Controls
+│
+├── 📝 Tests and Questions
+│   ├── Create mock tests (subject, chapter, duration, schedule)
+│   ├── Add 4-option MCQs with single correct answer assignment
+│   └── Edit or remove questions and tests
+│
+├── 📅 Schedule Management
+│   ├── Schedule upcoming tests with live start timestamps
+│   └── Toggle test visibility (Active / Inactive)
+│
+├── 📚 Notes and Videos
+│   ├── Upload PDF notes and MP4/WebM video lectures
+│   └── Categorize by subject and delete expired study materials
+│
+├── 👥 Students and Results
+│   ├── Directory of all registered student accounts and email addresses
+│   ├── Manage role permissions (Student / Teacher / Admin)
+│   └── Real-time scorecard logs of all student test attempts and percentages
+│
+├── 💬 Community Moderation
+│   ├── Oversee student doubt discussion threads
+│   └── Delete inappropriate messages, spam, or photos
+│
+├── 🔴 Live Class Controls
+│   ├── Start faculty live broadcast rooms
+│   └── Archive recorded video streams automatically
+│
+└── ⚙️ Platform Settings
+    ├── Exam focus mode toggle
+    ├── Audio chime notifications for test start and finish
+    └── Platform administrative preferences
+```
+
+
 
 
