@@ -18,3 +18,68 @@ Login using the email and password defined in `.env`. The server creates the adm
 Push this folder to GitHub and deploy it on Render or Railway. Set `JWT_SECRET`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`, and `PORT` as deployment environment variables. For durable production data, attach the provider's persistent disk to preserve `data.json`; for larger scale, migrate data to PostgreSQL.
 
 Never use the sample `.env.example` credentials on a public deployment.
+
+## System Architecture
+
+```text
+Browser (Student / Teacher / Admin)
+│
+├── Frontend
+│   ├── HTML + CSS + Vanilla JavaScript
+│   ├── Role-based UI
+│   ├── Test engine and timers
+│   ├── Community chat interface
+│   ├── Study calendar
+│   ├── Profile/settings
+│   └── WebRTC camera/microphone live-class interface
+│
+├── HTTP API Requests
+│   │
+│   ▼
+├── Node.js + Express Server
+│   ├── Authentication API
+│   ├── Student APIs
+│   ├── Teacher APIs
+│   ├── Admin APIs
+│   ├── Test and result APIs
+│   ├── Community chat APIs
+│   ├── Study calendar APIs
+│   ├── Resource upload APIs
+│   └── Live class control APIs
+│
+├── Security Layer
+│   ├── JWT token verification
+│   ├── Password hashing using bcrypt
+│   ├── Role checks: Student / Teacher / Admin
+│   └── Protected admin and teacher routes
+│
+├── Real-Time Layer
+│   ├── Socket.IO
+│   ├── Live-class signalling
+│   ├── Active live-class status
+│   └── Student-teacher connection events
+│
+├── Video Layer
+│   ├── WebRTC for teacher-to-student video
+│   ├── Browser MediaRecorder for recording
+│   └── Recording upload after live class ends
+│
+└── Storage Layer
+    ├── data.json
+    │   ├── Users
+    │   ├── Tests
+    │   ├── Questions
+    │   ├── Attempts/results
+    │   ├── Community messages/replies
+    │   ├── Study plans
+    │   ├── Resources
+    │   └── Live-class status
+    │
+    └── uploads/
+        ├── PDF notes
+        ├── Videos
+        ├── Live-class recordings
+        ├── Community photos
+        └── Profile photos
+```
+
