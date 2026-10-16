@@ -654,39 +654,186 @@
       color: #777773;
     }
 
-    /* Admin Management Tabs and Sections */
-    .admin-nav-strip {
+    /* Hidden utility */
+    .hidden { display: none !important; }
+
+    /* Sticky Admin Navigation Row */
+    .admin-nav-wrapper {
+      position: sticky;
+      top: 68px;
+      z-index: 95;
+      background: var(--bg);
+      padding: 12px 0 16px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--line);
+    }
+    .admin-nav-bar {
       display: flex;
       align-items: center;
       gap: 8px;
       overflow-x: auto;
-      padding-bottom: 8px;
-      margin-bottom: 20px;
-      border-bottom: 1px solid var(--line);
+      scrollbar-width: thin;
+      -webkit-overflow-scrolling: touch;
+      padding: 2px 2px 6px;
     }
-    .admin-tab-btn {
-      background: transparent;
-      border: 1px solid transparent;
-      padding: 8px 14px;
-      border-radius: 8px;
+    .admin-nav-bar::-webkit-scrollbar {
+      height: 4px;
+    }
+    .admin-nav-bar::-webkit-scrollbar-thumb {
+      background: #d4d4cd;
+      border-radius: 4px;
+    }
+    .admin-nav-btn {
+      background: #ffffff;
+      color: #555550;
+      border: 1.5px solid var(--line);
+      padding: 9px 16px;
+      border-radius: 10px;
       font-size: 13.5px;
       font-weight: 700;
-      color: #555550;
       cursor: pointer;
       white-space: nowrap;
-      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+      user-select: none;
+      flex-shrink: 0;
+    }
+    .admin-nav-btn:hover {
+      background: #f7f7f5;
+      color: #111111;
+      border-color: #111111;
+      transform: translateY(-1px);
+    }
+    .admin-nav-btn.active {
+      background: #111111 !important;
+      color: #ffffff !important;
+      border-color: #111111 !important;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+      transform: none;
+    }
+
+    /* Admin Section Transitions */
+    .admin-section {
+      display: none !important;
+    }
+    .admin-section.active {
+      display: block !important;
+      animation: adminSectionFade 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes adminSectionFade {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Admin Section Headers & Subtext */
+    .admin-section-header {
+      margin-bottom: 22px;
       display: flex;
       align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .admin-section-header h2 {
+      margin: 0 0 4px;
+      font-size: 22px;
+      font-weight: 800;
+      color: #111111;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .admin-section-header p {
+      margin: 0;
+      font-size: 13.5px;
+      color: var(--m);
+    }
+
+    /* Question Bank Options Layout */
+    .question-options-preview {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin: 10px 0;
+    }
+    .q-opt-pill {
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      background: #ffffff;
+      border: 1px solid #e0e0da;
+      color: #222220;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       gap: 6px;
     }
-    .admin-tab-btn:hover {
-      background: #ededeb;
+    .q-opt-pill.is-correct {
+      background: var(--green-bg);
+      border-color: #86efac;
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    /* Community Moderation Post Card */
+    .comm-mod-card {
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+    .comm-mod-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .comm-mod-author {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .comm-mod-body {
+      font-size: 14.5px;
       color: #111111;
+      line-height: 1.55;
+      margin: 0 0 12px;
+      white-space: pre-wrap;
     }
-    .admin-tab-btn.active {
-      background: #111111;
-      color: #ffffff;
+    .comm-mod-image {
+      max-width: 320px;
+      max-height: 260px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      margin-bottom: 12px;
+      cursor: pointer;
+      display: block;
+      object-fit: cover;
     }
+    .comm-mod-replies {
+      background: #f8f8f6;
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-top: 12px;
+      border-left: 3px solid #111111;
+    }
+    .comm-mod-reply-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid #ebebe6;
+    }
+    .comm-mod-reply-row:last-child {
+      border-bottom: none;
+    }
+
 
     /* Live Stream Hub for Teacher and Admin */
     .live-stream-box {
@@ -1698,215 +1845,526 @@
 
     <!-- 3. ADMIN DASHBOARD VIEW -->
     <div id="adminDashboardView" style="display:none">
-      <!-- Admin Top Strip with Single Admin Controls Menu Trigger -->
-      <div class="panel" style="background:#111111;color:#ffffff;border-radius:16px;padding:22px;margin-bottom:24px">
-        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px">
+      <!-- Clean Horizontal Sticky Navigation Row Only -->
+      <div class="admin-nav-wrapper" id="adminStickyNav">
+        <div class="admin-nav-bar" id="adminNavBar" role="tablist" aria-label="Admin Controls Navigation">
+          <button class="admin-nav-btn active" id="tabAdminTestsBtn" onclick="switchAdminActiveSection('tests')" role="tab" aria-selected="true">
+            <span>📝</span> <span>Manage Tests</span>
+          </button>
+          <button class="admin-nav-btn" id="tabAdminQuestionsBtn" onclick="switchAdminActiveSection('questions')" role="tab" aria-selected="false">
+            <span>❓</span> <span>Manage Questions</span>
+          </button>
+          <button class="admin-nav-btn" id="tabAdminScheduleBtn" onclick="switchAdminActiveSection('schedule')" role="tab" aria-selected="false">
+            <span>📅</span> <span>Test Schedule</span>
+          </button>
+          <button class="admin-nav-btn" id="tabAdminResourcesBtn" onclick="switchAdminActiveSection('resources')" role="tab" aria-selected="false">
+            <span>📚</span> <span>Notes & Videos</span>
+          </button>
+          <button class="admin-nav-btn" id="tabAdminResultsBtn" onclick="switchAdminActiveSection('results')" role="tab" aria-selected="false">
+            <span>📊</span> <span>Student Results</span>
+          </button>
+          <button class="admin-nav-btn" id="tabAdminAccountsBtn" onclick="switchAdminActiveSection('accounts')" role="tab" aria-selected="false">
+            <span>👥</span> <span>Student Accounts</span>
+          </button>
+          <button class="admin-nav-btn" id="tabAdminCommunityBtn" onclick="switchAdminActiveSection('community')" role="tab" aria-selected="false">
+            <span>💬</span> <span>Community</span>
+          </button>
+          <button class="admin-nav-btn" id="tabAdminLiveBtn" onclick="switchAdminActiveSection('live')" role="tab" aria-selected="false">
+            <span>🔴</span> <span>Live Classes</span>
+          </button>
+          <button class="admin-nav-btn" id="tabAdminSettingsBtn" onclick="switchAdminActiveSection('settings')" role="tab" aria-selected="false">
+            <span>⚙️</span> <span>Settings</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- SECTION 1: MANAGE TESTS (Only test create, edit, delete, publish/unpublish controls) -->
+      <div id="adminSectionTests" class="admin-section active">
+        <div class="admin-section-header">
           <div>
-            <span class="tag" style="background:#262624;color:#f0f0ed">Platform Administrator</span>
-            <h2 style="font-size:22px;margin:6px 0 2px">Admin Command Center</h2>
-            <p style="color:#d7d7d2;margin:0;font-size:13.5px">Everything is organized under your clean Admin Controls menu.</p>
+            <h2>📝 Manage Tests</h2>
+            <p>Create, edit, delete, and configure publish availability for NEET mock examinations.</p>
           </div>
-          <div style="display:flex;align-items:center;gap:10px">
-            <button class="admin-controls-btn" onclick="toggleAdminControlsMenu()" style="background:#ffffff;color:#111111;border-color:#ffffff">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M4 4h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM4 10h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM4 16h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4z"/>
-              </svg>
-              <span>Admin Controls</span>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
-            </button>
-          </div>
+          <button class="light" onclick="scrollToAdminTestForm()">+ Create New Test</button>
         </div>
-      </div>
 
-      <!-- Quick KPI Overview Cards -->
-      <div class="kpi-grid">
-        <div class="kpi-card" onclick="openAdminSection('tests')" style="cursor:pointer">
-          <div class="kpi-label">📝 Tests</div>
-          <div class="kpi-value" id="kpiTestCount">0</div>
-          <div class="kpi-desc">Mock tests configured</div>
-        </div>
-        <div class="kpi-card" onclick="openAdminSection('accounts')" style="cursor:pointer">
-          <div class="kpi-label">👥 Users & Students</div>
-          <div class="kpi-value" id="kpiUserCount">0</div>
-          <div class="kpi-desc">Registered accounts</div>
-        </div>
-        <div class="kpi-card" onclick="openAdminSection('results')" style="cursor:pointer">
-          <div class="kpi-label">📊 Test Attempts</div>
-          <div class="kpi-value" id="kpiAttemptCount">0</div>
-          <div class="kpi-desc">Completed mock attempts</div>
-        </div>
-        <div class="kpi-card" onclick="openAdminSection('resources')" style="cursor:pointer">
-          <div class="kpi-label">📚 Notes & Videos</div>
-          <div class="kpi-value" id="kpiResourceCount">0</div>
-          <div class="kpi-desc">Uploaded study files</div>
-        </div>
-        <div class="kpi-card" onclick="openAdminSection('live')" style="cursor:pointer">
-          <div class="kpi-label">🔴 Live Classes</div>
-          <div class="kpi-value" id="kpiLiveStatus">Idle</div>
-          <div class="kpi-desc">Broadcast status</div>
-        </div>
-      </div>
+        <!-- Create or Edit Test Form -->
+        <div class="panel" id="adminTestFormCard" style="margin-bottom:24px">
+          <h3 id="testHeading" style="margin-top:0">Create a New Mock Test</h3>
+          <input id="editTest" type="hidden">
 
-      <!-- Admin Tab Switcher Strip -->
-      <div class="admin-nav-strip">
-        <button class="admin-tab-btn active" id="tabAdminTestsBtn" onclick="switchAdminActiveSection('tests')">📝 Manage Tests</button>
-        <button class="admin-tab-btn" id="tabAdminQuestionsBtn" onclick="switchAdminActiveSection('questions')">❓ Manage Questions</button>
-        <button class="admin-tab-btn" id="tabAdminScheduleBtn" onclick="switchAdminActiveSection('schedule')">📅 Test Schedule</button>
-        <button class="admin-tab-btn" id="tabAdminResourcesBtn" onclick="switchAdminActiveSection('resources')">📚 Notes & Videos</button>
-        <button class="admin-tab-btn" id="tabAdminResultsBtn" onclick="switchAdminActiveSection('results')">📊 Student Results</button>
-        <button class="admin-tab-btn" id="tabAdminAccountsBtn" onclick="switchAdminActiveSection('accounts')">👥 Student Accounts</button>
-        <button class="admin-tab-btn" id="tabAdminCommunityBtn" onclick="switchAdminActiveSection('community')">💬 Community</button>
-        <button class="admin-tab-btn" id="tabAdminLiveBtn" onclick="switchAdminActiveSection('live')">🔴 Live Classes</button>
-        <button class="admin-tab-btn" id="tabAdminSettingsBtn" onclick="switchAdminActiveSection('settings')">⚙️ Settings</button>
-      </div>
+          <label>Test Title</label>
+          <input id="testTitle" placeholder="e.g. NEET Biology: Cell Structure and Biomolecules">
 
-      <!-- SECTION 1 & 2: MANAGE TESTS & QUESTIONS -->
-      <div id="adminSectionTests">
-        <div class="formgrid">
-          <div class="panel">
-            <h3 id="testHeading" style="margin-top:0">Create a scheduled test</h3>
-            <input id="editTest" type="hidden">
-            <label>Test title</label>
-            <input id="testTitle" placeholder="e.g. NEET Biology: Cell Structure">
-            <label>Subject</label>
-            <select id="testSubject">
-              <option>Biology</option>
-              <option>Chemistry</option>
-              <option>Physics</option>
-            </select>
-            <label>Chapter</label>
-            <input id="testChapter" placeholder="e.g. Cytology & Cell Division">
-            <label>Duration in minutes</label>
-            <input id="testDuration" type="number" min="1" value="15">
-            <label>Scheduled start date and time (leave blank for instant practice)</label>
-            <input id="testStart" type="datetime-local">
-            <label><input id="testActive" type="checkbox" checked style="width:auto"> Show test to students</label>
-            <div style="display:flex;gap:10px;margin-top:16px">
-              <button onclick="saveTest()">Save Test</button>
-              <button class="out" onclick="resetTest()">Reset Form</button>
+          <div class="formgrid" style="margin-top:4px">
+            <div>
+              <label>Subject</label>
+              <select id="testSubject">
+                <option value="Biology">🧬 Biology</option>
+                <option value="Chemistry">🧪 Chemistry</option>
+                <option value="Physics">⚡ Physics</option>
+              </select>
+            </div>
+            <div>
+              <label>Chapter / Unit</label>
+              <input id="testChapter" placeholder="e.g. Cytology, Cell Division & Functions">
             </div>
           </div>
 
-          <div class="panel" id="adminSectionQuestions">
-            <h3 id="questionHeading" style="margin-top:0">Add a question</h3>
-            <input id="editQuestion" type="hidden">
-            <label>Target Test</label>
-            <select id="questionTest"></select>
-            <label>Question statement</label>
-            <textarea id="questionText" placeholder="Enter question statement..."></textarea>
-            <label>Option A</label>
-            <input id="oa">
-            <label>Option B</label>
-            <input id="ob">
-            <label>Option C</label>
-            <input id="oc">
-            <label>Option D</label>
-            <input id="od">
-            <label>Correct answer</label>
+          <div class="formgrid" style="margin-top:4px">
+            <div>
+              <label>Duration (Minutes)</label>
+              <input id="testDuration" type="number" min="1" max="300" value="15">
+            </div>
+            <div>
+              <label>Scheduled Start Date & Time (Optional)</label>
+              <input id="testStart" type="datetime-local">
+              <small class="muted" style="display:block;margin-top:4px">Leave empty for Instant Practice (always available).</small>
+            </div>
+          </div>
+
+          <div style="margin:14px 0 16px">
+            <label style="display:inline-flex;align-items:center;gap:8px;cursor:pointer">
+              <input id="testActive" type="checkbox" checked style="width:auto;height:auto">
+              <span><b>Publish Test:</b> Make visible to students immediately</span>
+            </label>
+          </div>
+
+          <div style="display:flex;gap:10px">
+            <button onclick="saveTest()">Save Test</button>
+            <button class="out" onclick="resetTest()">Reset Form</button>
+          </div>
+        </div>
+
+        <!-- Configured Tests List -->
+        <div class="panel">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px">
+            <div>
+              <h3 style="margin:0">Existing NEET Mock Tests (<span id="testTotalBadge">0</span>)</h3>
+              <p class="muted" style="margin:2px 0 0;font-size:13px">Tests configured for students on the platform.</p>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <input id="searchTestsInput" placeholder="Search test or chapter..." oninput="renderAdminTests()" style="width:220px;padding:8px 12px;font-size:13px">
+            </div>
+          </div>
+
+          <!-- Filter Pills for Tests -->
+          <div class="filter-pills-bar" style="margin:0 0 16px">
+            <button class="filter-pill admin-test-pill active" data-sub="all" onclick="filterAdminTests('all')">All Tests</button>
+            <button class="filter-pill admin-test-pill" data-sub="biology" onclick="filterAdminTests('biology')">🧬 Biology</button>
+            <button class="filter-pill admin-test-pill" data-sub="chemistry" onclick="filterAdminTests('chemistry')">🧪 Chemistry</button>
+            <button class="filter-pill admin-test-pill" data-sub="physics" onclick="filterAdminTests('physics')">⚡ Physics</button>
+            <button class="filter-pill admin-test-pill" data-sub="active" onclick="filterAdminTests('active')">● Published</button>
+            <button class="filter-pill admin-test-pill" data-sub="draft" onclick="filterAdminTests('draft')">○ Drafts / Hidden</button>
+          </div>
+
+          <div id="adminTestsList"></div>
+        </div>
+      </div>
+
+      <!-- SECTION 2: MANAGE QUESTIONS (Only question create, edit, delete, correct-answer, test-selection controls) -->
+      <div id="adminSectionQuestions" class="admin-section">
+        <div class="admin-section-header">
+          <div>
+            <h2>❓ Manage Questions</h2>
+            <p>Create, edit, review question banks, options, and verified correct answers for each test.</p>
+          </div>
+          <button class="light" onclick="scrollToAdminQuestionForm()">+ Add New Question</button>
+        </div>
+
+        <!-- Question Form Card -->
+        <div class="panel" id="adminQuestionFormCard" style="margin-bottom:24px">
+          <h3 id="questionHeading" style="margin-top:0">Add a New Question</h3>
+          <input id="editQuestion" type="hidden">
+
+          <label>Target Mock Test</label>
+          <select id="questionTest"></select>
+
+          <label>Question Statement</label>
+          <textarea id="questionText" placeholder="Enter complete question text, clinical problem, or diagram description..."></textarea>
+
+          <div class="formgrid" style="margin-top:6px">
+            <div>
+              <label>Option A</label>
+              <input id="oa" placeholder="Option A text">
+            </div>
+            <div>
+              <label>Option B</label>
+              <input id="ob" placeholder="Option B text">
+            </div>
+            <div>
+              <label>Option C</label>
+              <input id="oc" placeholder="Option C text">
+            </div>
+            <div>
+              <label>Option D</label>
+              <input id="od" placeholder="Option D text">
+            </div>
+          </div>
+
+          <div style="margin-top:6px;max-width:320px">
+            <label>Verified Correct Answer</label>
             <select id="answer">
               <option value="0">Option A</option>
               <option value="1">Option B</option>
               <option value="2">Option C</option>
               <option value="3">Option D</option>
             </select>
-            <div style="display:flex;gap:10px;margin-top:16px">
-              <button onclick="saveQuestion()">Save Question</button>
-              <button class="out" onclick="resetQuestion()">Reset</button>
+          </div>
+
+          <div style="display:flex;gap:10px;margin-top:18px">
+            <button onclick="saveQuestion()">Save Question</button>
+            <button class="out" onclick="resetQuestion()">Reset Form</button>
+          </div>
+        </div>
+
+        <!-- Question Bank Browser Card -->
+        <div class="panel">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px">
+            <div>
+              <h3 style="margin:0">Question Bank (<span id="questionTotalBadge">0</span>)</h3>
+              <p class="muted" style="margin:2px 0 0;font-size:13px">Browse all test questions and verified answer keys.</p>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+              <select id="filterQuestionByTest" onchange="renderAdminQuestions()" style="width:auto;padding:8px 12px;font-size:13px">
+                <option value="all">All Tests</option>
+              </select>
+              <input id="searchQuestionsInput" placeholder="Search question text..." oninput="renderAdminQuestions()" style="width:200px;padding:8px 12px;font-size:13px">
             </div>
           </div>
 
-          <div class="panel wide">
-            <h3 style="margin-top:0">Existing Tests and Questions</h3>
-            <div id="content"></div>
-          </div>
+          <div id="adminQuestionsList"></div>
         </div>
       </div>
 
-      <!-- SECTION 3: TEST SCHEDULE -->
-      <div id="adminSectionSchedule" class="hidden">
+      <!-- SECTION 3: TEST SCHEDULE (Only scheduled tests, date/time, duration, availability, and schedule edit controls) -->
+      <div id="adminSectionSchedule" class="admin-section">
+        <div class="admin-section-header">
+          <div>
+            <h2>📅 Test Schedule</h2>
+            <p>Monitor examination dates, start times, durations, availability windows, and edit schedules.</p>
+          </div>
+          <button class="light" onclick="switchAdminActiveSection('tests')">+ Schedule New Test</button>
+        </div>
+
+        <!-- Schedule KPI Highlights -->
+        <div class="kpi-grid" style="margin-bottom:20px">
+          <div class="kpi-card">
+            <div class="kpi-label">📅 Scheduled Dates</div>
+            <div class="kpi-value" id="kpiScheduleTimedCount">0</div>
+            <div class="kpi-desc">Tests with timed dates</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">⚡ Instant Practice</div>
+            <div class="kpi-value" id="kpiScheduleInstantCount">0</div>
+            <div class="kpi-desc">Always accessible to students</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">● Active Published</div>
+            <div class="kpi-value" id="kpiSchedulePublishedCount">0</div>
+            <div class="kpi-desc">Currently visible to students</div>
+          </div>
+        </div>
+
         <div class="panel">
-          <h3 style="margin-top:0">📅 Test Schedule Management</h3>
-          <p class="muted">Review all active and upcoming mock tests along with start dates.</p>
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px">
+            <h3 style="margin:0">Full Examination Timetable</h3>
+            <div class="filter-pills-bar" style="margin:0">
+              <button class="filter-pill sched-filter-pill active" data-sched="all" onclick="filterAdminSchedule('all')">All Tests</button>
+              <button class="filter-pill sched-filter-pill" data-sched="upcoming" onclick="filterAdminSchedule('upcoming')">Upcoming Only</button>
+              <button class="filter-pill sched-filter-pill" data-sched="instant" onclick="filterAdminSchedule('instant')">Instant Practice</button>
+            </div>
+          </div>
           <div id="adminScheduleList"></div>
         </div>
       </div>
 
-      <!-- SECTION 4: NOTES & VIDEOS -->
-      <div id="adminSectionResources" class="hidden">
-        <div class="panel">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <!-- SECTION 4: NOTES & VIDEOS (Only upload, preview, edit, delete, file type, and study-material controls) -->
+      <div id="adminSectionResources" class="admin-section">
+        <div class="admin-section-header">
+          <div>
+            <h2>📚 Notes & Videos</h2>
+            <p>Upload study notes (PDFs), recorded video lectures, preview files, and manage learning material.</p>
+          </div>
+          <button onclick="toggleAdminUploadInline()">+ Upload New Material</button>
+        </div>
+
+        <!-- Inline Upload Card -->
+        <div class="panel" id="adminInlineUploadCard" style="display:none;margin-bottom:24px;border:2px dashed #111111;background:#fafaf8">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+            <h3 style="margin:0">Upload Study Material or Lecture Video</h3>
+            <button class="close" onclick="toggleAdminUploadInline()" style="position:static">✕</button>
+          </div>
+          <label>Material Title</label>
+          <input id="inlineResourceTitle" placeholder="e.g. Biology Summary: Endocrine System High-Yield Notes">
+
+          <div class="formgrid" style="margin-top:6px">
             <div>
-              <h3 style="margin:0">📚 Study Material & Recordings</h3>
-              <p class="muted" style="margin:4px 0 0">Upload new study PDF or recorded lecture video (up to 100 MB).</p>
+              <label>Subject</label>
+              <select id="inlineResourceSubject">
+                <option value="Biology">🧬 Biology</option>
+                <option value="Chemistry">🧪 Chemistry</option>
+                <option value="Physics">⚡ Physics</option>
+                <option value="General">📘 General / NEET Strategy</option>
+              </select>
             </div>
-            <button onclick="show('upload')">+ Upload New Material</button>
+            <div>
+              <label>Select PDF Note or Video (MP4 / WebM, max 100 MB)</label>
+              <input id="inlineResourceFile" type="file" accept="application/pdf,video/mp4,video/webm,video/quicktime">
+            </div>
+          </div>
+
+          <div style="display:flex;gap:10px;margin-top:16px">
+            <button id="inlineUploadSubmitBtn" onclick="submitInlineResourceUpload()">Upload Material Now</button>
+            <button class="out" onclick="toggleAdminUploadInline()">Cancel</button>
+          </div>
+        </div>
+
+        <!-- Filter bar & Cards -->
+        <div class="panel">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px">
+            <h3 style="margin:0">Uploaded Learning Resources (<span id="resourceTotalBadge">0</span>)</h3>
+            <div class="filter-pills-bar" style="margin:0">
+              <button class="filter-pill admin-res-pill active" data-res="all" onclick="filterAdminResources('all')">All Materials</button>
+              <button class="filter-pill admin-res-pill" data-res="notes" onclick="filterAdminResources('notes')">📄 PDF Notes</button>
+              <button class="filter-pill admin-res-pill" data-res="videos" onclick="filterAdminResources('videos')">🎥 Video Lectures</button>
+              <button class="filter-pill admin-res-pill" data-res="biology" onclick="filterAdminResources('biology')">Biology</button>
+              <button class="filter-pill admin-res-pill" data-res="chemistry" onclick="filterAdminResources('chemistry')">Chemistry</button>
+              <button class="filter-pill admin-res-pill" data-res="physics" onclick="filterAdminResources('physics')">Physics</button>
+            </div>
           </div>
           <div id="adminResourceList"></div>
         </div>
       </div>
 
-      <!-- SECTION 5: STUDENT RESULTS -->
-      <div id="adminSectionResults" class="hidden">
+      <!-- SECTION 5: STUDENT RESULTS (Only result lists, filters, test-wise/student-wise performance, and detailed answer review) -->
+      <div id="adminSectionResults" class="admin-section">
+        <div class="admin-section-header">
+          <div>
+            <h2>📊 Student Results</h2>
+            <p>Examine individual student submissions, accuracy percentages, and detailed question-by-question review sheets.</p>
+          </div>
+          <span class="tag" style="background:#111111;color:#ffffff;font-size:12px">Real-time Submissions</span>
+        </div>
+
+        <!-- Results KPIs -->
+        <div class="kpi-grid" style="margin-bottom:20px">
+          <div class="kpi-card">
+            <div class="kpi-label">📊 Total Attempts</div>
+            <div class="kpi-value" id="kpiResultsTotalCount">0</div>
+            <div class="kpi-desc">Submitted mock tests</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">🎯 Average Accuracy</div>
+            <div class="kpi-value" id="kpiResultsAvgAccuracy">0%</div>
+            <div class="kpi-desc">Across all attempts</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">🏆 Top Score</div>
+            <div class="kpi-value" id="kpiResultsTopScore">—</div>
+            <div class="kpi-desc">Highest student mark</div>
+          </div>
+        </div>
+
         <div class="panel">
-          <h3 style="margin-top:0">📊 Student Attempt Reports & Scores</h3>
-          <p class="muted">Real-time log of mock test submissions.</p>
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px">
+            <h3 style="margin:0">Student Submissions Log</h3>
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+              <input id="searchResultInput" placeholder="Filter by student name..." oninput="renderAdminReports()" style="width:200px;padding:8px 12px;font-size:13px">
+              <select id="filterResultByTest" onchange="renderAdminReports()" style="width:auto;padding:8px 12px;font-size:13px">
+                <option value="all">All Tests</option>
+              </select>
+            </div>
+          </div>
           <div id="adminAttemptsList"></div>
         </div>
       </div>
 
-      <!-- SECTION 6: STUDENT ACCOUNTS & ROLES -->
-      <div id="adminSectionAccounts" class="hidden">
+      <!-- SECTION 6: STUDENT ACCOUNTS (Only student account list, profile details, role/status, and account management controls) -->
+      <div id="adminSectionAccounts" class="admin-section">
+        <div class="admin-section-header">
+          <div>
+            <h2>👥 Student Accounts & Roles</h2>
+            <p>Manage registered accounts, view student and faculty profile details, and adjust platform permissions.</p>
+          </div>
+        </div>
+
+        <!-- Accounts KPIs -->
+        <div class="kpi-grid" style="margin-bottom:20px">
+          <div class="kpi-card">
+            <div class="kpi-label">👥 Total Accounts</div>
+            <div class="kpi-value" id="kpiAccountsTotal">0</div>
+            <div class="kpi-desc">Registered users</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">🎓 Students</div>
+            <div class="kpi-value" id="kpiAccountsStudents">0</div>
+            <div class="kpi-desc">NEET Aspirants</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">👨‍🏫 Faculty / Teachers</div>
+            <div class="kpi-value" id="kpiAccountsTeachers">0</div>
+            <div class="kpi-desc">Instructors & Mentors</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">🛡️ Platform Admins</div>
+            <div class="kpi-value" id="kpiAccountsAdmins">0</div>
+            <div class="kpi-desc">Platform controllers</div>
+          </div>
+        </div>
+
         <div class="panel">
-          <h3 style="margin-top:0">👥 User Accounts & Role Permissions</h3>
-          <p class="muted">Manage registered student, teacher, and administrator accounts.</p>
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px">
+            <h3 style="margin:0">User Directory</h3>
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+              <div class="filter-pills-bar" style="margin:0">
+                <button class="filter-pill admin-user-pill active" data-role="all" onclick="filterAdminUsers('all')">All</button>
+                <button class="filter-pill admin-user-pill" data-role="student" onclick="filterAdminUsers('student')">🎓 Students</button>
+                <button class="filter-pill admin-user-pill" data-role="teacher" onclick="filterAdminUsers('teacher')">👨‍🏫 Teachers</button>
+                <button class="filter-pill admin-user-pill" data-role="admin" onclick="filterAdminUsers('admin')">🛡️ Admins</button>
+              </div>
+              <input id="searchUsersInput" placeholder="Search name or email..." oninput="renderAdminUsersList()" style="width:200px;padding:8px 12px;font-size:13px">
+            </div>
+          </div>
           <div id="adminUsersList"></div>
         </div>
       </div>
 
-      <!-- SECTION 7: COMMUNITY MODERATION -->
-      <div id="adminSectionCommunity" class="hidden">
-        <div class="panel">
-          <h3 style="margin-top:0">💬 Community Doubt Moderation</h3>
-          <p class="muted">Moderate student doubt queries and thread replies.</p>
-          <button style="margin-bottom:16px" onclick="communityOpen()">Open Full Community Chat & Moderate</button>
-          <div id="adminCommunityOverview"></div>
-        </div>
-      </div>
-
-      <!-- SECTION 8: LIVE CLASSES -->
-      <div id="adminSectionLive" class="hidden">
-        <div class="panel">
-          <h3 style="margin-top:0">🔴 Live Class Broadcast Control</h3>
-          <p class="muted">Start or terminate a platform live stream. Stream recordings are automatically saved to Notes & Videos upon conclusion.</p>
-          <div style="margin:20px 0;background:#f7f7f5;padding:18px;border-radius:12px;border:1px solid #e0e0da">
-            <label style="margin-top:0">Class Title</label>
-            <input id="adminClassTitle" placeholder="e.g. Master Class: High-Yield NEET Chemistry Mechanisms" style="margin-bottom:12px">
-            <button onclick="startAdminLiveClass()">🔴 Start Live Broadcast</button>
+      <!-- SECTION 7: COMMUNITY (Only community messages, replies, uploaded photos, moderation, and remove-message controls) -->
+      <div id="adminSectionCommunity" class="admin-section">
+        <div class="admin-section-header">
+          <div>
+            <h2>💬 Community Moderation</h2>
+            <p>Moderate student questions, doubt replies, uploaded question photos, and post official platform announcements.</p>
           </div>
-          <div id="adminLiveClassStatusBox"></div>
+          <button class="light" onclick="communityOpen()">Open Full Community Chat ↗</button>
         </div>
-      </div>
 
-      <!-- SECTION 9: WEBSITE SETTINGS -->
-      <div id="adminSectionSettings" class="hidden">
-        <div class="panel" style="max-width:600px">
-          <h3 style="margin-top:0">⚙️ Website & Exam Settings</h3>
-          <p class="muted">Configure focus honesty and test alert parameters.</p>
-          <div style="margin-top:18px">
-            <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
-              <input type="checkbox" id="adminSettingFocus" checked style="width:auto;height:auto">
-              <span><b>Strict Focus Protection:</b> Auto-submit tests on tab switch, minimize, or focus loss.</span>
-            </label>
-            <p class="muted" style="font-size:12px;margin:4px 0 16px 26px">Ensures student practice simulates real proctored examination honesty.</p>
+        <!-- Official Announcement Card -->
+        <div class="panel" style="margin-bottom:24px">
+          <h3 style="margin-top:0">📢 Post Official Admin Announcement</h3>
+          <p class="muted" style="margin:0 0 10px;font-size:13px">Broadcast a pinned update, guidance, or answer directly to all NEET aspirants.</p>
+          <textarea id="adminAnnouncementText" placeholder="Write an official announcement or guidance message to students..." style="min-height:70px"></textarea>
+          <button style="margin-top:12px" onclick="submitAdminAnnouncement()">Post to Community Feed →</button>
+        </div>
 
-            <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
-              <input type="checkbox" id="adminSettingSound" checked style="width:auto;height:auto">
-              <span><b>5-Minute Countdown Warning:</b> Alert student when 5 minutes remain in test.</span>
-            </label>
+        <!-- Moderation Feed Container -->
+        <div class="panel">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+            <div>
+              <h3 style="margin:0">Community Feed Moderation (<span id="communityPostCountBadge">0</span> Posts)</h3>
+              <p class="muted" style="margin:2px 0 0;font-size:13px">Remove inappropriate doubt threads or offensive replies.</p>
+            </div>
+            <button class="out" style="padding:6px 12px;font-size:12px" onclick="loadAdminCommunity()">🔄 Refresh Feed</button>
           </div>
-          <button style="margin-top:20px" onclick="saveSettings()">Save Preferences</button>
+          <div id="adminCommunityFeed"></div>
         </div>
       </div>
+
+      <!-- SECTION 8: LIVE CLASSES (Only create/start/end live class, live status, attendee list, recording status, and saved recording controls) -->
+      <div id="adminSectionLive" class="admin-section">
+        <div class="admin-section-header">
+          <div>
+            <h2>🔴 Live Classes Hub</h2>
+            <p>Start live broadcasts, stream camera/microphone, monitor live status, and manage saved lecture recordings.</p>
+          </div>
+          <div id="adminLiveBadge">
+            <span class="tag green">● Broadcaster Ready</span>
+          </div>
+        </div>
+
+        <!-- Active Broadcast Control Box -->
+        <div class="live-stream-box" style="margin-bottom:24px">
+          <div id="adminLiveActiveView" style="display:none">
+            <span class="tag" style="background:#dc2626;color:#ffffff"><span class="live-pulse-dot"></span>LIVE BROADCAST IN PROGRESS</span>
+            <h3 id="adminActiveLiveTitle" style="font-size:22px;margin:10px 0 6px">NEET Master Class</h3>
+            <p style="margin:0 0 14px;color:#d7d7d2" id="adminActiveLiveHost">Broadcasting now to students.</p>
+            <video class="live-monitor-video" id="adminHostVideo" autoplay muted playsinline></video>
+            <div style="display:flex;gap:12px;align-items:center">
+              <button class="red" onclick="endLiveClass()">⏹ End Live Class & Save Recording</button>
+            </div>
+          </div>
+
+          <div id="adminLiveIdleView">
+            <span class="tag" style="background:#262624;color:#f0f0ed">🔴 Administrator Live Studio</span>
+            <h3 style="font-size:22px;margin:8px 0 4px">Start Live Broadcast</h3>
+            <p style="margin:0 0 18px;color:#d7d7d2;font-size:14px">Stream live interactive NEET lectures. Students receive an instant live banner alert on their dashboards.</p>
+
+            <div style="background:#1e1e1c;padding:18px;border-radius:12px;max-width:620px">
+              <label style="color:#e0e0dc;margin-top:0">Lecture Title</label>
+              <input id="adminClassTitle" placeholder="e.g. Master Class: High-Yield NEET Chemistry Mechanisms" style="background:#2a2a28;border-color:#444440;color:#ffffff;margin-bottom:14px">
+              <button onclick="startAdminLiveClass()" style="background:#ffffff;color:#111111;font-weight:800">🔴 Start Live Broadcast Now</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Saved Live Recordings -->
+        <div class="panel">
+          <h3 style="margin-top:0">Saved Live Class Recordings</h3>
+          <p class="muted">Recordings automatically saved to Notes & Videos upon live conclusion.</p>
+          <div id="adminLiveRecordingsList"></div>
+        </div>
+      </div>
+
+      <!-- SECTION 9: SETTINGS (Only website settings, branding, basic configuration, and admin preferences) -->
+      <div id="adminSectionSettings" class="admin-section">
+        <div class="admin-section-header">
+          <div>
+            <h2>⚙️ Platform & Admin Settings</h2>
+            <p>Website branding, examination honesty parameters, proctoring alerts, and administrative configurations.</p>
+          </div>
+        </div>
+
+        <div class="formgrid">
+          <!-- Platform Branding Panel -->
+          <div class="panel">
+            <h3 style="margin-top:0">🏷️ Platform Branding</h3>
+            <label>Platform Name</label>
+            <input value="PN Neet Diw" disabled style="background:#f7f7f5;color:#111111;font-weight:700">
+
+            <label>Admin Contact Email</label>
+            <input id="adminSettingsEmail" disabled style="background:#f7f7f5;color:#666662">
+
+            <label>Target Exam Scope</label>
+            <input value="NEET-UG Medical Entrance Preparation" disabled style="background:#f7f7f5;color:#666662">
+          </div>
+
+          <!-- Exam & Proctored Practice Rules Panel -->
+          <div class="panel">
+            <h3 style="margin-top:0">🛡️ Exam & Focus Rules</h3>
+            <p class="muted" style="margin:0 0 14px;font-size:13px">Configure student exam environment behavior.</p>
+
+            <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;margin-bottom:14px">
+              <input type="checkbox" id="adminSettingFocus" checked style="width:auto;height:auto;margin-top:3px">
+              <div>
+                <b>Strict Focus Protection:</b>
+                <span style="display:block;font-size:12.5px;color:var(--m);font-weight:400">Auto-submit test immediately on tab switch, window minimization, or blur.</span>
+              </div>
+            </label>
+
+            <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;margin-bottom:14px">
+              <input type="checkbox" id="adminSettingSound" checked style="width:auto;height:auto;margin-top:3px">
+              <div>
+                <b>5-Minute Countdown Warning:</b>
+                <span style="display:block;font-size:12.5px;color:var(--m);font-weight:400">Alert student visually and build time awareness in final minutes.</span>
+              </div>
+            </label>
+
+            <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer">
+              <input type="checkbox" id="adminSettingInstant" checked style="width:auto;height:auto;margin-top:3px">
+              <div>
+                <b>Instant Review Analysis:</b>
+                <span style="display:block;font-size:12.5px;color:var(--m);font-weight:400">Allow students to view detailed answer keys immediately upon test submission.</span>
+              </div>
+            </label>
+
+            <div style="margin-top:22px">
+              <button onclick="saveAdminSettings()">Save Preferences</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     </div>
   </main>
 
@@ -2025,6 +2483,7 @@
         tests = [],
         dashboard = {},
         adminUsers = [],
+        allResources = [],
         test = null,
         answers = {},
         timer,
@@ -2383,46 +2842,66 @@
       closeAdminControlsMenu();
       if (user?.role !== 'admin') return;
       switchAdminActiveSection(section);
-      $('adminDashboardView').scrollIntoView({ behavior: 'smooth' });
+      const stickyNav = $('adminStickyNav');
+      if (stickyNav) {
+        stickyNav.scrollIntoView({ behavior: 'smooth' });
+      }
     }
 
     function switchAdminActiveSection(section) {
-      activeAdminTab = section;
+      if (user?.role !== 'admin') return;
+      activeAdminTab = section || 'tests';
 
-      // Update button highlights
       const tabMap = {
-        tests: 'tabAdminTestsBtn',
-        questions: 'tabAdminQuestionsBtn',
-        schedule: 'tabAdminScheduleBtn',
-        resources: 'tabAdminResourcesBtn',
-        results: 'tabAdminResultsBtn',
-        accounts: 'tabAdminAccountsBtn',
-        community: 'tabAdminCommunityBtn',
-        live: 'tabAdminLiveBtn',
-        settings: 'tabAdminSettingsBtn'
+        tests: { btn: 'tabAdminTestsBtn', panel: 'adminSectionTests' },
+        questions: { btn: 'tabAdminQuestionsBtn', panel: 'adminSectionQuestions' },
+        schedule: { btn: 'tabAdminScheduleBtn', panel: 'adminSectionSchedule' },
+        resources: { btn: 'tabAdminResourcesBtn', panel: 'adminSectionResources' },
+        results: { btn: 'tabAdminResultsBtn', panel: 'adminSectionResults' },
+        accounts: { btn: 'tabAdminAccountsBtn', panel: 'adminSectionAccounts' },
+        community: { btn: 'tabAdminCommunityBtn', panel: 'adminSectionCommunity' },
+        live: { btn: 'tabAdminLiveBtn', panel: 'adminSectionLive' },
+        settings: { btn: 'tabAdminSettingsBtn', panel: 'adminSectionSettings' }
       };
 
-      Object.values(tabMap).forEach(btnId => {
-        const btn = $(btnId);
-        if (btn) btn.classList.remove('active');
+      // 1. Update navigation tab buttons: active option gets dark/black state, others clean white/gray
+      Object.keys(tabMap).forEach(key => {
+        const item = tabMap[key];
+        const btn = $(item.btn);
+        const panel = $(item.panel);
+
+        if (btn) {
+          const isActive = key === activeAdminTab;
+          btn.classList.toggle('active', isActive);
+          btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        }
+
+        // 2. Hide all other section content completely. Show only active option's complete content below navigation.
+        if (panel) {
+          const isActive = key === activeAdminTab;
+          panel.classList.toggle('active', isActive);
+        }
       });
-      if (tabMap[section] && $(tabMap[section])) {
-        $(tabMap[section]).classList.add('active');
-      }
 
-      // Hide all panels
-      $('adminSectionTests').classList.toggle('hidden', section !== 'tests' && section !== 'questions');
-      $('adminSectionSchedule').classList.toggle('hidden', section !== 'schedule');
-      $('adminSectionResources').classList.toggle('hidden', section !== 'resources');
-      $('adminSectionResults').classList.toggle('hidden', section !== 'results');
-      $('adminSectionAccounts').classList.toggle('hidden', section !== 'accounts');
-      $('adminSectionCommunity').classList.toggle('hidden', section !== 'community');
-      $('adminSectionLive').classList.toggle('hidden', section !== 'live');
-      $('adminSectionSettings').classList.toggle('hidden', section !== 'settings');
-
-      if (section === 'questions') {
-        const qEl = $('adminSectionQuestions');
-        if (qEl) qEl.scrollIntoView({ behavior: 'smooth' });
+      // 3. Trigger loader/renderer for active section
+      if (activeAdminTab === 'tests') {
+        renderAdminTests();
+      } else if (activeAdminTab === 'questions') {
+        renderAdminQuestions();
+      } else if (activeAdminTab === 'schedule') {
+        renderAdminSchedule();
+      } else if (activeAdminTab === 'resources') {
+        renderAdminResources();
+      } else if (activeAdminTab === 'results') {
+        renderAdminReports();
+      } else if (activeAdminTab === 'accounts') {
+        loadAdminUsers();
+      } else if (activeAdminTab === 'community') {
+        loadAdminCommunity();
+      } else if (activeAdminTab === 'live') {
+        loadAdminLive();
+      } else if (activeAdminTab === 'settings') {
+        loadAdminSettings();
       }
     }
 
@@ -2731,136 +3210,763 @@
     };
 
     // =========================================================================
-    // ADMIN DASHBOARD LOGIC
+    // ADMIN DASHBOARD CONTROLLER & LOGIC
     // =========================================================================
+    let adminCurrentTestFilter = 'all';
+    let adminScheduleFilter = 'all';
+    let adminResourceFilter = 'all';
+    let adminUserRoleFilter = 'all';
+
     async function adminLoad() {
       if (user?.role !== 'admin') return;
       try {
         dashboard = await api('admin/dashboard');
+        adminUsers = await api('admin/users');
+        allResources = await api('resources');
 
-        // Update Overview KPIs
-        $('kpiTestCount').textContent = dashboard.tests?.length || 0;
-        $('kpiUserCount').textContent = dashboard.students?.length || 0;
-        $('kpiAttemptCount').textContent = dashboard.attempts?.length || 0;
+        // Populate question target test dropdown
+        if ($('questionTest') && dashboard.tests) {
+          $('questionTest').innerHTML = dashboard.tests.map(t => `<option value="${t.id}">${esc(t.title)} (${esc(t.subject)})</option>`).join('');
+        }
 
-        // Load resources count
-        const resList = await api('resources');
-        $('kpiResourceCount').textContent = resList.length;
-
-        // Load live status
-        const live = await api('live-class');
-        $('kpiLiveStatus').textContent = live?.active ? 'LIVE NOW' : 'Offline';
-
-        // Populate test selectors
-        $('questionTest').innerHTML = dashboard.tests.map(t => `<option value="${t.id}">${esc(t.title)}</option>`).join('');
-
-        renderAdminContent();
-        renderAdminSchedule();
-        renderAdminResources(resList);
-        renderAdminReports();
-        loadAdminUsers();
+        // On initial Admin Dashboard load, show only one default section: Manage Tests
+        if (!activeAdminTab) activeAdminTab = 'tests';
+        switchAdminActiveSection(activeAdminTab);
       } catch (e) {
         console.error(e);
       }
     }
 
-    function renderAdminContent() {
-      $('content').innerHTML = dashboard.tests.map(t => `
-        <div class="item">
-          <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:8px">
-            <div>
-              <b style="font-size:16px">${esc(t.title)}</b><br>
-              <small>${esc(t.subject)} · ${esc(t.chapter || 'General')} · ${t.duration} min · ${when(t.startAt)} · ${t.active ? 'Visible' : 'Hidden'}</small>
-            </div>
-            <div>
-              <button class="light" style="padding:6px 12px;font-size:12px" onclick="editTest(${t.id})">Edit Test</button> 
-              <button class="red" style="padding:6px 12px;font-size:12px" onclick="removeTest(${t.id})">Delete</button>
+    // =========================================================================
+    // 1. MANAGE TESTS SECTION
+    // =========================================================================
+    function scrollToAdminTestForm() {
+      const el = $('adminTestFormCard');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function filterAdminTests(sub) {
+      adminCurrentTestFilter = sub;
+      const pills = document.querySelectorAll('.admin-test-pill');
+      pills.forEach(p => p.classList.toggle('active', p.getAttribute('data-sub') === sub));
+      renderAdminTests();
+    }
+
+    function renderAdminTests() {
+      const container = $('adminTestsList');
+      if (!container || !dashboard.tests) return;
+
+      const q = ($('searchTestsInput')?.value || '').trim().toLowerCase();
+      let list = dashboard.tests;
+
+      if (adminCurrentTestFilter === 'active') {
+        list = list.filter(t => t.active);
+      } else if (adminCurrentTestFilter === 'draft') {
+        list = list.filter(t => !t.active);
+      } else if (adminCurrentTestFilter !== 'all') {
+        list = list.filter(t => (t.subject || '').toLowerCase() === adminCurrentTestFilter.toLowerCase());
+      }
+
+      if (q) {
+        list = list.filter(t => (t.title || '').toLowerCase().includes(q) || (t.chapter || '').toLowerCase().includes(q));
+      }
+
+      if ($('testTotalBadge')) $('testTotalBadge').textContent = dashboard.tests.length;
+
+      if (!list.length) {
+        container.innerHTML = `
+          <div class="empty-state-card">
+            <span class="empty-state-icon">📝</span>
+            <h4 class="empty-state-title">No Mock Tests Found</h4>
+            <p class="empty-state-desc">No tests match your selected filter. Create one using the form above.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = list.map(t => {
+        const qCount = t.questions?.length || 0;
+        const isScheduled = !!t.startAt;
+        const scheduleLabel = isScheduled ? `📅 Starts ${when(t.startAt)}` : '⚡ Instant Practice';
+
+        return `
+          <div class="item" style="border-left-color:${t.active ? '#111111' : '#a3a39e'}">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px">
+              <div>
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+                  <span class="tag">${esc(t.subject)}</span>
+                  <span class="tag" style="background:#f0f0ed;color:#555550">${qCount} Questions</span>
+                  <span class="tag ${t.active ? 'green' : ''}">${t.active ? '● Published' : '○ Draft'}</span>
+                </div>
+                <b style="font-size:16px;color:#111111">${esc(t.title)}</b>
+                <div style="font-size:13px;color:#666662;margin-top:2px">
+                  <span>Unit: <b>${esc(t.chapter || 'General')}</b></span> · 
+                  <span>⏱ ${t.duration} min</span> · 
+                  <span>${scheduleLabel}</span>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                <button class="out" style="padding:6px 12px;font-size:12px" onclick="toggleTestPublish(${t.id})">
+                  ${t.active ? 'Hide (Unpublish)' : 'Publish to Students'}
+                </button>
+                <button class="light" style="padding:6px 12px;font-size:12px" onclick="editTest(${t.id})">Edit Test</button>
+                <button class="light" style="padding:6px 12px;font-size:12px;font-weight:700" onclick="manageQuestionsForTest(${t.id})">Manage Questions (${qCount}) →</button>
+                <button class="red" style="padding:6px 12px;font-size:12px" onclick="removeTest(${t.id})">Delete</button>
+              </div>
             </div>
           </div>
-          <div style="margin-top:12px">
-            <b>Questions (${t.questions.length}):</b>
-            ${t.questions.map(q => `
-              <div class="row">
-                <small style="max-width:70%">${esc(q.question)}</small>
-                <span>
-                  <button class="out" style="padding:5px 9px;font-size:11.5px" onclick="editQuestion(${q.id})">Edit</button> 
-                  <button class="red" style="padding:5px 9px;font-size:11.5px" onclick="removeQuestion(${q.id})">Delete</button>
-                </span>
-              </div>`).join('') || '<p class="muted" style="margin:4px 0">No questions added yet.</p>'}
+        `;
+      }).join('');
+    }
+
+    async function toggleTestPublish(id) {
+      let t = dashboard.tests.find(x => x.id === id);
+      if (!t) return;
+      try {
+        await api('admin/tests/' + id, {
+          method: 'PUT',
+          body: JSON.stringify({
+            title: t.title,
+            subject: t.subject,
+            chapter: t.chapter || 'General',
+            duration: t.duration,
+            startAt: t.startAt,
+            active: !t.active
+          })
+        });
+        t.active = !t.active;
+        renderAdminTests();
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+
+    function manageQuestionsForTest(testId) {
+      switchAdminActiveSection('questions');
+      const testSelect = $('questionTest');
+      const filterSelect = $('filterQuestionByTest');
+      if (testSelect) testSelect.value = testId;
+      if (filterSelect) {
+        filterSelect.value = testId;
+        renderAdminQuestions();
+      }
+      const header = $('adminSectionQuestions');
+      if (header) header.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function resetTest() {
+      $('editTest').value = '';
+      $('testTitle').value = '';
+      $('testSubject').value = 'Biology';
+      $('testChapter').value = '';
+      $('testDuration').value = 15;
+      $('testStart').value = '';
+      $('testActive').checked = true;
+      $('testHeading').textContent = 'Create a New Mock Test';
+    }
+
+    function editTest(id) {
+      let t = dashboard.tests.find(x => x.id === id);
+      if (!t) return;
+      $('editTest').value = id;
+      $('testTitle').value = t.title;
+      $('testSubject').value = t.subject;
+      $('testChapter').value = t.chapter || '';
+      $('testDuration').value = t.duration;
+      $('testStart').value = t.startAt ? new Date(t.startAt).toISOString().slice(0, 16) : '';
+      $('testActive').checked = t.active;
+      $('testHeading').textContent = 'Edit Test: ' + t.title;
+      scrollToAdminTestForm();
+    }
+
+    async function saveTest() {
+      try {
+        let id = $('editTest').value,
+            start = $('testStart').value,
+            b = {
+              title: $('testTitle').value.trim(),
+              subject: $('testSubject').value,
+              chapter: $('testChapter').value.trim() || 'General',
+              duration: +$('testDuration').value,
+              startAt: start ? new Date(start).toISOString() : null,
+              active: $('testActive').checked
+            };
+        if (!b.title) return alert('Please enter a test title.');
+        await api(id ? 'admin/tests/' + id : 'admin/tests', {
+          method: id ? 'PUT' : 'POST',
+          body: JSON.stringify(b)
+        });
+        resetTest();
+        await adminLoad();
+        alert('Test saved successfully.');
+      } catch (e) {
+        alert(e.message);
+      }
+    }
+
+    async function removeTest(id) {
+      if (confirm('Delete this mock test and all its questions permanently?')) {
+        await api('admin/tests/' + id, { method: 'DELETE' });
+        adminLoad();
+      }
+    }
+
+    // =========================================================================
+    // 2. MANAGE QUESTIONS SECTION
+    // =========================================================================
+    function scrollToAdminQuestionForm() {
+      const el = $('adminQuestionFormCard');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function renderAdminQuestions() {
+      const container = $('adminQuestionsList');
+      if (!container || !dashboard.tests) return;
+
+      const testSelect = $('questionTest');
+      const filterSelect = $('filterQuestionByTest');
+
+      // Populate test options if needed
+      if (testSelect && !testSelect.children.length) {
+        testSelect.innerHTML = dashboard.tests.map(t => `<option value="${t.id}">${esc(t.title)} (${esc(t.subject)})</option>`).join('');
+      }
+
+      if (filterSelect && filterSelect.options.length <= 1) {
+        const cur = filterSelect.value;
+        filterSelect.innerHTML = `<option value="all">All Tests (${dashboard.tests.reduce((acc, t) => acc + (t.questions?.length || 0), 0)} Questions)</option>` +
+          dashboard.tests.map(t => `<option value="${t.id}">${esc(t.title)} (${t.questions?.length || 0})</option>`).join('');
+        filterSelect.value = cur || 'all';
+      }
+
+      const selectedFilterTest = filterSelect ? filterSelect.value : 'all';
+      const qText = ($('searchQuestionsInput')?.value || '').trim().toLowerCase();
+
+      let allQuestions = [];
+      dashboard.tests.forEach(t => {
+        (t.questions || []).forEach(q => {
+          allQuestions.push({ ...q, testTitle: t.title, testSubject: t.subject });
+        });
+      });
+
+      if ($('questionTotalBadge')) $('questionTotalBadge').textContent = allQuestions.length;
+
+      let filtered = allQuestions;
+      if (selectedFilterTest !== 'all') {
+        filtered = filtered.filter(q => q.testId === +selectedFilterTest);
+      }
+      if (qText) {
+        filtered = filtered.filter(q => (q.question || '').toLowerCase().includes(qText));
+      }
+
+      if (!filtered.length) {
+        container.innerHTML = `
+          <div class="empty-state-card">
+            <span class="empty-state-icon">❓</span>
+            <h4 class="empty-state-title">No Questions Found</h4>
+            <p class="empty-state-desc">No questions match this selection. Add questions to this test using the form above.</p>
           </div>
-        </div>`).join('') || '<p class="muted">No mock tests created yet.</p>';
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map((q, idx) => {
+        const letters = ['A', 'B', 'C', 'D'];
+        return `
+          <div class="item" style="background:#ffffff;border:1.5px solid var(--line);border-radius:12px;padding:16px;margin-bottom:14px">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:8px">
+              <div style="display:flex;align-items:center;gap:8px">
+                <span class="tag" style="background:#111111;color:#ffffff;font-size:11px">Q#${idx + 1}</span>
+                <span class="tag" style="font-size:11px">${esc(q.testSubject)} · ${esc(q.testTitle)}</span>
+              </div>
+              <div>
+                <button class="light" style="padding:5px 12px;font-size:12px" onclick="editQuestion(${q.id})">Edit Question</button>
+                <button class="red" style="padding:5px 12px;font-size:12px" onclick="removeQuestion(${q.id})">Delete</button>
+              </div>
+            </div>
+
+            <div style="font-size:15px;font-weight:700;color:#111111;margin:8px 0 10px;line-height:1.5">
+              ${esc(q.question)}
+            </div>
+
+            <div class="question-options-preview">
+              ${(q.options || []).map((opt, optIdx) => {
+                const isCorrect = optIdx === q.answer;
+                return `
+                  <div class="q-opt-pill ${isCorrect ? 'is-correct' : ''}">
+                    <span><b>${letters[optIdx]}.</b> ${esc(opt)}</span>
+                    ${isCorrect ? '<span>✓ Correct Answer</span>' : ''}
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function resetQuestion() {
+      $('editQuestion').value = '';
+      ['questionText', 'oa', 'ob', 'oc', 'od'].forEach(x => $(x).value = '');
+      $('answer').value = '0';
+      $('questionHeading').textContent = 'Add a New Question';
+    }
+
+    function editQuestion(id) {
+      let q = dashboard.tests.flatMap(t => t.questions).find(x => x.id === id);
+      if (!q) return;
+      $('editQuestion').value = id;
+      $('questionTest').value = q.testId;
+      $('questionText').value = q.question;
+      ['oa', 'ob', 'oc', 'od'].forEach((x, i) => $(x).value = q.options[i]);
+      $('answer').value = q.answer;
+      $('questionHeading').textContent = 'Edit Question';
+      scrollToAdminQuestionForm();
+    }
+
+    async function saveQuestion() {
+      try {
+        let id = $('editQuestion').value,
+            b = {
+              testId: +$('questionTest').value,
+              question: $('questionText').value.trim(),
+              options: [$('oa').value.trim(), $('ob').value.trim(), $('oc').value.trim(), $('od').value.trim()],
+              answer: +$('answer').value
+            };
+        if (!b.testId) return alert('Select a target test first.');
+        if (!b.question) return alert('Enter question statement.');
+        if (b.options.some(x => !x)) return alert('Fill in all 4 options.');
+
+        await api(id ? 'admin/questions/' + id : 'admin/questions', {
+          method: id ? 'PUT' : 'POST',
+          body: JSON.stringify(b)
+        });
+        resetQuestion();
+        await adminLoad();
+        renderAdminQuestions();
+        alert('Question saved successfully.');
+      } catch (e) {
+        alert(e.message);
+      }
+    }
+
+    async function removeQuestion(id) {
+      if (confirm('Delete this question permanently?')) {
+        await api('admin/questions/' + id, { method: 'DELETE' });
+        await adminLoad();
+        renderAdminQuestions();
+      }
+    }
+
+    // =========================================================================
+    // 3. TEST SCHEDULE SECTION
+    // =========================================================================
+    function filterAdminSchedule(filter) {
+      adminScheduleFilter = filter;
+      const pills = document.querySelectorAll('.sched-filter-pill');
+      pills.forEach(p => p.classList.toggle('active', p.getAttribute('data-sched') === filter));
+      renderAdminSchedule();
     }
 
     function renderAdminSchedule() {
       const container = $('adminScheduleList');
-      if (!container) return;
-      container.innerHTML = dashboard.tests?.map(t => `
-        <div class="row">
-          <div>
-            <b>${esc(t.title)}</b><br>
-            <small>${esc(t.subject)} · ${esc(t.chapter || 'General')} · Duration: ${t.duration} min</small>
+      if (!container || !dashboard.tests) return;
+
+      const timed = dashboard.tests.filter(t => !!t.startAt);
+      const instant = dashboard.tests.filter(t => !t.startAt);
+      const published = dashboard.tests.filter(t => t.active);
+
+      if ($('kpiScheduleTimedCount')) $('kpiScheduleTimedCount').textContent = timed.length;
+      if ($('kpiScheduleInstantCount')) $('kpiScheduleInstantCount').textContent = instant.length;
+      if ($('kpiSchedulePublishedCount')) $('kpiSchedulePublishedCount').textContent = published.length;
+
+      let list = dashboard.tests;
+      if (adminScheduleFilter === 'upcoming') {
+        list = timed;
+      } else if (adminScheduleFilter === 'instant') {
+        list = instant;
+      }
+
+      if (!list.length) {
+        container.innerHTML = `
+          <div class="empty-state-card">
+            <span class="empty-state-icon">📅</span>
+            <h4 class="empty-state-title">No Scheduled Tests</h4>
+            <p class="empty-state-desc">There are no tests matching this timetable filter.</p>
           </div>
-          <div style="display:flex;align-items:center;gap:12px">
-            <span class="tag ${t.active ? 'green' : ''}">${t.active ? 'Active' : 'Inactive'}</span>
-            <span style="font-size:13px">${when(t.startAt)}</span>
-            <button class="light" style="padding:6px 10px;font-size:12px" onclick="editTest(${t.id});openAdminSection('tests')">Edit Schedule</button>
+        `;
+        return;
+      }
+
+      container.innerHTML = list.map(t => {
+        const isScheduled = !!t.startAt;
+        const now = Date.now();
+        const startTime = isScheduled ? new Date(t.startAt).getTime() : 0;
+        let timingBadge = '';
+
+        if (!isScheduled) {
+          timingBadge = '<span class="tag" style="background:#e0f2fe;color:#0369a1">⚡ Instant Practice</span>';
+        } else if (now >= startTime) {
+          timingBadge = '<span class="tag green">● Live / In Progress</span>';
+        } else {
+          timingBadge = `<span class="tag" style="background:#fef3c7;color:#92400e">⏳ Starts in ${Math.round((startTime - now) / (1000 * 60 * 60))}h</span>`;
+        }
+
+        return `
+          <div class="row" style="padding:16px 0">
+            <div>
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+                <span class="tag">${esc(t.subject)}</span>
+                ${timingBadge}
+                <span class="tag ${t.active ? 'green' : ''}">${t.active ? 'Visible' : 'Hidden'}</span>
+              </div>
+              <b style="font-size:15.5px;color:#111111">${esc(t.title)}</b>
+              <div style="font-size:13px;color:#666662;margin-top:2px">
+                <span>Unit: <b>${esc(t.chapter || 'General')}</b></span> · 
+                <span>Duration: <b>${t.duration} mins</b></span> · 
+                <span>Exam Date: <b>${when(t.startAt)}</b></span>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <button class="light" style="padding:7px 12px;font-size:12.5px" onclick="editTest(${t.id});switchAdminActiveSection('tests')">Edit Schedule</button>
+            </div>
           </div>
-        </div>
-      `).join('') || '<p class="muted">No tests scheduled.</p>';
+        `;
+      }).join('');
     }
 
-    function renderAdminResources(list) {
+    // =========================================================================
+    // 4. NOTES & VIDEOS SECTION
+    // =========================================================================
+    function toggleAdminUploadInline() {
+      const card = $('adminInlineUploadCard');
+      if (card) {
+        card.style.display = card.style.display === 'none' ? 'block' : 'none';
+        if (card.style.display === 'block') card.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    function filterAdminResources(filter) {
+      adminResourceFilter = filter;
+      const pills = document.querySelectorAll('.admin-res-pill');
+      pills.forEach(p => p.classList.toggle('active', p.getAttribute('data-res') === filter));
+      renderAdminResources();
+    }
+
+    function renderAdminResources(listParam) {
       const container = $('adminResourceList');
       if (!container) return;
-      container.innerHTML = list.length ? `<div class="grid">${list.map(x => `
-        <article class="card">
-          <span class="tag">${x.type === 'note' ? 'PDF Note' : 'Video'} · ${esc(x.subject)}</span>
-          <h3>${esc(x.title)}</h3>
-          ${x.type === 'video'
-            ? `<video controls preload="metadata" style="width:100%;border-radius:8px" src="${x.url}"></video>`
-            : `<a href="${x.url}" target="_blank" download><button class="light">Download Note</button></a>`}
-          <button class="red" style="margin-top:10px" onclick="deleteResource(${x.id})">Delete</button>
-        </article>`).join('')}</div>` : '<p class="muted">No study materials uploaded yet.</p>';
+      const list = listParam || allResources;
+
+      if ($('resourceTotalBadge')) $('resourceTotalBadge').textContent = list.length;
+
+      let filtered = list;
+      if (adminResourceFilter === 'notes') {
+        filtered = filtered.filter(x => x.type === 'note');
+      } else if (adminResourceFilter === 'videos') {
+        filtered = filtered.filter(x => x.type === 'video');
+      } else if (adminResourceFilter !== 'all') {
+        filtered = filtered.filter(x => (x.subject || '').toLowerCase() === adminResourceFilter.toLowerCase());
+      }
+
+      if (!filtered.length) {
+        container.innerHTML = `
+          <div class="empty-state-card">
+            <span class="empty-state-icon">📚</span>
+            <h4 class="empty-state-title">No Study Materials Available</h4>
+            <p class="empty-state-desc">Upload high-yield PDF notes or recorded videos for students.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = `
+        <div class="grid">${filtered.map(x => `
+          <article class="card">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+              <span class="tag">${x.type === 'note' ? '📄 PDF Note' : '🎥 Video'} · ${esc(x.subject)}</span>
+              <small class="muted">${new Date(x.createdAt).toLocaleDateString('en-IN')}</small>
+            </div>
+            <h3>${esc(x.title)}</h3>
+            ${x.type === 'video'
+              ? `<video controls preload="metadata" style="width:100%;border-radius:10px;margin:8px 0" src="${x.url}"></video>`
+              : `<a href="${x.url}" target="_blank" download style="text-decoration:none"><button class="light" style="margin:10px 0 0;width:100%">⬇ Download PDF Note</button></a>`}
+            <button class="red" style="margin-top:10px" onclick="deleteResource(${x.id})">Delete Material</button>
+          </article>`).join('')}
+        </div>
+      `;
     }
 
+    async function submitInlineResourceUpload() {
+      const file = $('inlineResourceFile').files[0];
+      const title = $('inlineResourceTitle').value.trim();
+      const subject = $('inlineResourceSubject').value;
+      const btn = $('inlineUploadSubmitBtn');
+
+      if (!file) return alert('Select a PDF or Video file first.');
+      if (!title) return alert('Provide a title for this study material.');
+
+      btn.disabled = true;
+      btn.textContent = 'Uploading...';
+
+      try {
+        const fd = new FormData();
+        fd.append('title', title);
+        fd.append('subject', subject);
+        fd.append('file', file);
+
+        await api('admin/resources', { method: 'POST', body: fd });
+        $('inlineResourceTitle').value = '';
+        $('inlineResourceFile').value = '';
+        toggleAdminUploadInline();
+        allResources = await api('resources');
+        renderAdminResources();
+        alert('Study material uploaded successfully!');
+      } catch (err) {
+        alert(err.message || 'Upload failed');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Upload Material Now';
+      }
+    }
+
+    // =========================================================================
+    // 5. STUDENT RESULTS SECTION
+    // =========================================================================
     function renderAdminReports() {
-      $('adminAttemptsList').innerHTML = (dashboard.attempts || []).length
-        ? (dashboard.attempts || []).map(a => `
-            <div class="row">
-              <div>
-                <b>${esc(a.student)}</b><br>
-                <small>${esc(a.test)} · ${new Date(a.createdAt).toLocaleString('en-IN')}</small>
+      const container = $('adminAttemptsList');
+      if (!container || !dashboard.attempts) return;
+
+      const attempts = dashboard.attempts || [];
+      const testSelect = $('filterResultByTest');
+
+      if (testSelect && testSelect.options.length <= 1 && dashboard.tests) {
+        testSelect.innerHTML = '<option value="all">All Tests</option>' +
+          dashboard.tests.map(t => `<option value="${t.id}">${esc(t.title)}</option>`).join('');
+      }
+
+      // Update KPIs
+      const totalCount = attempts.length;
+      let avgAcc = 0;
+      let topScore = '—';
+
+      if (totalCount > 0) {
+        const sumPct = attempts.reduce((acc, a) => acc + (a.score / a.total), 0);
+        avgAcc = Math.round((sumPct / totalCount) * 100);
+        const top = Math.max(...attempts.map(a => Math.round((a.score / a.total) * 100)));
+        topScore = top + '%';
+      }
+
+      if ($('kpiResultsTotalCount')) $('kpiResultsTotalCount').textContent = totalCount;
+      if ($('kpiResultsAvgAccuracy')) $('kpiResultsAvgAccuracy').textContent = avgAcc + '%';
+      if ($('kpiResultsTopScore')) $('kpiResultsTopScore').textContent = topScore;
+
+      const searchName = ($('searchResultInput')?.value || '').trim().toLowerCase();
+      const selectedTest = testSelect ? testSelect.value : 'all';
+
+      let list = attempts;
+      if (selectedTest !== 'all') {
+        list = list.filter(a => a.testId === +selectedTest);
+      }
+      if (searchName) {
+        list = list.filter(a => (a.student || '').toLowerCase().includes(searchName));
+      }
+
+      if (!list.length) {
+        container.innerHTML = `
+          <div class="empty-state-card">
+            <span class="empty-state-icon">📊</span>
+            <h4 class="empty-state-title">No Submissions Found</h4>
+            <p class="empty-state-desc">No student results match your filter criteria.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = list.map(a => {
+        const pct = Math.round((a.score / a.total) * 100);
+        const tagClass = pct >= 75 ? 'green' : (pct < 40 ? 'red' : '');
+        return `
+          <div class="row" style="padding:14px 0">
+            <div>
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px">
+                <span class="tag" style="font-weight:700">🎓 ${esc(a.student)}</span>
+                <span class="tag ${tagClass}">${a.score}/${a.total} · ${pct}%</span>
               </div>
-              <span class="tag">${a.score}/${a.total} · ${Math.round(a.score / a.total * 100)}%</span>
-            </div>`).join('')
-        : '<p class="muted">No student test attempts recorded yet.</p>';
+              <b style="font-size:15px;color:#111111">${esc(a.test)}</b>
+              <div style="font-size:12.5px;color:#666662;margin-top:2px">
+                Attempted on ${new Date(a.createdAt).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <button class="light" style="padding:7px 14px;font-size:12.5px;font-weight:700" onclick="viewAdminAttemptReview(${a.id})">Detailed Answer Review →</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function viewAdminAttemptReview(attemptId) {
+      const attempt = (dashboard.attempts || []).find(x => x.id === attemptId);
+      if (!attempt) return alert('Attempt details not found.');
+      if (!attempt.review || !attempt.review.length) {
+        return alert('Detailed question breakdown is not available for this submission.');
+      }
+
+      const correctCount = attempt.review.filter(q => q.selectedAnswer === q.correctAnswer).length;
+      const wrongCount = attempt.review.filter(q => q.selectedAnswer !== null && q.selectedAnswer !== q.correctAnswer).length;
+      const unattemptedCount = attempt.review.filter(q => q.selectedAnswer === null).length;
+      const percentage = Math.round((attempt.score / attempt.total) * 100);
+
+      $('testBox').innerHTML = `
+        <button class="close" onclick="hide('test')">✕</button>
+        <span class="tag">Student Submission Review</span>
+        <h2 style="margin:10px 0 4px;font-size:22px">${esc(attempt.student)} — ${esc(attempt.test)}</h2>
+        <p class="muted" style="margin:0 0 16px">Completed on ${new Date(attempt.createdAt).toLocaleString('en-IN')}</p>
+
+        <div class="review-score-hero" style="padding:20px;margin-bottom:20px">
+          <div style="font-size:32px;font-weight:800">${attempt.score} / ${attempt.total} (${percentage}%)</div>
+          <div class="review-stat-pills">
+            <span class="review-stat-pill correct">✓ ${correctCount} Correct</span>
+            <span class="review-stat-pill wrong">✗ ${wrongCount} Incorrect</span>
+            <span class="review-stat-pill unanswered">— ${unattemptedCount} Unattempted</span>
+          </div>
+        </div>
+
+        <div style="margin-top:20px">
+          ${attempt.review.map((q, idx) => {
+            const isCorrect = q.selectedAnswer === q.correctAnswer;
+            const isUnattempted = q.selectedAnswer === null;
+            let statusBadge = isCorrect
+              ? `<span class="review-badge correct">✓ Correct</span>`
+              : (isUnattempted ? `<span class="review-badge unanswered">— Not Attempted</span>` : `<span class="review-badge wrong">✗ Incorrect</span>`);
+
+            return `
+              <article class="review-item-card">
+                <div class="review-item-header">
+                  <b>Question ${idx + 1}</b>
+                  <div style="display:flex;align-items:center;gap:8px">
+                    ${statusBadge}
+                    <span style="font-size:12px;color:var(--m)">Spent: ${q.timeSpent || 0}s</span>
+                  </div>
+                </div>
+
+                <div style="font-size:15.5px;font-weight:600;margin-bottom:14px;color:#111">
+                  ${esc(q.question)}
+                </div>
+
+                <div>
+                  ${q.options.map((opt, optIdx) => {
+                    const isAnswer = optIdx === q.correctAnswer;
+                    const isUserChoice = optIdx === q.selectedAnswer;
+                    let rowClass = 'review-option-row';
+                    let labelTag = '';
+
+                    if (isAnswer) {
+                      rowClass += ' is-correct';
+                      labelTag = '✓ Correct Answer';
+                    } else if (isUserChoice) {
+                      rowClass += ' is-wrong';
+                      labelTag = '✗ Student Choice';
+                    }
+
+                    return `
+                      <div class="${rowClass}">
+                        <span><b>${'ABCD'[optIdx]}.</b> ${esc(opt)}</span>
+                        ${labelTag ? `<span style="font-size:12px;font-weight:700">${labelTag}</span>` : ''}
+                      </div>
+                    `;
+                  }).join('')}
+                </div>
+              </article>
+            `;
+          }).join('')}
+        </div>
+
+        <div style="margin-top:20px;text-align:center">
+          <button style="padding:10px 24px" onclick="hide('test')">Close Review</button>
+        </div>
+      `;
+      show('test');
+    }
+
+    // =========================================================================
+    // 6. STUDENT ACCOUNTS SECTION
+    // =========================================================================
+    function filterAdminUsers(role) {
+      adminUserRoleFilter = role;
+      const pills = document.querySelectorAll('.admin-user-pill');
+      pills.forEach(p => p.classList.toggle('active', p.getAttribute('data-role') === role));
+      renderAdminUsersList();
     }
 
     async function loadAdminUsers() {
       try {
         adminUsers = await api('admin/users');
-        $('kpiUserCount').textContent = adminUsers.length;
-        const container = $('adminUsersList');
-        if (!container) return;
+        renderAdminUsersList();
+      } catch (err) {
+        console.error(err);
+      }
+    }
 
-        container.innerHTML = adminUsers.map(u => `
-          <div class="row">
-            <div>
-              <b>${esc(u.name)}</b> <span class="tag ${u.role === 'admin' ? 'red' : (u.role === 'teacher' ? 'green' : '')}">${u.role.toUpperCase()}</span><br>
-              <small>${esc(u.email)} · Registered ${new Date(u.createdAt).toLocaleDateString('en-IN')}</small>
+    function renderAdminUsersList() {
+      const container = $('adminUsersList');
+      if (!container || !adminUsers) return;
+
+      const total = adminUsers.length;
+      const students = adminUsers.filter(u => u.role === 'student').length;
+      const teachers = adminUsers.filter(u => u.role === 'teacher').length;
+      const admins = adminUsers.filter(u => u.role === 'admin').length;
+
+      if ($('kpiAccountsTotal')) $('kpiAccountsTotal').textContent = total;
+      if ($('kpiAccountsStudents')) $('kpiAccountsStudents').textContent = students;
+      if ($('kpiAccountsTeachers')) $('kpiAccountsTeachers').textContent = teachers;
+      if ($('kpiAccountsAdmins')) $('kpiAccountsAdmins').textContent = admins;
+
+      const search = ($('searchUsersInput')?.value || '').trim().toLowerCase();
+
+      let list = adminUsers;
+      if (adminUserRoleFilter !== 'all') {
+        list = list.filter(u => u.role === adminUserRoleFilter);
+      }
+      if (search) {
+        list = list.filter(u => (u.name || '').toLowerCase().includes(search) || (u.email || '').toLowerCase().includes(search));
+      }
+
+      if (!list.length) {
+        container.innerHTML = `
+          <div class="empty-state-card">
+            <span class="empty-state-icon">👥</span>
+            <h4 class="empty-state-title">No Accounts Found</h4>
+            <p class="empty-state-desc">No users match this filter.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = list.map(u => `
+        <div class="row" style="padding:14px 0">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div class="avatar-circle" style="width:38px;height:38px;font-size:14px">
+              ${u.avatar ? `<img src="${u.avatar}" class="nav-avatar-img">` : (u.name || 'U').charAt(0).toUpperCase()}
             </div>
-            <div style="display:flex;align-items:center;gap:8px">
-              <select onchange="updateUserRole(${u.id}, this.value)" style="padding:6px 10px;font-size:12px;width:auto">
-                <option value="student" ${u.role === 'student' ? 'selected' : ''}>Student</option>
-                <option value="teacher" ${u.role === 'teacher' ? 'selected' : ''}>Teacher / Faculty</option>
-                <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>Admin</option>
-              </select>
+            <div>
+              <div style="display:flex;align-items:center;gap:8px">
+                <b style="font-size:15px;color:#111111">${esc(u.name)}</b>
+                <span class="tag ${u.role === 'admin' ? 'red' : (u.role === 'teacher' ? 'green' : '')}">${u.role.toUpperCase()}</span>
+              </div>
+              <small class="muted">${esc(u.email)} · Registered ${new Date(u.createdAt).toLocaleDateString('en-IN')}</small>
             </div>
           </div>
-        `).join('');
-      } catch (e) {
-        console.error(e);
-      }
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="font-size:12px;font-weight:700;color:#666662">Role:</span>
+            <select onchange="updateUserRole(${u.id}, this.value)" style="padding:6px 10px;font-size:12.5px;width:auto">
+              <option value="student" ${u.role === 'student' ? 'selected' : ''}>Student</option>
+              <option value="teacher" ${u.role === 'teacher' ? 'selected' : ''}>Teacher / Faculty</option>
+              <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>Admin</option>
+            </select>
+          </div>
+        </div>
+      `).join('');
     }
 
     async function updateUserRole(id, role) {
@@ -2877,120 +3983,196 @@
       }
     }
 
+    // =========================================================================
+    // 7. COMMUNITY MODERATION SECTION
+    // =========================================================================
+    async function loadAdminCommunity() {
+      const container = $('adminCommunityFeed');
+      if (!container) return;
+
+      try {
+        const posts = await api('community');
+        if ($('communityPostCountBadge')) $('communityPostCountBadge').textContent = posts.length;
+
+        if (!posts.length) {
+          container.innerHTML = `
+            <div class="empty-state-card">
+              <span class="empty-state-icon">💬</span>
+              <h4 class="empty-state-title">No Community Posts Yet</h4>
+              <p class="empty-state-desc">Doubts and discussions started by students will appear here.</p>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = posts.map(post => `
+          <div class="comm-mod-card">
+            <div class="comm-mod-header">
+              <div class="comm-mod-author">
+                <div class="avatar-circle" style="width:34px;height:34px;font-size:13px">
+                  ${post.authorAvatar ? `<img src="${post.authorAvatar}" class="nav-avatar-img">` : (post.author || 'S').charAt(0).toUpperCase()}
+                </div>
+                <div>
+                  <b style="font-size:14px;color:#111111">${esc(post.author)}</b>
+                  <span class="tag" style="font-size:10px;padding:2px 7px">${esc(post.authorRole || 'student')}</span>
+                  <small class="muted" style="display:block">${new Date(post.createdAt).toLocaleString('en-IN')}</small>
+                </div>
+              </div>
+              <button class="red" style="padding:5px 10px;font-size:12px" onclick="deleteCommunityPost(${post.id})">🗑️ Delete Post</button>
+            </div>
+
+            <div class="comm-mod-body">${esc(post.body)}</div>
+            ${post.image ? `<img src="${post.image}" class="comm-mod-image" onclick="window.open('${post.image}','_blank')">` : ''}
+
+            ${(post.comments && post.comments.length) ? `
+              <div class="comm-mod-replies">
+                <div style="font-size:12px;font-weight:700;color:#555550;margin-bottom:6px">Replies (${post.comments.length}):</div>
+                ${post.comments.map(c => `
+                  <div class="comm-mod-reply-row">
+                    <div>
+                      <b style="font-size:13px">${esc(c.author)}:</b>
+                      <span style="font-size:13px;color:#222">${esc(c.body)}</span>
+                      <small class="muted" style="display:block">${new Date(c.createdAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}</small>
+                    </div>
+                    <button class="red" style="padding:3px 7px;font-size:11px" onclick="deleteCommunityComment(${post.id}, ${c.id})">Delete</button>
+                  </div>
+                `).join('')}
+              </div>
+            ` : ''}
+          </div>
+        `).join('');
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    async function submitAdminAnnouncement() {
+      const text = ($('adminAnnouncementText')?.value || '').trim();
+      if (!text) return alert('Please enter an announcement text.');
+
+      try {
+        await api('community', {
+          method: 'POST',
+          body: JSON.stringify({ body: '📢 [OFFICIAL ANNOUNCEMENT]\n' + text })
+        });
+        $('adminAnnouncementText').value = '';
+        loadAdminCommunity();
+        alert('Announcement broadcasted to community!');
+      } catch (err) {
+        alert(err.message || 'Failed to post announcement.');
+      }
+    }
+
+    async function deleteCommunityPost(id) {
+      if (confirm('Delete this doubt post and all its replies?')) {
+        await api('community/' + id, { method: 'DELETE' });
+        loadAdminCommunity();
+      }
+    }
+
+    async function deleteCommunityComment(postId, commentId) {
+      if (confirm('Delete this reply?')) {
+        await api('community/' + postId + '/comments/' + commentId, { method: 'DELETE' });
+        loadAdminCommunity();
+      }
+    }
+
+    // =========================================================================
+    // 8. LIVE CLASSES SECTION
+    // =========================================================================
+    async function loadAdminLive() {
+      try {
+        const live = await api('live-class');
+        const badge = $('adminLiveBadge');
+        const activeView = $('adminLiveActiveView');
+        const idleView = $('adminLiveIdleView');
+
+        if (live?.active) {
+          if (badge) badge.innerHTML = `<span class="tag" style="background:#dc2626;color:#ffffff"><span class="live-pulse-dot"></span>LIVE BROADCAST NOW</span>`;
+          if (activeView) activeView.style.display = 'block';
+          if (idleView) idleView.style.display = 'none';
+          if ($('adminActiveLiveTitle')) $('adminActiveLiveTitle').textContent = live.title || 'Live NEET Session';
+          if ($('adminActiveLiveHost')) $('adminActiveLiveHost').textContent = `Host: ${live.teacher || 'Admin'} · Started ${new Date(live.startedAt).toLocaleTimeString('en-IN')}`;
+        } else {
+          if (badge) badge.innerHTML = `<span class="tag green">● Broadcaster Ready</span>`;
+          if (activeView) activeView.style.display = 'none';
+          if (idleView) idleView.style.display = 'block';
+        }
+
+        // Render saved recordings
+        const recordingsList = $('adminLiveRecordingsList');
+        if (recordingsList) {
+          const recs = (allResources || []).filter(r => r.type === 'video' || (r.subject || '').toLowerCase().includes('live'));
+          if (!recs.length) {
+            recordingsList.innerHTML = '<p class="muted">No past recordings available yet.</p>';
+          } else {
+            recordingsList.innerHTML = `
+              <div class="grid">${recs.map(r => `
+                <article class="card">
+                  <span class="tag">🎥 Live Class Recording</span>
+                  <h3>${esc(r.title)}</h3>
+                  <video controls preload="metadata" style="width:100%;border-radius:8px;margin:8px 0" src="${r.url}"></video>
+                  <small class="muted" style="display:block;margin-bottom:8px">Saved on ${new Date(r.createdAt).toLocaleDateString('en-IN')}</small>
+                  <button class="red" onclick="deleteResource(${r.id})">Delete Recording</button>
+                </article>
+              `).join('')}</div>
+            `;
+          }
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
     async function startAdminLiveClass() {
-      const title = $('adminClassTitle').value.trim() || 'Administrator Live Stream';
-      if (typeof window.startLiveClass === 'function') {
-        window.startLiveClass();
-      }
-    }
-
-    // Manage Tests CRUD
-    function resetTest() {
-      $('editTest').value = '';
-      $('testTitle').value = '';
-      $('testSubject').value = 'Biology';
-      $('testChapter').value = '';
-      $('testDuration').value = 15;
-      $('testStart').value = '';
-      $('testActive').checked = true;
-      $('testHeading').textContent = 'Create a scheduled test';
-    }
-
-    function editTest(id) {
-      let t = dashboard.tests.find(x => x.id === id);
-      if (!t) return;
-      $('editTest').value = id;
-      $('testTitle').value = t.title;
-      $('testSubject').value = t.subject;
-      $('testChapter').value = t.chapter || '';
-      $('testDuration').value = t.duration;
-      $('testStart').value = t.startAt ? new Date(t.startAt).toISOString().slice(0, 16) : '';
-      $('testActive').checked = t.active;
-      $('testHeading').textContent = 'Edit test: ' + t.title;
-    }
-
-    async function saveTest() {
+      const title = $('adminClassTitle').value.trim() || 'NEET Master Lecture';
       try {
-        let id = $('editTest').value,
-            start = $('testStart').value,
-            b = {
-              title: $('testTitle').value,
-              subject: $('testSubject').value,
-              chapter: $('testChapter').value,
-              duration: +$('testDuration').value,
-              startAt: start ? new Date(start).toISOString() : null,
-              active: $('testActive').checked
-            };
-        await api(id ? 'admin/tests/' + id : 'admin/tests', {
-          method: id ? 'PUT' : 'POST',
-          body: JSON.stringify(b)
-        });
-        resetTest();
-        await adminLoad();
-        alert('Test saved successfully.');
-      } catch (e) {
-        alert(e.message);
+        const cameraStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        await api('admin/live-class/start', { method: 'POST', body: JSON.stringify({ title }) });
+
+        const videoEl = $('adminHostVideo');
+        if (videoEl) {
+          videoEl.srcObject = cameraStream;
+          videoEl.play();
+        }
+
+        loadAdminLive();
+        alert('You are now broadcasting live! Students have received an alert banner.');
+      } catch (err) {
+        alert(err.message || 'Camera and mic permissions needed to start live stream.');
       }
     }
 
-    async function removeTest(id) {
-      if (confirm('Delete this test and all its questions?')) {
-        await api('admin/tests/' + id, { method: 'DELETE' });
-        adminLoad();
+    // =========================================================================
+    // 9. WEBSITE SETTINGS SECTION
+    // =========================================================================
+    function loadAdminSettings() {
+      if ($('adminSettingsEmail')) $('adminSettingsEmail').value = user?.email || 'admin@pnneetdiw.com';
+      if ($('adminSettingFocus')) {
+        const val = localStorage.getItem('settings_focus');
+        $('adminSettingFocus').checked = val === null ? true : val === 'true';
+      }
+      if ($('adminSettingSound')) {
+        const val = localStorage.getItem('settings_sound');
+        $('adminSettingSound').checked = val === null ? true : val === 'true';
+      }
+      if ($('adminSettingInstant')) {
+        const val = localStorage.getItem('settings_instant');
+        $('adminSettingInstant').checked = val === null ? true : val === 'true';
       }
     }
 
-    // Questions CRUD
-    function resetQuestion() {
-      $('editQuestion').value = '';
-      ['questionText', 'oa', 'ob', 'oc', 'od'].forEach(x => $(x).value = '');
-      $('answer').value = '0';
-      $('questionHeading').textContent = 'Add a question';
+    function saveAdminSettings() {
+      localStorage.setItem('settings_focus', $('adminSettingFocus').checked);
+      localStorage.setItem('settings_sound', $('adminSettingSound').checked);
+      localStorage.setItem('settings_instant', $('adminSettingInstant').checked);
+      alert('Website and exam settings saved successfully!');
     }
 
-    function editQuestion(id) {
-      let q = dashboard.tests.flatMap(t => t.questions).find(x => x.id === id);
-      if (!q) return;
-      $('editQuestion').value = id;
-      $('questionTest').value = q.testId;
-      $('questionText').value = q.question;
-      ['oa', 'ob', 'oc', 'od'].forEach((x, i) => $(x).value = q.options[i]);
-      $('answer').value = q.answer;
-      $('questionHeading').textContent = 'Edit question';
-    }
-
-    async function saveQuestion() {
-      try {
-        let id = $('editQuestion').value,
-            b = {
-              testId: +$('questionTest').value,
-              question: $('questionText').value,
-              options: [$('oa').value, $('ob').value, $('oc').value, $('od').value],
-              answer: +$('answer').value
-            };
-        await api(id ? 'admin/questions/' + id : 'admin/questions', {
-          method: id ? 'PUT' : 'POST',
-          body: JSON.stringify(b)
-        });
-        resetQuestion();
-        await adminLoad();
-        alert('Question saved.');
-      } catch (e) {
-        alert(e.message);
-      }
-    }
-
-    async function removeQuestion(id) {
-      if (confirm('Delete this question?')) {
-        await api('admin/questions/' + id, { method: 'DELETE' });
-        adminLoad();
-      }
-    }
 
     // =========================================================================
     // STUDY MATERIAL (NOTES & VIDEOS)
     // =========================================================================
-    let allResources = [];
     let currentLibraryFilter = 'all';
 
     async function libraryOpen() {
