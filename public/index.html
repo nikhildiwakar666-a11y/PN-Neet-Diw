@@ -80,34 +80,10 @@
     }
 
     .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .nav-link-btn {
-      background: transparent;
-      color: #444440;
-      border: 1px solid transparent;
-      padding: 7px 12px;
-      border-radius: 8px;
-      font-size: 13.5px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .nav-link-btn:hover {
-      background: #f0f0ed;
-      color: #111111;
-    }
-    .nav-link-btn.active {
-      background: #111111;
-      color: #ffffff;
+      display: none !important;
     }
 
-    /* Header Right & Admin Controls Menu */
+    /* Header Right Area */
     .header-right {
       display: flex;
       align-items: center;
@@ -115,120 +91,15 @@
       position: relative;
     }
 
-    /* Professional Admin Controls Trigger Button */
+    /* Top header admin button is hidden; all controls are in three-dot menu */
     .admin-controls-btn {
-      background: #111111;
-      color: #ffffff;
-      border: 1px solid #111111;
-      border-radius: 9px;
-      padding: 8px 14px;
-      font-size: 13px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      display: none !important;
     }
-    .admin-controls-btn:hover {
-      background: #2c2c28;
-      border-color: #2c2c28;
-    }
-    .admin-controls-btn svg {
-      flex-shrink: 0;
-    }
-
-    /* Admin Controls Dropdown Menu */
     .admin-controls-menu {
-      position: absolute;
-      top: calc(100% + 10px);
-      right: 0;
-      width: 320px;
-      max-width: 92vw;
-      background: #ffffff;
-      border: 1px solid #dcdcd6;
-      border-radius: 16px;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
-      padding: 10px;
-      display: none;
-      flex-direction: column;
-      gap: 2px;
-      z-index: 1010;
-      animation: menuFadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .admin-controls-menu.open {
-      display: flex;
-    }
-    .admin-menu-header {
-      padding: 10px 14px 12px;
-      border-bottom: 1px solid #ebebe6;
-      margin-bottom: 6px;
-    }
-    .admin-menu-badge {
-      display: inline-block;
-      font-size: 10.5px;
-      font-weight: 800;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      background: #111111;
-      color: #ffffff;
-      padding: 2px 7px;
-      border-radius: 4px;
-      margin-bottom: 5px;
-    }
-    .admin-menu-title {
-      font-size: 16px;
-      font-weight: 800;
-      color: #111111;
-      margin: 0;
-    }
-    .admin-menu-sub {
-      font-size: 12px;
-      color: var(--m);
-      margin: 3px 0 0;
-    }
-    .admin-menu-item {
-      display: flex;
-      align-items: center;
-      gap: 11px;
-      padding: 10px 13px;
-      border-radius: 9px;
-      background: transparent;
-      border: none;
-      color: #222220;
-      font-size: 13.5px;
-      font-weight: 600;
-      text-align: left;
-      width: 100%;
-      cursor: pointer;
-      transition: background 0.12s ease;
-    }
-    .admin-menu-item:hover {
-      background: #f5f5f2;
-      color: #111111;
-    }
-    .admin-menu-item-icon {
-      font-size: 16px;
-      width: 22px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-    .admin-menu-item-text {
-      flex: 1;
-      min-width: 0;
-    }
-    .admin-menu-item-desc {
-      font-size: 11px;
-      color: #777773;
-      display: block;
-      margin-top: 1px;
-      font-weight: 400;
+      display: none !important;
     }
 
-    /* User Greeting & Three Dot Account Menu */
+    /* User Greeting & Three-Dot Navigation Menu */
     .nav-user-greeting {
       display: flex;
       flex-direction: column;
@@ -260,9 +131,9 @@
       padding: 3px 10px 3px 4px;
       display: flex;
       align-items: center;
-      gap: 7px;
+      gap: 8px;
       cursor: pointer;
-      transition: all 0.15s ease;
+      transition: all 0.16s ease;
       box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
       user-select: none;
     }
@@ -270,9 +141,10 @@
       background: #f7f7f5;
       border-color: #111111;
       transform: translateY(-1px);
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
     }
     .menu-dots-icon {
-      color: #666662;
+      color: #555552;
       flex-shrink: 0;
       transition: color 0.15s ease;
     }
@@ -304,12 +176,15 @@
       position: absolute;
       top: calc(100% + 10px);
       right: 0;
-      width: 270px;
+      width: 290px;
       max-width: 92vw;
+      max-height: calc(100vh - 84px);
+      overflow-y: auto;
+      overscroll-behavior: contain;
       background: #ffffff;
       border: 1px solid #dcdcd6;
       border-radius: 16px;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.14), 0 2px 8px rgba(0, 0, 0, 0.05);
       padding: 8px;
       display: none;
       flex-direction: column;
@@ -320,9 +195,26 @@
     .three-dot-menu.open {
       display: flex;
     }
+    .three-dot-menu::-webkit-scrollbar {
+      width: 5px;
+    }
+    .three-dot-menu::-webkit-scrollbar-thumb {
+      background: #d4d4cd;
+      border-radius: 6px;
+    }
     @keyframes menuFadeIn {
       from { opacity: 0; transform: translateY(-6px); }
       to { opacity: 1; transform: translateY(0); }
+    }
+
+    .menu-group-label {
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #888882;
+      padding: 8px 12px 4px;
+      user-select: none;
     }
 
     .menu-user-card {
@@ -337,22 +229,22 @@
     }
     .menu-user-card:hover { background: #ebebe7; }
     .menu-user-thumb {
-      width: 34px;
-      height: 34px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
       object-fit: cover;
-      border: 1px solid #d4d4cd;
+      border: 1.5px solid #d4d4cd;
     }
     .menu-user-thumb-fallback {
-      width: 34px;
-      height: 34px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
       background: #111111;
       color: #ffffff;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 700;
       flex-shrink: 0;
     }
@@ -381,9 +273,9 @@
     .menu-item {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 9px 12px;
-      border-radius: 8px;
+      gap: 11px;
+      padding: 9.5px 12px;
+      border-radius: 9px;
       background: transparent;
       border: none;
       color: #222220;
@@ -392,17 +284,23 @@
       text-align: left;
       width: 100%;
       cursor: pointer;
-      transition: background 0.12s ease;
+      transition: all 0.12s ease;
     }
-    .menu-item:hover { background: #f5f5f2; color: #111111; }
+    .menu-item:hover {
+      background: #f5f5f2;
+      color: #111111;
+      transform: translateX(2px);
+    }
     .menu-item.logout { color: var(--red); }
     .menu-item.logout:hover { background: var(--red-bg); color: #b02020; }
     .menu-item-icon {
-      font-size: 15px;
-      width: 18px;
+      font-size: 16px;
+      width: 22px;
+      height: 22px;
       display: flex;
       align-items: center;
       justify-content: center;
+      flex-shrink: 0;
     }
 
     /* Buttons & General */
@@ -1684,95 +1582,6 @@
 
       <!-- In Logged In state: Admin Controls (Admin only) & Account Menu -->
       <div id="loggedInControls" style="display:none;align-items:center;gap:10px">
-        <!-- 1. Admin Controls Button (STRICTLY Admin only) -->
-        <button class="admin-controls-btn" id="adminControlsBtn" onclick="toggleAdminControlsMenu()" aria-label="Admin Controls" title="Open Admin Controls" style="display:none">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M4 4h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM4 10h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM4 16h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4z"/>
-          </svg>
-          <span>Admin Controls</span>
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
-        </button>
-
-        <!-- Admin Controls Menu Dropdown -->
-        <div class="admin-controls-menu" id="adminControlsMenu" role="menu">
-          <div class="admin-menu-header">
-            <span class="admin-menu-badge">🛡️ Administrator</span>
-            <h3 class="admin-menu-title">Admin Controls</h3>
-            <p class="admin-menu-sub">Manage tests, live classes, students & platform</p>
-          </div>
-
-          <button class="admin-menu-item" onclick="openAdminSection('tests')">
-            <span class="admin-menu-item-icon">📝</span>
-            <div class="admin-menu-item-text">
-              <b>Manage Tests</b>
-              <span class="admin-menu-item-desc">Create, edit & configure chapter mock tests</span>
-            </div>
-          </button>
-
-          <button class="admin-menu-item" onclick="openAdminSection('questions')">
-            <span class="admin-menu-item-icon">❓</span>
-            <div class="admin-menu-item-text">
-              <b>Manage Questions</b>
-              <span class="admin-menu-item-desc">Add, edit & review NEET question banks</span>
-            </div>
-          </button>
-
-          <button class="admin-menu-item" onclick="openAdminSection('schedule')">
-            <span class="admin-menu-item-icon">📅</span>
-            <div class="admin-menu-item-text">
-              <b>Test Schedule</b>
-              <span class="admin-menu-item-desc">Set exam dates, start times & duration</span>
-            </div>
-          </button>
-
-          <button class="admin-menu-item" onclick="openAdminSection('resources')">
-            <span class="admin-menu-item-icon">📚</span>
-            <div class="admin-menu-item-text">
-              <b>Notes & Videos</b>
-              <span class="admin-menu-item-desc">Upload study PDFs & lecture recordings</span>
-            </div>
-          </button>
-
-          <button class="admin-menu-item" onclick="openAdminSection('results')">
-            <span class="admin-menu-item-icon">📊</span>
-            <div class="admin-menu-item-text">
-              <b>Student Results</b>
-              <span class="admin-menu-item-desc">Monitor student attempts, scores & accuracy</span>
-            </div>
-          </button>
-
-          <button class="admin-menu-item" onclick="openAdminSection('accounts')">
-            <span class="admin-menu-item-icon">👥</span>
-            <div class="admin-menu-item-text">
-              <b>Student Accounts</b>
-              <span class="admin-menu-item-desc">Manage registered students & role permissions</span>
-            </div>
-          </button>
-
-          <button class="admin-menu-item" onclick="openAdminSection('community')">
-            <span class="admin-menu-item-icon">💬</span>
-            <div class="admin-menu-item-text">
-              <b>Community Moderation</b>
-              <span class="admin-menu-item-desc">Review doubts & moderate student messages</span>
-            </div>
-          </button>
-
-          <button class="admin-menu-item" onclick="openAdminSection('live')">
-            <span class="admin-menu-item-icon">🔴</span>
-            <div class="admin-menu-item-text">
-              <b>Live Classes</b>
-              <span class="admin-menu-item-desc">Start or end live streams & save recordings</span>
-            </div>
-          </button>
-
-          <button class="admin-menu-item" onclick="openAdminSection('settings')">
-            <span class="admin-menu-item-icon">⚙️</span>
-            <div class="admin-menu-item-text">
-              <b>Website Settings</b>
-              <span class="admin-menu-item-desc">Focus protection, exam rules & alert timers</span>
-            </div>
-          </button>
-        </div>
 
         <!-- 2. User Greeting (Name & Role Pill) -->
         <div class="nav-user-greeting" id="navUserGreeting" style="display:none">
@@ -1948,27 +1757,27 @@
 
       <!-- Quick Action Tools for Students -->
       <div class="kpi-grid">
-        <div class="kpi-card" onclick="scrollToSchedule()" style="cursor:pointer">
+        <div class="kpi-card" onclick="openStudentSection('schedule')" style="cursor:pointer">
           <div class="kpi-label">📅 Test Schedule</div>
           <div class="kpi-value" id="studentTestCount">3</div>
           <div class="kpi-desc">Chapter mock tests</div>
         </div>
-        <div class="kpi-card" onclick="libraryOpen()" style="cursor:pointer">
+        <div class="kpi-card" onclick="openStudentSection('library')" style="cursor:pointer">
           <div class="kpi-label">📚 Notes & Videos</div>
           <div class="kpi-value" id="studentResourceCount">0</div>
           <div class="kpi-desc">PDFs & recorded lectures</div>
         </div>
-        <div class="kpi-card" onclick="resultsOpen()" style="cursor:pointer">
+        <div class="kpi-card" onclick="openStudentSection('results')" style="cursor:pointer">
           <div class="kpi-label">📊 My Results</div>
           <div class="kpi-value" id="studentAttemptCount">0</div>
           <div class="kpi-desc">Test score breakdown</div>
         </div>
-        <div class="kpi-card" onclick="communityOpen()" style="cursor:pointer">
+        <div class="kpi-card" onclick="openStudentSection('community')" style="cursor:pointer">
           <div class="kpi-label">💬 Community Chat</div>
           <div class="kpi-value">Active</div>
           <div class="kpi-desc">Ask doubts with peers</div>
         </div>
-        <div class="kpi-card" onclick="calendarOpen()" style="cursor:pointer">
+        <div class="kpi-card" onclick="openStudentSection('calendar')" style="cursor:pointer">
           <div class="kpi-label">🗓️ Study Calendar</div>
           <div class="kpi-value">Planner</div>
           <div class="kpi-desc">Daily revision goals</div>
@@ -1979,8 +1788,8 @@
       <div class="section-head" id="scheduleHead">
         <h2>Chapter-wise Test Schedule</h2>
         <div style="display:flex;gap:8px">
-          <button class="light" onclick="resultsOpen()">My Results & Review</button>
-          <button class="out" onclick="calendarOpen()">My Study Calendar</button>
+          <button class="light" onclick="openStudentSection('results')">My Results</button>
+          <button class="out" onclick="openStudentSection('calendar')">Study Calendar</button>
         </div>
       </div>
 
@@ -2934,7 +2743,7 @@
         $('mainNavLinks').style.display = 'none';
         $('loggedOutBadge').style.display = 'inline-block';
         $('loggedInControls').style.display = 'none';
-        $('adminControlsBtn').style.display = 'none';
+        if ($('adminControlsBtn')) $('adminControlsBtn').style.display = 'none';
 
         ['test', 'results', 'library', 'upload', 'profileModal', 'settingsModal'].forEach(hide);
         return;
@@ -2949,7 +2758,7 @@
       $('loggedOutBadge').style.display = 'none';
       $('loggedInControls').style.display = 'flex';
 
-      // Setup Role-Based Navigation Links
+      // Setup Role-Based Navigation Links (hidden as items are inside three-dot menu)
       renderHeaderNavLinks();
 
       // Setup Universal Role Greeting & Introduction
@@ -2959,13 +2768,10 @@
       updateNavAvatar();
       renderThreeDotMenu();
 
-      // Hide or Show Admin Controls Button (STRICTLY Admin only)
-      if (user.role === 'admin') {
-        $('adminControlsBtn').style.display = 'flex';
-      } else {
+      if ($('adminControlsBtn')) {
         $('adminControlsBtn').style.display = 'none';
-        closeAdminControlsMenu();
       }
+      closeAdminControlsMenu();
 
       // Route to correct role dashboard
       if (user.role === 'admin') {
@@ -3014,41 +2820,82 @@
       }
     }
 
-    // Header nav links based on role
+    // Header nav links based on role - completely hidden as required
     function renderHeaderNavLinks() {
       const container = $('mainNavLinks');
-      if (!container || !user) return;
-      container.style.display = 'flex';
-
-      if (user.role === 'admin') {
-        container.innerHTML = `
-          <button class="nav-link-btn" onclick="scrollToSection('adminDashboardView')">📊 Overview</button>
-          <button class="nav-link-btn" onclick="openAdminSection('live')">🔴 Live Classes</button>
-          <button class="nav-link-btn" onclick="openAdminSection('resources')">📚 Notes & Videos</button>
-          <button class="nav-link-btn" onclick="openAdminSection('community')">💬 Community</button>
-        `;
-      } else if (user.role === 'teacher') {
-        container.innerHTML = `
-          <button class="nav-link-btn" onclick="scrollToSection('teacherLiveActiveArea')">🔴 Live Classes</button>
-          <button class="nav-link-btn" onclick="libraryOpen()">📚 Saved Recordings</button>
-          <button class="nav-link-btn" onclick="communityOpen()">💬 Community</button>
-          <button class="nav-link-btn" onclick="openProfileModal()">👤 Faculty Profile</button>
-        `;
-      } else {
-        container.innerHTML = `
-          <button class="nav-link-btn" onclick="scrollToSchedule()">📅 Test Schedule</button>
-          <button class="nav-link-btn" onclick="libraryOpen()">📚 Notes & Videos</button>
-          <button class="nav-link-btn" onclick="resultsOpen()">📊 My Results</button>
-          <button class="nav-link-btn" onclick="communityOpen()">💬 Community Chat</button>
-          <button class="nav-link-btn" onclick="calendarOpen()">🗓️ Study Calendar</button>
-          <button class="nav-link-btn" onclick="helpOpen()">❓ Help & Support</button>
-        `;
+      if (container) {
+        container.style.display = 'none';
+        container.innerHTML = '';
       }
     }
 
     function scrollToSection(id) {
+      closeAllOverlays();
       const el = $(id);
       if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function closeAllOverlays() {
+      closeUserMenu();
+      closeAdminControlsMenu();
+      ['test', 'library', 'results', 'upload', 'profileModal', 'settingsModal'].forEach(hide);
+    }
+
+    function openStudentSection(section) {
+      closeAllOverlays();
+      if (user?.role !== 'student') return;
+
+      if (section === 'schedule') {
+        scrollToSchedule();
+      } else if (section === 'library') {
+        libraryOpen();
+      } else if (section === 'results') {
+        resultsOpen();
+      } else if (section === 'community') {
+        if (typeof window.communityOpen === 'function') {
+          window.communityOpen();
+        }
+      } else if (section === 'calendar') {
+        if (typeof window.calendarOpen === 'function') {
+          window.calendarOpen();
+        }
+      } else if (section === 'help') {
+        if (typeof window.helpOpen === 'function') {
+          window.helpOpen();
+        }
+      } else if (section === 'profile') {
+        openProfileModal();
+      } else if (section === 'settings') {
+        openSettingsModal();
+      }
+    }
+
+    function openTeacherSection(sec) {
+      closeAllOverlays();
+      if (sec === 'live') {
+        scrollToSection('teacherLiveActiveArea');
+      } else if (sec === 'library') {
+        libraryOpen();
+      } else if (sec === 'community') {
+        if (typeof window.communityOpen === 'function') {
+          window.communityOpen();
+        }
+      } else if (sec === 'profile') {
+        openProfileModal();
+      } else if (sec === 'settings') {
+        openSettingsModal();
+      }
+    }
+
+    function openAdminMenuSection(sec) {
+      closeAllOverlays();
+      if (sec === 'profile') {
+        openProfileModal();
+      } else if (sec === 'overview') {
+        scrollToSection('adminDashboardView');
+      } else {
+        openAdminSection(sec);
+      }
     }
 
     function logoutUser() {
@@ -3068,10 +2915,12 @@
 
     function brandHomeClick() {
       if (!user) return;
+      closeAllOverlays();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function scrollToSchedule() {
+      closeAllOverlays();
       const el = $('scheduleHead') || $('cards');
       if (el) el.scrollIntoView({ behavior: 'smooth' });
     }
@@ -3083,7 +2932,7 @@
       if (user?.role !== 'admin') return;
       const menu = $('adminControlsMenu');
       closeUserMenu();
-      menu.classList.toggle('open');
+      if (menu) menu.classList.toggle('open');
     }
 
     function closeAdminControlsMenu() {
@@ -3163,6 +3012,7 @@
     // =========================================================================
     function toggleUserMenu() {
       const menu = $('threeDotMenu');
+      if (!menu) return;
       closeAdminControlsMenu();
       if (menu.classList.contains('open')) {
         closeUserMenu();
@@ -3205,98 +3055,169 @@
       if (user.role === 'admin') roleLabel = '🛡️ Administrator';
       else if (user.role === 'teacher') roleLabel = '👨‍🏫 Faculty / Teacher';
 
-      menu.innerHTML = `
-        <div class="menu-user-card" onclick="closeUserMenu();openProfileModal()">
-          ${avatarImg}
-          <div class="menu-user-details">
-            <div class="menu-user-name">${esc(user.name)}</div>
-            <div class="menu-user-badge">${roleLabel}</div>
+      if (user.role === 'student') {
+        menu.innerHTML = `
+          <div class="menu-user-card" onclick="openStudentSection('profile')">
+            ${avatarImg}
+            <div class="menu-user-details">
+              <div class="menu-user-name">${esc(user.name)}</div>
+              <div class="menu-user-badge">${roleLabel}</div>
+            </div>
           </div>
-        </div>
-        <div class="menu-divider"></div>
+          <div class="menu-divider"></div>
 
-        ${user.role === 'student' ? `
-          <button class="menu-item" onclick="closeUserMenu();scrollToSchedule()">
+          <div class="menu-group-label">STUDENT DASHBOARD</div>
+          <button class="menu-item" onclick="openStudentSection('schedule')">
             <span class="menu-item-icon">📅</span>
             <span>Test Schedule</span>
           </button>
-          <button class="menu-item" onclick="closeUserMenu();libraryOpen()">
+          <button class="menu-item" onclick="openStudentSection('library')">
             <span class="menu-item-icon">📚</span>
             <span>Notes & Videos</span>
           </button>
-          <button class="menu-item" onclick="closeUserMenu();resultsOpen()">
+          <button class="menu-item" onclick="openStudentSection('results')">
             <span class="menu-item-icon">📊</span>
-            <span>My Results & Review</span>
+            <span>My Results</span>
           </button>
-          <button class="menu-item" onclick="closeUserMenu();communityOpen()">
+          <button class="menu-item" onclick="openStudentSection('community')">
             <span class="menu-item-icon">💬</span>
             <span>Community Chat</span>
           </button>
-          <button class="menu-item" onclick="closeUserMenu();calendarOpen()">
+          <button class="menu-item" onclick="openStudentSection('calendar')">
             <span class="menu-item-icon">🗓️</span>
             <span>Study Calendar</span>
           </button>
-          <button class="menu-item" onclick="closeUserMenu();helpOpen()">
+          <button class="menu-item" onclick="openStudentSection('help')">
             <span class="menu-item-icon">❓</span>
             <span>Help & Support</span>
           </button>
-          <div class="menu-divider"></div>
-        ` : ''}
 
-        ${user.role === 'teacher' ? `
-          <button class="menu-item" onclick="closeUserMenu();scrollToSection('teacherLiveActiveArea')">
+          <div class="menu-divider"></div>
+          <div class="menu-group-label">PREFERENCES</div>
+          <button class="menu-item" onclick="openStudentSection('profile')">
+            <span class="menu-item-icon">👤</span>
+            <span>My Profile</span>
+          </button>
+          <button class="menu-item" onclick="openStudentSection('settings')">
+            <span class="menu-item-icon">⚙️</span>
+            <span>Settings</span>
+          </button>
+
+          <div class="menu-divider"></div>
+          <button class="menu-item logout" onclick="closeUserMenu();logoutUser()">
+            <span class="menu-item-icon">🚪</span>
+            <span>Logout</span>
+          </button>
+        `;
+      } else if (user.role === 'teacher') {
+        menu.innerHTML = `
+          <div class="menu-user-card" onclick="openTeacherSection('profile')">
+            ${avatarImg}
+            <div class="menu-user-details">
+              <div class="menu-user-name">${esc(user.name)}</div>
+              <div class="menu-user-badge">${roleLabel}</div>
+            </div>
+          </div>
+          <div class="menu-divider"></div>
+
+          <div class="menu-group-label">FACULTY CONTROLS</div>
+          <button class="menu-item" onclick="openTeacherSection('live')">
             <span class="menu-item-icon">🔴</span>
             <span>Live Broadcast Center</span>
           </button>
-          <button class="menu-item" onclick="closeUserMenu();libraryOpen()">
+          <button class="menu-item" onclick="openTeacherSection('library')">
             <span class="menu-item-icon">📚</span>
             <span>Saved Class Recordings</span>
           </button>
-          <button class="menu-item" onclick="closeUserMenu();communityOpen()">
+          <button class="menu-item" onclick="openTeacherSection('community')">
             <span class="menu-item-icon">💬</span>
             <span>Community Doubts</span>
           </button>
-          <div class="menu-divider"></div>
-        ` : ''}
 
-        ${user.role === 'admin' ? `
-          <button class="menu-item" onclick="closeUserMenu();toggleAdminControlsMenu()">
-            <span class="menu-item-icon">🛡️</span>
-            <span>Admin Controls</span>
+          <div class="menu-divider"></div>
+          <div class="menu-group-label">ACCOUNT</div>
+          <button class="menu-item" onclick="openTeacherSection('profile')">
+            <span class="menu-item-icon">👤</span>
+            <span>Faculty Profile</span>
           </button>
-          <button class="menu-item" onclick="closeUserMenu();openAdminSection('tests')">
+          <button class="menu-item" onclick="openTeacherSection('settings')">
+            <span class="menu-item-icon">⚙️</span>
+            <span>Settings</span>
+          </button>
+
+          <div class="menu-divider"></div>
+          <button class="menu-item logout" onclick="closeUserMenu();logoutUser()">
+            <span class="menu-item-icon">🚪</span>
+            <span>Logout</span>
+          </button>
+        `;
+      } else if (user.role === 'admin') {
+        menu.innerHTML = `
+          <div class="menu-user-card" onclick="openAdminMenuSection('profile')">
+            ${avatarImg}
+            <div class="menu-user-details">
+              <div class="menu-user-name">${esc(user.name)}</div>
+              <div class="menu-user-badge">${roleLabel}</div>
+            </div>
+          </div>
+          <div class="menu-divider"></div>
+
+          <div class="menu-group-label">ADMINISTRATION</div>
+          <button class="menu-item" onclick="openAdminMenuSection('overview')">
+            <span class="menu-item-icon">📊</span>
+            <span>Overview</span>
+          </button>
+          <button class="menu-item" onclick="openAdminMenuSection('tests')">
             <span class="menu-item-icon">📝</span>
             <span>Manage Tests</span>
           </button>
-          <button class="menu-item" onclick="closeUserMenu();openAdminSection('resources')">
+          <button class="menu-item" onclick="openAdminMenuSection('questions')">
+            <span class="menu-item-icon">❓</span>
+            <span>Manage Questions</span>
+          </button>
+          <button class="menu-item" onclick="openAdminMenuSection('schedule')">
+            <span class="menu-item-icon">📅</span>
+            <span>Test Schedule</span>
+          </button>
+          <button class="menu-item" onclick="openAdminMenuSection('resources')">
             <span class="menu-item-icon">📚</span>
             <span>Notes & Videos</span>
           </button>
-          <button class="menu-item" onclick="closeUserMenu();openAdminSection('results')">
+          <button class="menu-item" onclick="openAdminMenuSection('results')">
             <span class="menu-item-icon">📊</span>
             <span>Student Results</span>
           </button>
-          <button class="menu-item" onclick="closeUserMenu();openAdminSection('accounts')">
+          <button class="menu-item" onclick="openAdminMenuSection('accounts')">
             <span class="menu-item-icon">👥</span>
             <span>Student Accounts</span>
           </button>
-          <div class="menu-divider"></div>
-        ` : ''}
+          <button class="menu-item" onclick="openAdminMenuSection('community')">
+            <span class="menu-item-icon">💬</span>
+            <span>Community Moderation</span>
+          </button>
+          <button class="menu-item" onclick="openAdminMenuSection('live')">
+            <span class="menu-item-icon">🔴</span>
+            <span>Live Classes</span>
+          </button>
+          <button class="menu-item" onclick="openAdminMenuSection('settings')">
+            <span class="menu-item-icon">⚙️</span>
+            <span>Platform Settings</span>
+          </button>
 
-        <button class="menu-item" onclick="closeUserMenu();openProfileModal()">
-          <span class="menu-item-icon">👤</span>
-          <span>My Profile</span>
-        </button>
-        <button class="menu-item" onclick="closeUserMenu();openSettingsModal()">
-          <span class="menu-item-icon">⚙️</span>
-          <span>Settings</span>
-        </button>
-        <div class="menu-divider"></div>
-        <button class="menu-item logout" onclick="closeUserMenu();logoutUser()">
-          <span class="menu-item-icon">🚪</span>
-          <span>Sign Out</span>
-        </button>
-      `;
+          <div class="menu-divider"></div>
+          <div class="menu-group-label">ACCOUNT</div>
+          <button class="menu-item" onclick="openAdminMenuSection('profile')">
+            <span class="menu-item-icon">👤</span>
+            <span>My Profile</span>
+          </button>
+
+          <div class="menu-divider"></div>
+          <button class="menu-item logout" onclick="closeUserMenu();logoutUser()">
+            <span class="menu-item-icon">🚪</span>
+            <span>Logout</span>
+          </button>
+        `;
+      }
     }
 
     function updateNavAvatar() {
@@ -3314,8 +3235,8 @@
       if (navGreeting) {
         navGreeting.style.display = 'flex';
         $('navGreetingName').textContent = (user.name || 'User').trim().split(' ')[0];
-        let rolePill = 'Aspirant';
-        if (user.role === 'admin') rolePill = 'Admin';
+        let rolePill = 'NEET Aspirant';
+        if (user.role === 'admin') rolePill = 'Administrator';
         else if (user.role === 'teacher') rolePill = 'Faculty';
         $('navGreetingRole').textContent = rolePill;
       }
@@ -4431,6 +4352,7 @@
     async function libraryOpen() {
       if (!user) { logoutUser(); return; }
       try {
+        ['test', 'results', 'upload', 'profileModal', 'settingsModal'].forEach(hide);
         allResources = await api('resources');
         const canManage = user?.role === 'admin' || user?.role === 'teacher';
 
@@ -4536,6 +4458,7 @@
     async function resultsOpen() {
       if (!user) { logoutUser(); return; }
       try {
+        ['test', 'library', 'upload', 'profileModal', 'settingsModal'].forEach(hide);
         let r = await api('my-results');
         const container = $('resultsList');
         if (!container) return;
@@ -4579,6 +4502,7 @@
 
     function openProfileModal() {
       if (!user) { logoutUser(); return; }
+      ['test', 'library', 'results', 'upload', 'settingsModal'].forEach(hide);
       $('profileNameInput').value = user.name || '';
       $('profileEmailDisplay').value = user.email || '';
 
@@ -4648,6 +4572,7 @@
     }
 
     function openSettingsModal() {
+      ['test', 'library', 'results', 'upload', 'profileModal'].forEach(hide);
       show('settingsModal');
     }
 

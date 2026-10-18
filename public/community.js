@@ -383,9 +383,10 @@
 
   window.communityOpen = async function () {
     if (!user) {
-      loginOpen();
+      if (typeof loginOpen === 'function') loginOpen();
       return;
     }
+    ['library', 'results', 'upload', 'profileModal', 'settingsModal'].forEach(hide);
 
     $('testBox').innerHTML = `
       <div class="chat-modal-box">
@@ -685,6 +686,7 @@
   // Modern Study Calendar feature
   window.calendarOpen = async function () {
     if (!user) { applyViewState(); return; }
+    ['library', 'results', 'upload', 'profileModal', 'settingsModal'].forEach(hide);
     $('testBox').innerHTML = `
       <button class="close" onclick="hide('test')">✕</button>
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
@@ -797,6 +799,7 @@
 
   // Modern Help & Support feature
   window.helpOpen = function () {
+    ['library', 'results', 'upload', 'profileModal', 'settingsModal'].forEach(hide);
     $('testBox').innerHTML = `
       <button class="close" onclick="hide('test')">✕</button>
       <span class="tag">Support & Guidance</span>
