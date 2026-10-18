@@ -4,6 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>PN Neet Diw — NEET Preparation Platform</title>
+  <!-- Official Website Brand Favicons & Icons (No Generic Globe Icon) -->
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/logo-icon.png">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <meta name="theme-color" content="#111111">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -47,25 +53,31 @@
       z-index: 100;
     }
     .brand {
-      font-size: 20px;
-      font-weight: 800;
-      letter-spacing: -0.02em;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
       cursor: pointer;
       user-select: none;
+      transition: opacity 0.15s ease;
+      text-decoration: none;
+    }
+    .brand:hover {
+      opacity: 0.92;
+    }
+    .brand-official-logo {
+      height: 42px;
+      width: auto;
+      max-width: 240px;
+      object-fit: contain;
+      display: block;
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .brand:hover .brand-official-logo {
+      transform: scale(1.02);
     }
     .brand-badge {
-      background: #111111;
-      color: #ffffff;
-      font-size: 13px;
-      padding: 3px 8px;
-      border-radius: 6px;
-      font-weight: 800;
-      letter-spacing: 0.04em;
+      display: none;
     }
-    .brand b { color: #111111; }
 
     .nav-links {
       display: flex;
@@ -1158,20 +1170,200 @@
       animation: menuFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .landing-brand-badge {
+    .landing-brand-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 22px;
+    }
+    .landing-official-logo {
+      height: 62px;
+      width: auto;
+      max-width: 320px;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.06));
+    }
+    .auth-brand-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--line);
+    }
+    .auth-official-logo {
+      height: 40px;
+      width: auto;
+      max-width: 220px;
+      object-fit: contain;
+    }
+    .role-greeting-crest {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .dashboard-crest-mark {
+      width: 58px;
+      height: 58px;
+      border-radius: 14px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+      border: 1px solid var(--line);
+      background: #ffffff;
+      padding: 3px;
+      object-fit: contain;
+    }
+    /* Brand Loading Screen Styles */
+    .app-init-loader {
+      position: fixed;
+      inset: 0;
+      background: #ffffff;
+      z-index: 99999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.35s ease;
+    }
+    .app-init-loader.fade-out {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .loader-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+    .loader-logo-pulse {
+      animation: pulseBrand 1.6s ease-in-out infinite;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    }
+    @keyframes pulseBrand {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.05); opacity: 0.88; }
+    }
+    .loader-bar-wrap {
+      width: 150px;
+      height: 3.5px;
+      background: #f0f0ed;
+      border-radius: 999px;
+      overflow: hidden;
+      position: relative;
+    }
+    .loader-bar-fill {
+      width: 45%;
+      height: 100%;
+      background: #111111;
+      border-radius: 999px;
+      animation: loaderSlide 1.2s infinite ease-in-out;
+    }
+    @keyframes loaderSlide {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(320%); }
+    }
+    .loader-text {
+      font-size: 12px;
+      font-weight: 700;
+      color: #888880;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    /* Global Official Platform Footer */
+    .official-platform-footer {
+      margin-top: auto;
+      background: #ffffff;
+      border-top: 1px solid var(--line);
+      padding: 48px max(20px, calc((100% - 1180px)/2)) 28px;
+      font-size: 13.5px;
+      color: #555550;
+    }
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      gap: 40px;
+      flex-wrap: wrap;
+      margin-bottom: 36px;
+    }
+    .footer-brand-col {
+      max-width: 360px;
+    }
+    .footer-logo {
+      height: 38px;
+      width: auto;
+      object-fit: contain;
+      margin-bottom: 12px;
+    }
+    .footer-tagline {
+      margin: 0 0 16px;
+      line-height: 1.6;
+      font-size: 13px;
+      color: #666662;
+    }
+    .footer-status-pill {
       display: inline-flex;
       align-items: center;
-      gap: 10px;
-      font-size: 24px;
-      font-weight: 800;
+      gap: 7px;
+      background: #f7f7f5;
+      border: 1px solid var(--line);
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 11.5px;
+      font-weight: 700;
       color: #111111;
-      margin-bottom: 16px;
-      cursor: default;
     }
-    .landing-brand-badge .brand-badge {
-      font-size: 14px;
-      padding: 4px 10px;
-      border-radius: 7px;
+    .footer-status-pill .status-pulse-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
+    }
+    .footer-links-grid {
+      display: flex;
+      gap: 48px;
+      flex-wrap: wrap;
+    }
+    .footer-nav-group {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+    .footer-group-title {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      color: #111111;
+      margin-bottom: 4px;
+    }
+    .footer-nav-group a {
+      color: #666662;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.15s ease;
+    }
+    .footer-nav-group a:hover {
+      color: #111111;
+    }
+    .footer-bottom-bar {
+      border-top: 1px solid var(--line);
+      padding-top: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      font-size: 12px;
+      color: #888882;
+    }
+    .footer-meta-badge {
+      font-size: 11px;
+      font-weight: 700;
+      color: #111111;
+      background: #f0f0ed;
+      padding: 3px 8px;
+      border-radius: 5px;
     }
 
     .landing-heading {
@@ -1467,11 +1659,19 @@
   </style>
 </head>
 <body>
+  <!-- Initial Brand Loading Screen -->
+  <div id="appInitLoader" class="app-init-loader">
+    <div class="loader-inner">
+      <img src="/assets/logo-icon.svg" alt="PN Neet Diw Logo" class="loader-logo-pulse" width="68" height="68">
+      <div class="loader-bar-wrap"><div class="loader-bar-fill"></div></div>
+      <div class="loader-text">Loading PN Neet Diw...</div>
+    </div>
+  </div>
+
   <!-- Global Header (Visible after login) -->
   <header id="globalHeader" style="display:none">
-    <div class="brand" onclick="brandHomeClick()">
-      <span class="brand-badge">PN</span>
-      <span>Neet <b>Diw</b></span>
+    <div class="brand" onclick="brandHomeClick()" title="PN Neet Diw — Home" aria-label="PN Neet Diw Logo">
+      <img src="/assets/logo.svg" alt="PN Neet Diw Logo" class="brand-official-logo">
     </div>
 
     <!-- Role-Based Navigation Links (Visible when logged in) -->
@@ -1603,9 +1803,8 @@
   <main id="loginGateContainer">
     <!-- MANDATORY FIRST PAGE: THREE CIRCULAR ROLE CARDS -->
     <div class="role-selection-wrapper" id="roleSelectionScreen">
-      <div class="landing-brand-badge">
-        <span class="brand-badge">PN</span>
-        <span>Neet <b>Diw</b></span>
+      <div class="landing-brand-container">
+        <img src="/assets/logo.svg" alt="PN Neet Diw Logo" class="landing-official-logo">
       </div>
       <h1 class="landing-heading">Welcome to PN Neet Diw</h1>
       <p class="landing-subheading">Choose your role to continue your learning journey.</p>
@@ -1665,6 +1864,9 @@
 
     <!-- TAILORED ROLE LOGIN & REGISTRATION CONTAINER -->
     <div class="role-auth-wrapper" id="roleAuthContainer" style="display:none">
+      <div class="auth-brand-header">
+        <img src="/assets/logo.svg" alt="PN Neet Diw Logo" class="auth-official-logo">
+      </div>
       <button type="button" class="auth-back-btn" onclick="backToRoleSelection()">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
         <span>Back to Role Selection</span>
@@ -1720,6 +1922,9 @@
           <div class="role-pill-badge" id="roleGreetingBadge">🎓 NEET Aspirant</div>
           <h1 class="role-greeting-title" id="roleGreetingTitle">Welcome back 👋</h1>
           <p class="role-greeting-subtitle" id="roleGreetingSubtitle">Keep moving forward—your effort today builds tomorrow’s confidence.</p>
+        </div>
+        <div class="role-greeting-crest">
+          <img src="/assets/logo-icon.svg" alt="PN Neet Diw Logo" class="dashboard-crest-mark" width="58" height="58">
         </div>
       </div>
       <div class="role-intro-box">
@@ -2319,6 +2524,13 @@
           <!-- Platform Branding Panel -->
           <div class="panel">
             <h3 style="margin-top:0">🏷️ Platform Branding</h3>
+            <div class="admin-brand-preview-card" style="display:flex;align-items:center;gap:14px;background:#ffffff;border:1px solid var(--line);padding:14px 18px;border-radius:10px;margin-bottom:14px">
+              <img src="/assets/logo.svg" alt="PN Neet Diw Logo" style="height:44px;width:auto;object-fit:contain">
+              <div>
+                <div style="font-size:12px;font-weight:800;color:var(--green)">● OFFICIAL BRAND ASSET ACTIVE</div>
+                <div style="font-size:11.5px;color:var(--m)">SVG Vector &amp; Retina Favicons Synced</div>
+              </div>
+            </div>
             <label>Platform Name</label>
             <input value="PN Neet Diw" disabled style="background:#f7f7f5;color:#111111;font-weight:700">
 
@@ -2476,6 +2688,41 @@
       <button style="margin-top:15px;width:100%" onclick="uploadResource()">Upload Material</button>
     </div>
   </div>
+
+  <!-- Global Official Website Footer -->
+  <footer class="official-platform-footer" id="platformFooter">
+    <div class="footer-inner">
+      <div class="footer-brand-col">
+        <img src="/assets/logo.svg" alt="PN Neet Diw Logo" class="footer-logo">
+        <p class="footer-tagline">Excellence in NEET-UG medical entrance preparation. Chapter mocks, performance analytics, verified notes, and live faculty mentorship.</p>
+        <div class="footer-status-pill">
+          <span class="status-pulse-dot"></span> Official Preparation Portal
+        </div>
+      </div>
+      <div class="footer-links-grid">
+        <div class="footer-nav-group">
+          <span class="footer-group-title">ACADEMICS</span>
+          <a href="javascript:void(0)" onclick="brandHomeClick()">Test Series</a>
+          <a href="javascript:void(0)" onclick="libraryOpen()">Study Vault</a>
+          <a href="javascript:void(0)" onclick="resultsOpen()">Score Analytics</a>
+        </div>
+        <div class="footer-nav-group">
+          <span class="footer-group-title">COLLABORATION</span>
+          <a href="javascript:void(0)" onclick="communityOpen()">Aspirants Community</a>
+          <a href="javascript:void(0)" onclick="joinLiveClass()">Live Classroom</a>
+        </div>
+        <div class="footer-nav-group">
+          <span class="footer-group-title">PORTAL</span>
+          <a href="javascript:void(0)" onclick="openProfileModal()">Account Profile</a>
+          <a href="javascript:void(0)" onclick="logoutUser()">Sign Out</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom-bar">
+      <div class="footer-copy">© 2026 PN Neet Diw. All rights reserved. Designed for medical aspirants.</div>
+      <div class="footer-meta-badge">Verified Academic System</div>
+    </div>
+  </footer>
 
   <script>
     let token = localStorage.token || '',
@@ -2663,6 +2910,12 @@
     // ROLE-BASED VIEW ROUTING & GREETING
     // =========================================================================
     function applyViewState() {
+      // Hide initial brand loader smoothly
+      const loader = $('appInitLoader');
+      if (loader && !loader.classList.contains('fade-out')) {
+        setTimeout(() => loader.classList.add('fade-out'), 180);
+      }
+
       const isLoggedIn = !!(token && user);
 
       if (!isLoggedIn) {

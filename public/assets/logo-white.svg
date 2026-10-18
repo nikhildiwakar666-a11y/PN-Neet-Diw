@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 72" width="100%" height="100%">
+  <!-- Left Icon Mark -->
+  <g transform="translate(6, 6)">
+    <!-- Squircle Container -->
+    <rect x="0" y="0" width="60" height="60" rx="15" fill="#18181b" stroke="#3f3f46" stroke-width="1.5"/>
+    <rect x="2" y="2" width="56" height="56" rx="13" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
+
+    <!-- Emblem Shield -->
+    <path d="M30 9 L46 16 V31 C46 40 39 48 30 52 C21 48 14 40 14 31 V16 Z" 
+          fill="none" stroke="#71717a" stroke-width="1.2" opacity="0.6"/>
+
+    <!-- Stylized Monogram P and N -->
+    <path d="M22 22 V41 M22 22 H28 C32 22 35 24.5 35 28 C35 31.5 32 34 28 34 H22" 
+          fill="none" stroke="#ffffff" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M31 41 V27 L40 41 V22" 
+          fill="none" stroke="#ffffff" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round"/>
+    
+    <!-- Medical Star Accent -->
+    <circle cx="43" cy="14" r="2.8" fill="#22c55e"/>
+  </g>
+
+  <!-- Brand Typography -->
+  <g transform="translate(80, 0)">
+    <!-- Primary Line: PN NEET + DIW Badge -->
+    <text x="0" y="38" font-family="'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" 
+          font-weight="800" font-size="27" fill="#ffffff" letter-spacing="-0.03em">PN NEET</text>
+    
+    <!-- DIW Badge Pill -->
+    <g transform="translate(136, 17)">
+      <rect x="0" y="0" width="62" height="25" rx="6" fill="#ffffff"/>
+      <text x="31" y="17" text-anchor="middle" font-family="'Plus Jakarta Sans', -apple-system, sans-serif" 
+            font-weight="800" font-size="13" fill="#09090b" letter-spacing="0.08em">DIW</text>
+    </g>
+
+    <!-- Subtitle / Mission Tagline -->
+    <text x="1" y="55" font-family="'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" 
+          font-weight="700" font-size="9.5" fill="#a1a1aa" letter-spacing="0.18em">PREPARATION PLATFORM</text>
+  </g>
+</svg>

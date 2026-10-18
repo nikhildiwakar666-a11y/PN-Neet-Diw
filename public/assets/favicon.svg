@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="100%" height="100%">
+  <!-- High-contrast rounded squircle background -->
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="#09090b" stroke="#ffffff" stroke-width="2.5"/>
+  
+  <!-- Stylized PN Monogram for Tab Legibility -->
+  <!-- 'P' -->
+  <path d="M19 18 V46 M19 18 H29 C34 18 38 21.5 38 26 C38 30.5 34 34 29 34 H19" 
+        fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+        
+  <!-- 'N' -->
+  <path d="M33 46 V28 L45 46 V18" 
+        fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Emerald Medical Accent Pip -->
+  <circle cx="48" cy="16" r="3.5" fill="#22c55e" stroke="#09090b" stroke-width="1"/>
+</svg>
