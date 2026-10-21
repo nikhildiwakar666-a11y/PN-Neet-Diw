@@ -92,7 +92,19 @@
   document.head.appendChild(style);
 
   function connect() {
-    if (!socket && token) socket = io({ auth: { token } });
+    if (typeof io === 'undefined') {
+      console.warn('Socket.io client library is not loaded');
+      return null;
+    }
+    if (!socket && token) {
+      const socketUrl = (
+        window.VITE_API_BASE_URL ||
+        window.API_BASE_URL ||
+        (typeof localStorage !== 'undefined' && (localStorage.getItem('VITE_API_BASE_URL') || localStorage.getItem('API_BASE_URL'))) ||
+        ((typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) ? 'http://localhost:3000' : 'https://pnneet-api.onrender.com')
+      ).replace(/\/+$/, '');
+      socket = socketUrl ? io(socketUrl, { auth: { token } }) : io({ auth: { token } });
+    }
     return socket;
   }
 

@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
-    "build": "node -e \"console.log('Ready to run — no build step required.')\""
+    "build": "node build.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.3",

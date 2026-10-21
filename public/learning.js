@@ -2,9 +2,53 @@
   const getUser = () => JSON.parse(localStorage.user || 'null');
   const api = async (path, options = {}) => {
     const token = localStorage.token || '';
-    const response = await fetch('/api/' + path, { ...options, headers: { ...(token ? { Authorization: 'Bearer ' + token } : {}), ...(options.headers || {}) } });
-    const data = await response.json();
-    if (!response.ok) throw Error(data.error || 'Kuch galat hua');
+    const cleanPath = String(path).replace(/^\/?(api\/)?/, '');
+    const baseUrl = (
+      window.VITE_API_BASE_URL ||
+      window.API_BASE_URL ||
+      (typeof localStorage !== 'undefined' && (localStorage.getItem('VITE_API_BASE_URL') || localStorage.getItem('API_BASE_URL'))) ||
+      ((typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) ? 'http://localhost:3000' : 'https://pnneet-api.onrender.com')
+    ).replace(/\/+$/, '');
+    const endpoint = `${baseUrl}/api/${cleanPath}`;
+
+    let response;
+    try {
+      response = await fetch(endpoint, {
+        ...options,
+        headers: {
+          ...(token ? { Authorization: 'Bearer ' + token } : {}),
+          ...(options.headers || {})
+        }
+      });
+    } catch (e) {
+      throw Error('Backend server is not reachable. Please verify the server is running and CORS is enabled.');
+    }
+
+    const contentType = response.headers.get('content-type') || '';
+    let data = null;
+    let raw = '';
+
+    if (contentType.includes('application/json')) {
+      try { data = await response.json(); } catch (_) { data = null; }
+    } else {
+      try { raw = await response.text(); } catch (_) { raw = ''; }
+    }
+
+    if (!response.ok) {
+      let msg = data?.error || data?.message;
+      if (!msg) {
+        if (contentType.includes('text/html') || raw.includes('<!DOCTYPE') || raw.includes('<html')) {
+          msg = `Server returned an HTML error page (${response.status}). Please check VITE_API_BASE_URL configuration.`;
+        } else {
+          msg = `Request failed (${response.status}).`;
+        }
+      }
+      throw Error(msg);
+    }
+
+    if (data === null) {
+      try { data = JSON.parse(raw); } catch (_) { throw Error('Invalid non-JSON response received from server.'); }
+    }
     return data;
   };
   const escape = text => String(text).replace(/[&<>]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' })[c]);

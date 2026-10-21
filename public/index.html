@@ -10,6 +10,7 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/assets/logo-icon.png">
   <link rel="shortcut icon" href="/favicon.ico">
   <meta name="theme-color" content="#111111">
+  <script src="/config.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -2552,22 +2553,128 @@
           hide = id => $(id).classList.remove('show'),
           esc = s => String(s || '').replace(/[&<>]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[c]));
 
-    async function api(path, opt = {}) {
-      let r = await fetch('/api/' + path, {
-        ...opt,
-        headers: {
-          ...(opt.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }),
-          ...(token ? { Authorization: 'Bearer ' + token } : {}),
-          ...(opt.headers || {})
+    // Central shared API base URL configuration:
+    // Uses import.meta.env.VITE_API_BASE_URL when available; otherwise https://pnneet-api.onrender.com
+    function getApiBaseUrl() {
+      const DEFAULT_PROD_URL = 'https://pnneet-api.onrender.com';
+      let metaEnvUrl = '';
+      try {
+        if (typeof import !== 'undefined' && import.meta && import.meta.env && import.meta.env.VITE_API_BASE_URL) {
+          metaEnvUrl = import.meta.env.VITE_API_BASE_URL;
         }
-      });
-      let d = await r.json();
+      } catch (_) {
+        try {
+          metaEnvUrl = (new Function('try { return import.meta.env.VITE_API_BASE_URL; } catch(e) { return ""; }'))();
+        } catch (_) {}
+      }
+
+      let candidate = (
+        metaEnvUrl ||
+        window.VITE_API_BASE_URL ||
+        window.API_BASE_URL ||
+        (typeof localStorage !== 'undefined' && (localStorage.getItem('VITE_API_BASE_URL') || localStorage.getItem('API_BASE_URL'))) ||
+        ''
+      );
+
+      // In local development environment only:
+      if (!candidate && typeof window !== 'undefined') {
+        const hostname = window.location.hostname;
+        if (hostname === 'localhost' || hostname === '127.0.0.1') {
+          candidate = 'http://localhost:3000';
+        }
+      }
+
+      // In production or fallback, never use localhost:
+      if (!candidate || (candidate.includes('localhost') && typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1')) {
+        candidate = DEFAULT_PROD_URL;
+      }
+
+      return (candidate || DEFAULT_PROD_URL).replace(/\/+$/, '');
+    }
+
+    const API_BASE_URL = getApiBaseUrl();
+    window.API_BASE_URL = API_BASE_URL;
+    window.VITE_API_BASE_URL = API_BASE_URL;
+
+    async function api(path, opt = {}) {
+      const cleanPath = String(path).replace(/^\/?(api\/)?/, '');
+      const endpoint = `${API_BASE_URL}/api/${cleanPath}`;
+
+      let r;
+      try {
+        r = await fetch(endpoint, {
+          ...opt,
+          headers: {
+            ...(opt.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }),
+            ...(token ? { Authorization: 'Bearer ' + token } : {}),
+            ...(opt.headers || {})
+          }
+        });
+      } catch (netErr) {
+        throw new Error(
+          'Unable to connect to the backend server. If the server is on Render free tier, it may take ~30-50 seconds to wake up. Please wait a moment and try again.'
+        );
+      }
+
+      const contentType = (r.headers.get('content-type') || '').toLowerCase();
+      let d = null;
+      let rawText = '';
+
+      // Check Content-Type BEFORE attempting to parse JSON
+      if (contentType.includes('application/json')) {
+        try {
+          d = await r.json();
+        } catch (_) {
+          d = null;
+        }
+      } else {
+        try {
+          rawText = await r.text();
+        } catch (_) {
+          rawText = '';
+        }
+      }
+
+      // Check response.ok
       if (!r.ok) {
         if (r.status === 401) {
           logoutUser();
         }
-        throw Error(d.error || 'Request failed');
+
+        let errMsg = d?.error || d?.message;
+        if (!errMsg) {
+          if (contentType.includes('text/html') || rawText.includes('<!DOCTYPE') || rawText.includes('<html')) {
+            if (r.status === 404) {
+              errMsg = 'API service endpoint not found (404). Please ensure the backend server is running and deployed on Render.';
+            } else if (r.status === 502 || r.status === 503 || r.status === 504) {
+              errMsg = 'Backend server is currently starting up (Render cold start). Please wait ~30 seconds and try again.';
+            } else {
+              errMsg = `Backend returned an HTML status page (${r.status} ${r.statusText || 'Error'}). Please try again shortly.`;
+            }
+          } else if (rawText && rawText.length < 200) {
+            errMsg = rawText.trim();
+          } else {
+            errMsg = `Request failed with status ${r.status} (${r.statusText || 'Error'}).`;
+          }
+        }
+        throw new Error(errMsg);
       }
+
+      // Successful HTTP status (200-299)
+      if (d === null) {
+        if (r.status === 204 || !rawText) {
+          return { ok: true };
+        }
+        try {
+          d = JSON.parse(rawText);
+        } catch (_) {
+          if (rawText.includes('<!DOCTYPE') || rawText.includes('<html')) {
+            throw new Error('Received an unexpected HTML response from the server instead of JSON. The backend server may be restarting.');
+          }
+          throw new Error('Received an invalid response from the backend server.');
+        }
+      }
+
       return d;
     }
 
@@ -4586,5 +4693,10 @@
     // Initialize application state
     applyViewState();
   </script>
+  <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+  <script src="/landing.js"></script>
+  <script src="/review.js"></script>
+  <script src="/live.js"></script>
+  <script src="/community.js"></script>
 </body>
 </html>
