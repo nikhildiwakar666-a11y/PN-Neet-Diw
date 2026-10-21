@@ -1169,6 +1169,118 @@
       letter-spacing: 0.06em;
       text-transform: uppercase;
     }
+    /* Server Wakeup / Retry Modal */
+    .server-wakeup-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(17, 17, 17, 0.72);
+      backdrop-filter: blur(5px);
+      z-index: 99998;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .server-wakeup-card {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 30px 26px;
+      max-width: 460px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.18);
+      border: 1px solid #e5e5e0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      animation: popupSlide 0.25s ease-out;
+    }
+    @keyframes popupSlide {
+      from { transform: translateY(12px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .wakeup-status-pill {
+      background: #fff0f0;
+      color: #c53030;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 11px;
+      border-radius: 999px;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+    .wakeup-icon-box {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: #f7f7f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+    }
+    .wakeup-title {
+      font-size: 19px;
+      font-weight: 800;
+      color: #111111;
+      margin: 0;
+    }
+    .wakeup-desc {
+      font-size: 13.5px;
+      color: #666662;
+      line-height: 1.5;
+      margin: 0;
+    }
+    .wakeup-endpoint-info {
+      background: #f7f7f5;
+      border: 1px solid #e5e5e0;
+      border-radius: 8px;
+      padding: 7px 11px;
+      font-size: 11.5px;
+      color: #666662;
+      max-width: 100%;
+      word-break: break-all;
+    }
+    .wakeup-endpoint-info code {
+      color: #111111;
+      font-weight: 600;
+    }
+    .wakeup-actions {
+      display: flex;
+      gap: 10px;
+      width: 100%;
+      margin-top: 6px;
+    }
+    .wakeup-btn-primary {
+      flex: 1;
+      background: #111111;
+      color: #ffffff;
+      padding: 11px 16px;
+      border-radius: 9px;
+      font-weight: 700;
+      font-size: 13.5px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .wakeup-btn-primary:hover {
+      background: #2a2a2a;
+    }
+    .wakeup-btn-secondary {
+      background: #ededeb;
+      color: #111111;
+      padding: 11px 16px;
+      border-radius: 9px;
+      font-weight: 600;
+      font-size: 13px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .wakeup-btn-secondary:hover {
+      background: #e0e0dc;
+    }
     /* Global Official Platform Footer */
     .official-platform-footer {
       margin-top: auto;
@@ -1564,6 +1676,31 @@
       <img src="/assets/logo-icon.svg" alt="PN Neet Diw Logo" class="loader-logo-pulse" width="68" height="68">
       <div class="loader-bar-wrap"><div class="loader-bar-fill"></div></div>
       <div class="loader-text">Loading PN Neet Diw...</div>
+    </div>
+  </div>
+
+  <!-- Server Waking Up / Retry Screen (Render Free Tier Cold Start) -->
+  <div id="serverWakeupScreen" class="server-wakeup-overlay" style="display:none">
+    <div class="server-wakeup-card">
+      <div class="wakeup-badge-row">
+        <span class="wakeup-status-pill">Backend Initializing</span>
+      </div>
+      <div class="wakeup-icon-box">⚡</div>
+      <h3 class="wakeup-title">Server Is Waking Up</h3>
+      <p class="wakeup-desc">
+        Our backend service on Render spins down when idle. It takes approximately <strong>30–50 seconds</strong> to boot up.
+      </p>
+      <div class="wakeup-endpoint-info">
+        Endpoint: <code id="wakeupEndpointLabel">https://pnneet-api.onrender.com/api/health</code>
+      </div>
+      <div class="wakeup-actions">
+        <button id="retryServerBtn" class="wakeup-btn-primary" onclick="retryServerConnection()">
+          <span id="retryBtnText">Retry Connection ↻</span>
+        </button>
+        <button class="wakeup-btn-secondary" onclick="dismissWakeupScreen()">
+          Continue Anyway
+        </button>
+      </div>
     </div>
   </div>
 
@@ -2554,39 +2691,22 @@
           esc = s => String(s || '').replace(/[&<>]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[c]));
 
     // Central shared API base URL configuration:
-    // Uses import.meta.env.VITE_API_BASE_URL when available; otherwise https://pnneet-api.onrender.com
     function getApiBaseUrl() {
       const DEFAULT_PROD_URL = 'https://pnneet-api.onrender.com';
-      let metaEnvUrl = '';
-      try {
-        if (typeof import !== 'undefined' && import.meta && import.meta.env && import.meta.env.VITE_API_BASE_URL) {
-          metaEnvUrl = import.meta.env.VITE_API_BASE_URL;
-        }
-      } catch (_) {
-        try {
-          metaEnvUrl = (new Function('try { return import.meta.env.VITE_API_BASE_URL; } catch(e) { return ""; }'))();
-        } catch (_) {}
-      }
-
       let candidate = (
-        metaEnvUrl ||
         window.VITE_API_BASE_URL ||
         window.API_BASE_URL ||
         (typeof localStorage !== 'undefined' && (localStorage.getItem('VITE_API_BASE_URL') || localStorage.getItem('API_BASE_URL'))) ||
         ''
       );
 
-      // In local development environment only:
-      if (!candidate && typeof window !== 'undefined') {
+      if (typeof window !== 'undefined') {
         const hostname = window.location.hostname;
         if (hostname === 'localhost' || hostname === '127.0.0.1') {
-          candidate = 'http://localhost:3000';
+          candidate = candidate || 'http://localhost:3000';
+        } else {
+          candidate = candidate || DEFAULT_PROD_URL;
         }
-      }
-
-      // In production or fallback, never use localhost:
-      if (!candidate || (candidate.includes('localhost') && typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1')) {
-        candidate = DEFAULT_PROD_URL;
       }
 
       return (candidate || DEFAULT_PROD_URL).replace(/\/+$/, '');
@@ -2596,14 +2716,79 @@
     window.API_BASE_URL = API_BASE_URL;
     window.VITE_API_BASE_URL = API_BASE_URL;
 
+    // Guaranteed initial loader dismissal
+    function hideInitialLoader() {
+      const loader = $('appInitLoader');
+      if (loader && !loader.classList.contains('fade-out')) {
+        loader.classList.add('fade-out');
+        setTimeout(() => {
+          if (loader) loader.style.display = 'none';
+        }, 360);
+      }
+    }
+
+    // Server wakeup modal controls
+    function triggerServerWakeupScreen(endpoint, reason) {
+      hideInitialLoader();
+      console.warn(`[Server Wakeup] Triggered on endpoint: ${endpoint}. Reason: ${reason}`);
+      const screen = $('serverWakeupScreen');
+      const label = $('wakeupEndpointLabel');
+      if (label) label.textContent = endpoint || `${API_BASE_URL}/api/health`;
+      if (screen) screen.style.display = 'flex';
+    }
+
+    function dismissWakeupScreen() {
+      const screen = $('serverWakeupScreen');
+      if (screen) screen.style.display = 'none';
+    }
+
+    async function retryServerConnection() {
+      const btn = $('retryServerBtn');
+      const label = $('retryBtnText');
+      if (btn) btn.disabled = true;
+      if (label) label.textContent = 'Pinging server...';
+
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/health`, {
+          method: 'GET',
+          headers: { 'Accept': 'application/json' }
+        });
+        if (res.ok) {
+          if (label) label.textContent = 'Server is online! ✓';
+          setTimeout(() => {
+            dismissWakeupScreen();
+            if (btn) btn.disabled = false;
+            if (label) label.textContent = 'Retry Connection ↻';
+            applyViewState();
+          }, 600);
+          return;
+        }
+      } catch (err) {
+        console.warn('[Server Ping] Still waking up...', err);
+      }
+
+      if (label) label.textContent = 'Still warming up... retry in 10s';
+      setTimeout(() => {
+        if (btn) btn.disabled = false;
+        if (label) label.textContent = 'Retry Connection ↻';
+      }, 3500);
+    }
+
     async function api(path, opt = {}) {
       const cleanPath = String(path).replace(/^\/?(api\/)?/, '');
       const endpoint = `${API_BASE_URL}/api/${cleanPath}`;
+      const timeoutMs = opt.timeout || 15000; // 15-second timeout on requests
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => {
+        controller.abort();
+      }, timeoutMs);
 
       let r;
       try {
         r = await fetch(endpoint, {
           ...opt,
+          signal: controller.signal,
           headers: {
             ...(opt.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }),
             ...(token ? { Authorization: 'Bearer ' + token } : {}),
@@ -2611,9 +2796,16 @@
           }
         });
       } catch (netErr) {
-        throw new Error(
-          'Unable to connect to the backend server. If the server is on Render free tier, it may take ~30-50 seconds to wake up. Please wait a moment and try again.'
-        );
+        clearTimeout(timeoutId);
+        console.error(`[API Error] Failed to fetch "${cleanPath}" from ${endpoint}:`, netErr);
+        if (netErr.name === 'AbortError') {
+          triggerServerWakeupScreen(endpoint, `Request timed out after ${timeoutMs / 1000} seconds`);
+          throw new Error(`Request to "/api/${cleanPath}" timed out. Render backend may be waking up.`);
+        }
+        triggerServerWakeupScreen(endpoint, netErr.message);
+        throw new Error(`Unable to connect to backend server at ${endpoint}. Please wait a moment and try again.`);
+      } finally {
+        clearTimeout(timeoutId);
       }
 
       const contentType = (r.headers.get('content-type') || '').toLowerCase();
@@ -2637,6 +2829,7 @@
 
       // Check response.ok
       if (!r.ok) {
+        console.error(`[API Error] HTTP ${r.status} on endpoint: ${endpoint}`, { contentType, rawText, d });
         if (r.status === 401) {
           logoutUser();
         }
@@ -2645,11 +2838,12 @@
         if (!errMsg) {
           if (contentType.includes('text/html') || rawText.includes('<!DOCTYPE') || rawText.includes('<html')) {
             if (r.status === 404) {
-              errMsg = 'API service endpoint not found (404). Please ensure the backend server is running and deployed on Render.';
+              errMsg = 'API endpoint not found (404). Please ensure the backend server is deployed on Render.';
             } else if (r.status === 502 || r.status === 503 || r.status === 504) {
+              triggerServerWakeupScreen(endpoint, `Backend returned HTTP ${r.status}`);
               errMsg = 'Backend server is currently starting up (Render cold start). Please wait ~30 seconds and try again.';
             } else {
-              errMsg = `Backend returned an HTML status page (${r.status} ${r.statusText || 'Error'}). Please try again shortly.`;
+              errMsg = `Backend returned an HTML error (${r.status} ${r.statusText || 'Error'}). Please try again shortly.`;
             }
           } else if (rawText && rawText.length < 200) {
             errMsg = rawText.trim();
@@ -2668,10 +2862,8 @@
         try {
           d = JSON.parse(rawText);
         } catch (_) {
-          if (rawText.includes('<!DOCTYPE') || rawText.includes('<html')) {
-            throw new Error('Received an unexpected HTML response from the server instead of JSON. The backend server may be restarting.');
-          }
-          throw new Error('Received an invalid response from the backend server.');
+          console.error(`[API Error] Non-JSON payload received from ${endpoint}:`, rawText);
+          throw new Error('Received an unexpected non-JSON response from the server.');
         }
       }
 
@@ -3360,24 +3552,27 @@
 
     async function loadStudentDashboard() {
       if (!token || user?.role !== 'student') return;
+      hideInitialLoader();
       try {
         tests = await api('tests');
-        $('studentTestCount').textContent = tests.length;
+        if ($('studentTestCount')) $('studentTestCount').textContent = tests.length;
 
         renderStudentTestCards();
 
-        // Check resources count
-        const r = await api('resources');
-        $('studentResourceCount').textContent = r.length;
+        // Non-blocking secondary metrics
+        api('resources').then(r => {
+          if ($('studentResourceCount')) $('studentResourceCount').textContent = r.length;
+        }).catch(err => console.warn('[Student Dashboard] resources metric error:', err));
 
-        // Check attempts count
-        const a = await api('my-results');
-        $('studentAttemptCount').textContent = a.length;
+        api('my-results').then(a => {
+          if ($('studentAttemptCount')) $('studentAttemptCount').textContent = a.length;
+        }).catch(err => console.warn('[Student Dashboard] results metric error:', err));
 
-        // Check live class status for student
         checkStudentLiveStatus();
       } catch (e) {
-        console.error(e);
+        console.error('[Student Dashboard Error]', e);
+      } finally {
+        hideInitialLoader();
       }
     }
 
@@ -3447,6 +3642,7 @@
     // =========================================================================
     async function renderTeacherDashboard() {
       if (!token || user?.role !== 'teacher') return;
+      hideInitialLoader();
       try {
         const live = await api('live-class');
         const isLive = live && live.active;
@@ -3461,7 +3657,9 @@
           $('teacherLiveStatusTag').innerHTML = `<span class="tag green">● Ready to stream</span>`;
         }
       } catch (e) {
-        console.error(e);
+        console.error('[Teacher Dashboard Error]', e);
+      } finally {
+        hideInitialLoader();
       }
     }
 
@@ -3500,6 +3698,7 @@
 
     async function adminLoad() {
       if (user?.role !== 'admin') return;
+      hideInitialLoader();
       try {
         dashboard = await api('admin/dashboard');
         adminUsers = await api('admin/users');
@@ -3514,7 +3713,9 @@
         if (!activeAdminTab) activeAdminTab = 'tests';
         switchAdminActiveSection(activeAdminTab);
       } catch (e) {
-        console.error(e);
+        console.error('[Admin Dashboard Error]', e);
+      } finally {
+        hideInitialLoader();
       }
     }
 
@@ -4692,6 +4893,31 @@
 
     // Initialize application state
     applyViewState();
+
+    // Fail-safe: loader is always dismissed even on very slow networks
+    setTimeout(hideInitialLoader, 1200);
+    window.addEventListener('load', () => setTimeout(hideInitialLoader, 250));
+
+    // Non-blocking health check to wake up Render backend immediately
+    (async function prewarmBackend() {
+      try {
+        const start = Date.now();
+        const ctrl = new AbortController();
+        const tid = setTimeout(() => ctrl.abort(), 15000);
+        const res = await fetch(`${API_BASE_URL}/api/health`, {
+          signal: ctrl.signal,
+          headers: { 'Accept': 'application/json' }
+        });
+        clearTimeout(tid);
+        if (res.ok) {
+          console.log(`[PN Neet Diw] Backend service is healthy (${Date.now() - start}ms) at ${API_BASE_URL}`);
+        } else {
+          console.warn(`[PN Neet Diw] Health check returned HTTP ${res.status}`);
+        }
+      } catch (err) {
+        console.warn(`[PN Neet Diw] Startup health ping failed (Render cold start): ${err.message}`);
+      }
+    })();
   </script>
   <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
   <script src="/landing.js"></script>
