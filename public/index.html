@@ -1025,9 +1025,10 @@
       border-bottom: 1px solid var(--line);
     }
     .profile-avatar-large {
-      width: 82px;
-      height: 82px;
-      border-radius: 50%;
+      width: 84px;
+      height: 84px;
+      aspect-ratio: 1 / 1;
+      border-radius: 14px;
       overflow: hidden;
       background: #111111;
       color: #ffffff;
@@ -1038,11 +1039,13 @@
       font-weight: 800;
       border: 2px solid #d4d4cd;
       flex-shrink: 0;
+      position: relative;
     }
     .profile-avatar-large img {
       width: 100%;
       height: 100%;
       object-fit: cover;
+      display: block;
     }
 
     /* ==========================================================================
@@ -1851,10 +1854,94 @@
           <input id="authPassword" type="password" placeholder="Minimum 6 characters" required autocomplete="current-password">
         </div>
 
+        <div class="auth-aux-row" id="authForgotPasswordRow" style="display:flex;justify-content:flex-end;margin-top:-6px;margin-bottom:14px;">
+          <a href="javascript:void(0)" onclick="openForgotPassword()" class="forgot-pass-link" style="font-size:12.5px;color:var(--brand-primary,#0070f3);font-weight:600;text-decoration:none;cursor:pointer;">Forgot Password?</a>
+        </div>
+
         <button type="submit" class="gate-submit-btn" id="authSubmitBtn">Sign In to Dashboard →</button>
       </form>
 
       <div class="gate-switch-link" id="authSwitchPrompt"></div>
+    </div>
+
+    <!-- FORGOT PASSWORD CONTAINER -->
+    <div class="role-auth-wrapper" id="forgotPasswordContainer" style="display:none">
+      <div class="auth-brand-header">
+        <img src="/assets/logo.svg" alt="PN Neet Diw Logo" class="auth-official-logo">
+      </div>
+      <button type="button" class="auth-back-btn" onclick="backToSignInFromForgot()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        <span>Back to Sign In</span>
+      </button>
+
+      <div class="auth-role-hero">
+        <div class="auth-role-avatar-circle">🔑</div>
+        <div>
+          <span class="role-card-badge" style="margin-bottom:4px">Account Recovery</span>
+          <h2 style="margin:2px 0 0;font-size:20px;font-weight:800;color:#111111">Reset Password</h2>
+        </div>
+      </div>
+      <p style="margin:0 0 18px;font-size:13.5px;color:#555550">
+        Enter your registered email address. We'll send a secure one-time link to create a new password.
+      </p>
+
+      <div class="gate-error-banner" id="forgotErrorBanner" style="display:none"></div>
+      <div class="gate-success-banner" id="forgotSuccessBanner" style="display:none;background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;padding:12px 14px;border-radius:10px;font-size:13px;margin-bottom:16px;line-height:1.5;"></div>
+
+      <form id="forgotPasswordForm" onsubmit="handleForgotPasswordSubmit(event)">
+        <div class="gate-field">
+          <label>Registered Email Address</label>
+          <input id="forgotEmail" type="email" placeholder="student@example.com" required autocomplete="email">
+        </div>
+
+        <button type="submit" class="gate-submit-btn" id="forgotSubmitBtn">Send Password Reset Link →</button>
+      </form>
+
+      <div class="gate-switch-link" style="margin-top:16px;">
+        Remembered your password? <a href="javascript:void(0)" onclick="backToSignInFromForgot()">Back to Sign In</a>
+      </div>
+    </div>
+
+    <!-- CREATE NEW PASSWORD CONTAINER -->
+    <div class="role-auth-wrapper" id="resetPasswordContainer" style="display:none">
+      <div class="auth-brand-header">
+        <img src="/assets/logo.svg" alt="PN Neet Diw Logo" class="auth-official-logo">
+      </div>
+
+      <div class="auth-role-hero">
+        <div class="auth-role-avatar-circle">🔒</div>
+        <div>
+          <span class="role-card-badge" style="margin-bottom:4px">Security</span>
+          <h2 style="margin:2px 0 0;font-size:20px;font-weight:800;color:#111111">Create New Password</h2>
+        </div>
+      </div>
+      <p style="margin:0 0 18px;font-size:13.5px;color:#555550" id="resetPasswordDesc">
+        Set a strong new password for your PN Neet Diw account.
+      </p>
+
+      <div class="gate-error-banner" id="resetErrorBanner" style="display:none"></div>
+      <div class="gate-success-banner" id="resetSuccessBanner" style="display:none;background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;padding:12px 14px;border-radius:10px;font-size:13px;margin-bottom:16px;line-height:1.5;"></div>
+
+      <form id="resetPasswordForm" onsubmit="handleResetPasswordSubmit(event)">
+        <input type="hidden" id="resetTokenVal">
+        <input type="hidden" id="resetEmailVal">
+
+        <div class="gate-field">
+          <label>New Password</label>
+          <input id="resetNewPassword" type="password" placeholder="Minimum 6 characters" required autocomplete="new-password">
+        </div>
+
+        <div class="gate-field">
+          <label>Confirm New Password</label>
+          <input id="resetConfirmPassword" type="password" placeholder="Re-enter new password" required autocomplete="new-password">
+        </div>
+
+        <button type="submit" class="gate-submit-btn" id="resetSubmitBtn">Update Password & Sign In →</button>
+      </form>
+
+      <div class="gate-switch-link" style="margin-top:16px;">
+        <a href="javascript:void(0)" onclick="backToSignInFromReset()">Back to Sign In</a>
+      </div>
     </div>
   </main>
 
@@ -2870,6 +2957,18 @@
       return d;
     }
 
+    function formatAvatarUrl(url) {
+      if (!url || typeof url !== 'string') return '';
+      url = url.trim();
+      if (!url) return '';
+      if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:') || url.startsWith('blob:')) {
+        return url;
+      }
+      const base = (window.PN_API_BASE_URL || API_BASE_URL || 'https://pnneet-api.onrender.com').replace(/\/+$/, '');
+      return `${base}${url.startsWith('/') ? '' : '/'}${url}`;
+    }
+    window.formatAvatarUrl = formatAvatarUrl;
+
     // =========================================================================
     // =========================================================================
     // MANDATORY FIRST PAGE: ROLE SELECTION & LOGIN CONTROLS
@@ -2879,6 +2978,8 @@
     function openRoleAuth(role) {
       currentAuthRole = role;
       $('roleSelectionScreen').style.display = 'none';
+      if ($('forgotPasswordContainer')) $('forgotPasswordContainer').style.display = 'none';
+      if ($('resetPasswordContainer')) $('resetPasswordContainer').style.display = 'none';
       $('roleAuthContainer').style.display = 'flex';
 
       if (role === 'student') {
@@ -2916,6 +3017,8 @@
 
     function backToRoleSelection() {
       $('roleAuthContainer').style.display = 'none';
+      if ($('forgotPasswordContainer')) $('forgotPasswordContainer').style.display = 'none';
+      if ($('resetPasswordContainer')) $('resetPasswordContainer').style.display = 'none';
       $('roleSelectionScreen').style.display = 'flex';
       hideAuthError();
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -2931,6 +3034,11 @@
       if (tabRegister) tabRegister.classList.toggle('active', isRegister);
 
       $('authNameField').style.display = isRegister ? 'block' : 'none';
+
+      const forgotPassRow = $('authForgotPasswordRow');
+      if (forgotPassRow) {
+        forgotPassRow.style.display = !isRegister ? 'flex' : 'none';
+      }
 
       let submitLabel = 'Sign In to Dashboard →';
       if (isRegister) {
@@ -2963,6 +3071,185 @@
     function hideAuthError() {
       const banner = $('authErrorBanner');
       banner.style.display = 'none';
+    }
+
+    // =========================================================================
+    // FORGOT PASSWORD & CREATE NEW PASSWORD CONTROLS
+    // =========================================================================
+    function openForgotPassword() {
+      $('roleAuthContainer').style.display = 'none';
+      if ($('resetPasswordContainer')) $('resetPasswordContainer').style.display = 'none';
+      const fCont = $('forgotPasswordContainer');
+      if (fCont) {
+        fCont.style.display = 'block';
+        $('forgotEmail').value = $('authEmail').value || '';
+        hideForgotBanner();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    function backToSignInFromForgot() {
+      if ($('forgotPasswordContainer')) $('forgotPasswordContainer').style.display = 'none';
+      if ($('resetPasswordContainer')) $('resetPasswordContainer').style.display = 'none';
+      $('roleAuthContainer').style.display = 'flex';
+      hideForgotBanner();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function backToSignInFromReset() {
+      if ($('forgotPasswordContainer')) $('forgotPasswordContainer').style.display = 'none';
+      if ($('resetPasswordContainer')) $('resetPasswordContainer').style.display = 'none';
+      $('roleAuthContainer').style.display = 'flex';
+      setAuthMode('login');
+      hideResetBanner();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function showForgotBanner(msg, isSuccess = false) {
+      const errBanner = $('forgotErrorBanner');
+      const succBanner = $('forgotSuccessBanner');
+      if (isSuccess) {
+        if (errBanner) errBanner.style.display = 'none';
+        if (succBanner) {
+          succBanner.innerHTML = msg;
+          succBanner.style.display = 'block';
+        }
+      } else {
+        if (succBanner) succBanner.style.display = 'none';
+        if (errBanner) {
+          errBanner.textContent = msg;
+          errBanner.style.display = 'block';
+        }
+      }
+    }
+
+    function hideForgotBanner() {
+      const errBanner = $('forgotErrorBanner');
+      const succBanner = $('forgotSuccessBanner');
+      if (errBanner) errBanner.style.display = 'none';
+      if (succBanner) succBanner.style.display = 'none';
+    }
+
+    function showResetBanner(msg, isSuccess = false) {
+      const errBanner = $('resetErrorBanner');
+      const succBanner = $('resetSuccessBanner');
+      if (isSuccess) {
+        if (errBanner) errBanner.style.display = 'none';
+        if (succBanner) {
+          succBanner.innerHTML = msg;
+          succBanner.style.display = 'block';
+        }
+      } else {
+        if (succBanner) succBanner.style.display = 'none';
+        if (errBanner) {
+          errBanner.textContent = msg;
+          errBanner.style.display = 'block';
+        }
+      }
+    }
+
+    function hideResetBanner() {
+      const errBanner = $('resetErrorBanner');
+      const succBanner = $('resetSuccessBanner');
+      if (errBanner) errBanner.style.display = 'none';
+      if (succBanner) succBanner.style.display = 'none';
+    }
+
+    async function handleForgotPasswordSubmit(e) {
+      e.preventDefault();
+      hideForgotBanner();
+      const email = $('forgotEmail').value.trim();
+      if (!email) return showForgotBanner('Please enter your email address.');
+
+      const submitBtn = $('forgotSubmitBtn');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending Reset Link...';
+
+      try {
+        const res = await api('forgot-password', {
+          method: 'POST',
+          body: JSON.stringify({ email })
+        });
+        showForgotBanner(res.message || 'If an account exists, a password reset link has been sent to your email.', true);
+        $('forgotEmail').value = '';
+      } catch (err) {
+        showForgotBanner(err.message || 'Unable to send password reset email. Please try again.');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Send Password Reset Link →';
+      }
+    }
+
+    function openResetPasswordView(token, email) {
+      const roleScreen = $('roleSelectionScreen');
+      if (roleScreen) roleScreen.style.display = 'none';
+      const authCont = $('roleAuthContainer');
+      if (authCont) authCont.style.display = 'none';
+      const forgotCont = $('forgotPasswordContainer');
+      if (forgotCont) forgotCont.style.display = 'none';
+      const dashArea = $('dashboardMainArea');
+      if (dashArea) dashArea.style.display = 'none';
+
+      const resetCont = $('resetPasswordContainer');
+      if (resetCont) {
+        resetCont.style.display = 'block';
+        $('resetTokenVal').value = token;
+        $('resetEmailVal').value = email;
+        $('resetNewPassword').value = '';
+        $('resetConfirmPassword').value = '';
+        hideResetBanner();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        api(`verify-reset-token?token=${encodeURIComponent(token)}&email=${encodeURIComponent(email)}`)
+          .then(data => {
+            if (!data.valid) {
+              showResetBanner(data.error || 'This reset link has expired or is invalid.', false);
+              $('resetSubmitBtn').disabled = true;
+            }
+          })
+          .catch(err => {
+            showResetBanner(err.message || 'This reset link is invalid or expired. Please request a new one.', false);
+            $('resetSubmitBtn').disabled = true;
+          });
+      }
+    }
+
+    async function handleResetPasswordSubmit(e) {
+      e.preventDefault();
+      hideResetBanner();
+      const token = $('resetTokenVal').value;
+      const email = $('resetEmailVal').value;
+      const newPassword = $('resetNewPassword').value;
+      const confirmPassword = $('resetConfirmPassword').value;
+
+      if (!newPassword || newPassword.length < 6) {
+        return showResetBanner('Password must be at least 6 characters long.');
+      }
+      if (newPassword !== confirmPassword) {
+        return showResetBanner('Passwords do not match. Please verify both fields.');
+      }
+
+      const submitBtn = $('resetSubmitBtn');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Updating Password...';
+
+      try {
+        const res = await api('reset-password', {
+          method: 'POST',
+          body: JSON.stringify({ token, email, newPassword })
+        });
+        showResetBanner('<b>Success!</b> ' + (res.message || 'Password reset successfully.') + '<br><a href="javascript:void(0)" onclick="backToSignInFromReset()" style="color:#166534;font-weight:700;text-decoration:underline;margin-top:6px;display:inline-block;">Click here to Sign In now →</a>', true);
+        $('resetNewPassword').value = '';
+        $('resetConfirmPassword').value = '';
+        setTimeout(() => {
+          backToSignInFromReset();
+        }, 3500);
+      } catch (err) {
+        showResetBanner(err.message || 'Failed to reset password. Link may have expired.');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Update Password & Sign In →';
+      }
     }
 
     async function handleAuthSubmit(e) {
@@ -3024,6 +3311,17 @@
         setTimeout(() => loader.classList.add('fade-out'), 180);
       }
 
+      // Check for password reset token in URL parameters or path
+      const urlParams = new URLSearchParams(window.location.search);
+      const resetToken = urlParams.get('token');
+      const resetEmail = urlParams.get('email');
+      const isResetUrl = window.location.pathname.includes('reset-password') || urlParams.get('action') === 'reset_password' || !!resetToken;
+
+      if (resetToken && resetEmail && isResetUrl) {
+        openResetPasswordView(resetToken, resetEmail);
+        return;
+      }
+
       const isLoggedIn = !!(token && user);
 
       if (!isLoggedIn) {
@@ -3034,6 +3332,8 @@
         $('loginGateContainer').style.display = 'flex';
         $('roleSelectionScreen').style.display = 'flex';
         $('roleAuthContainer').style.display = 'none';
+        if ($('forgotPasswordContainer')) $('forgotPasswordContainer').style.display = 'none';
+        if ($('resetPasswordContainer')) $('resetPasswordContainer').style.display = 'none';
 
         $('dashboardMainArea').style.display = 'none';
         $('studentDashboardView').style.display = 'none';
@@ -3346,8 +3646,9 @@
       if (!menu || !user) return;
 
       const letter = (user.name || 'U').trim().charAt(0).toUpperCase();
-      const avatarImg = user.avatar
-        ? `<img src="${user.avatar}" class="menu-user-thumb" alt="${esc(user.name)}">`
+      const formattedAvatar = formatAvatarUrl(user.avatar);
+      const avatarImg = formattedAvatar
+        ? `<img src="${formattedAvatar}" class="menu-user-thumb" alt="${esc(user.name)}" onerror="this.onerror=null;this.parentElement.innerHTML='<div class=\\'menu-user-thumb-fallback\\'>${letter}</div>';">`
         : `<div class="menu-user-thumb-fallback">${letter}</div>`;
 
       let roleLabel = '🎓 NEET Aspirant';
@@ -3523,10 +3824,11 @@
       const avatarElem = $('navAvatar');
       if (!avatarElem || !user) return;
 
-      if (user.avatar) {
-        avatarElem.innerHTML = `<img src="${user.avatar}" alt="${esc(user.name)}" class="nav-avatar-img">`;
+      const formattedAvatar = formatAvatarUrl(user.avatar);
+      const letter = (user.name || 'U').trim().charAt(0).toUpperCase();
+      if (formattedAvatar) {
+        avatarElem.innerHTML = `<img src="${formattedAvatar}" alt="${esc(user.name)}" class="nav-avatar-img" onerror="this.onerror=null;this.parentElement.innerHTML='<span class=\\'nav-avatar-letter\\'>${letter}</span>';">`;
       } else {
-        const letter = (user.name || 'U').trim().charAt(0).toUpperCase();
         avatarElem.innerHTML = `<span class="nav-avatar-letter">${letter}</span>`;
       }
 
@@ -4429,7 +4731,7 @@
         <div class="row" style="padding:14px 0">
           <div style="display:flex;align-items:center;gap:12px">
             <div class="avatar-circle" style="width:38px;height:38px;font-size:14px">
-              ${u.avatar ? `<img src="${u.avatar}" class="nav-avatar-img">` : (u.name || 'U').charAt(0).toUpperCase()}
+              ${u.avatar ? `<img src="${formatAvatarUrl(u.avatar)}" class="nav-avatar-img" onerror="this.onerror=null;this.parentElement.innerHTML='${esc((u.name || 'U').charAt(0).toUpperCase())}';">` : (u.name || 'U').charAt(0).toUpperCase()}
             </div>
             <div>
               <div style="display:flex;align-items:center;gap:8px">
@@ -4827,17 +5129,33 @@
 
     function renderProfileAvatarPreview(avatarUrl) {
       const box = $('profileAvatarLarge');
-      if (avatarUrl) {
-        box.innerHTML = `<img src="${avatarUrl}" alt="Profile avatar">`;
+      if (!box) return;
+      const formattedUrl = formatAvatarUrl(avatarUrl);
+      const letter = (user?.name || 'U').trim().charAt(0).toUpperCase();
+      if (formattedUrl) {
+        box.innerHTML = `<img src="${formattedUrl}" alt="Profile avatar" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.onerror=null; this.parentElement.innerHTML='<span style=\\'font-weight:800;font-size:32px;\\'>${letter}</span>';">`;
       } else {
-        const letter = (user?.name || 'U').trim().charAt(0).toUpperCase();
-        box.innerHTML = `<span>${letter}</span>`;
+        box.innerHTML = `<span style="font-weight:800;font-size:32px;">${letter}</span>`;
       }
     }
 
     $('profilePhotoInput').onchange = function () {
       const file = this.files[0];
       if (!file) return;
+
+      const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+      if (!validTypes.includes(file.type)) {
+        alert('Invalid photo format. Please select a JPG, PNG, WebP, or GIF image.');
+        this.value = '';
+        return;
+      }
+
+      if (file.size > 5 * 1024 * 1024) {
+        alert('Photo is too large. Maximum allowed file size is 5 MB.');
+        this.value = '';
+        return;
+      }
+
       selectedProfilePhoto = file;
       renderProfileAvatarPreview(URL.createObjectURL(file));
     };
@@ -4866,13 +5184,18 @@
         user.avatar = updated.avatar;
         localStorage.user = JSON.stringify(user);
 
+        // Immediate updates across all views
         updateNavAvatar();
         renderThreeDotMenu();
         renderRoleGreeting();
+        renderProfileAvatarPreview(user.avatar);
+        selectedProfilePhoto = null;
+        $('profilePhotoInput').value = '';
         hide('profileModal');
         alert('Profile updated successfully!');
       } catch (e) {
-        alert(e.message || 'Failed to update profile.');
+        console.error('[Profile Update Error]:', e);
+        alert(e.message || 'Failed to update profile. Please check your connection and try again.');
       } finally {
         saveBtn.disabled = false;
         saveBtn.textContent = 'Save Profile';

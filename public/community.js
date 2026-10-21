@@ -373,10 +373,20 @@
     return d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }) + ' · ' + d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
   }
 
+  function formatAvatarUrl(url) {
+    if (!url || typeof url !== 'string') return '';
+    url = url.trim();
+    if (!url) return '';
+    if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:') || url.startsWith('blob:')) return url;
+    const base = (window.PN_API_BASE_URL || 'https://pnneet-api.onrender.com').replace(/\/+$/, '');
+    return `${base}${url.startsWith('/') ? '' : '/'}${url}`;
+  }
+
   function getAvatarHtml(name, avatarUrl, sizeClass = '') {
     const letter = (name || 'S').trim().charAt(0).toUpperCase();
-    if (avatarUrl) {
-      return `<div class="chat-avatar-wrap ${sizeClass}"><img src="${avatarUrl}" alt="${esc(name)}"></div>`;
+    const formattedUrl = formatAvatarUrl(avatarUrl);
+    if (formattedUrl) {
+      return `<div class="chat-avatar-wrap ${sizeClass}"><img src="${formattedUrl}" alt="${esc(name)}" onerror="this.onerror=null;this.parentElement.innerHTML='<span>${esc(letter)}</span>';"></div>`;
     }
     return `<div class="chat-avatar-wrap ${sizeClass}"><span>${letter}</span></div>`;
   }

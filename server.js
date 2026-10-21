@@ -1,15 +1,18 @@
 require('dotenv').config();
-const express=require('express'),bcrypt=require('bcryptjs'),jwt=require('jsonwebtoken'),multer=require('multer'),path=require('path'),fs=require('fs'),http=require('http'),{Server}=require('socket.io');
+const express=require('express'),bcrypt=require('bcryptjs'),jwt=require('jsonwebtoken'),multer=require('multer'),path=require('path'),fs=require('fs'),http=require('http'),crypto=require('crypto'),{Server}=require('socket.io');
 const allowedOrigins = ['https://pnneet.netlify.app', 'http://localhost:3000', 'http://127.0.0.1:3000'];
 const app=express(),server=http.createServer(app),io=new Server(server,{cors:{origin:allowedOrigins,methods:['GET','POST'],credentials:true}}),dataPath=path.join(__dirname,'data.json'),uploadDir=path.join(__dirname,'uploads'),secret=process.env.JWT_SECRET||'replace-me-before-production';
 const { uploadFile, supabase, isConfigured: isSupabaseReady } = require('./supabase');
+const { sendPasswordResetEmail } = require('./email-service');
 fs.mkdirSync(uploadDir,{recursive:true});const storage=multer.diskStorage({destination:uploadDir,filename:(req,file,cb)=>cb(null,Date.now()+'-'+file.originalname.replace(/[^a-zA-Z0-9._-]/g,'_'))}),upload=multer({storage,limits:{fileSize:100*1024*1024},fileFilter:(req,file,cb)=>{/^(application\/pdf|video\/mp4|video\/webm|video\/quicktime)$/.test(file.mimetype)?cb(null,true):cb(new Error('Sirf PDF, MP4, WebM ya MOV file upload karein.'))}}),imageUpload=multer({storage,limits:{fileSize:10*1024*1024},fileFilter:(req,file,cb)=>{/^image\/(jpeg|png|webp|gif)$/.test(file.mimetype)?cb(null,true):cb(new Error('Upload JPG, PNG, WebP, or GIF images only.'))}});
+const profileUpload=multer({storage,limits:{fileSize:5*1024*1024},fileFilter:(req,file,cb)=>{/^image\/(jpeg|png|webp|gif)$/i.test(file.mimetype)?cb(null,true):cb(new Error('Profile photo must be a JPG, PNG, WebP, or GIF image.'))}});
+function handleProfileUpload(req,res,next){profileUpload.single('avatar')(req,res,(err)=>{if(err){if(err.code==='LIMIT_FILE_SIZE')return res.status(400).json({error:'Image size exceeds 5 MB. Please choose a smaller photo.'});return res.status(400).json({error:err.message||'Invalid image. Upload JPG, PNG, WebP, or GIF under 5 MB.'});}next();});}
 app.use((req,res,next)=>{const origin=req.headers.origin;if(origin&&allowedOrigins.includes(origin)){res.header('Access-Control-Allow-Origin',origin);}else if(!origin){res.header('Access-Control-Allow-Origin','*');}res.header('Access-Control-Allow-Methods','GET, POST, PUT, DELETE, OPTIONS');res.header('Access-Control-Allow-Headers','Origin, X-Requested-With, Content-Type, Accept, Authorization');res.header('Access-Control-Allow-Credentials','true');if(req.method==='OPTIONS')return res.sendStatus(200);next();});
 const indexPage=()=>fs.readFileSync(path.join(__dirname,'public','index.html'),'utf8');
 app.use(express.json({limit:'1mb'}));app.use('/uploads',express.static(uploadDir));app.use(express.static(path.join(__dirname,'public'),{index:false}));
 app.get('/api/health',(req,res)=>res.json({ok:true}));
 const seed={users:[],tests:[{id:1,title:'NEET Biology: Cell & Biomolecules',subject:'Biology',duration:15,active:true},{id:2,title:'NEET Chemistry: Basic Concepts',subject:'Chemistry',duration:15,active:true},{id:3,title:'NEET Physics: Motion',subject:'Physics',duration:15,active:true}],questions:[{id:1,testId:1,question:'Which organelle is known as the powerhouse of a cell?',options:['Ribosome','Mitochondrion','Golgi body','Nucleus'],answer:1},{id:2,testId:1,question:'What is the full form of DNA?',options:['Deoxyribonucleic Acid','Dynamic Nuclear Acid','Double Nitrogen Acid','Deoxy Nuclear Atom'],answer:0},{id:3,testId:2,question:'How many particles are present in one mole?',options:['6.022 × 10²³','3.14 × 10²³','9.8 × 10²³','1.6 × 10⁻¹⁹'],answer:0},{id:4,testId:3,question:'What is the SI unit of force?',options:['Joule','Watt','Newton','Pascal'],answer:2}],attempts:[]};
-function load(){try{return JSON.parse(fs.readFileSync(dataPath,'utf8'))}catch{return structuredClone(seed)}}let db=load();if(!Array.isArray(db.resources)){db.resources=[]}if(!Array.isArray(db.community)){db.community=[]}if(!Array.isArray(db.plans)){db.plans=[]}if(!db.liveClass)db.liveClass=null;db.tests.forEach(t=>{if(!t.chapter)t.chapter='General';if(!('startAt' in t))t.startAt=null});function save(){fs.writeFileSync(dataPath,JSON.stringify(db,null,2))}function next(k){return Math.max(0,...db[k].map(x=>x.id||0))+1}
+function load(){try{return JSON.parse(fs.readFileSync(dataPath,'utf8'))}catch{return structuredClone(seed)}}let db=load();if(!Array.isArray(db.resources)){db.resources=[]}if(!Array.isArray(db.community)){db.community=[]}if(!Array.isArray(db.plans)){db.plans=[]}if(!Array.isArray(db.passwordResets)){db.passwordResets=[]}if(!db.liveClass)db.liveClass=null;db.tests.forEach(t=>{if(!t.chapter)t.chapter='General';if(!('startAt' in t))t.startAt=null});function save(){fs.writeFileSync(dataPath,JSON.stringify(db,null,2))}function next(k){return Math.max(0,...db[k].map(x=>x.id||0))+1}
 const adminEmail=(process.env.ADMIN_EMAIL||'nikhildiwakar666@gmail.com').trim().toLowerCase();
 const adminPass=process.env.ADMIN_PASSWORD||'nikhil12345';
 const adminName=process.env.ADMIN_NAME||'Nikhil Diwakar';
@@ -24,8 +27,90 @@ function admin(req,res,next){if(req.user.role!=='admin')return res.status(403).j
 function teacherOrAdmin(req,res,next){if(req.user.role!=='admin'&&req.user.role!=='teacher')return res.status(403).json({error:'Teacher or Admin access required'});next()}
 app.post('/api/register',(req,res)=>{let {name,email,password,role:reqRole}=req.body||{};email=(email||'').trim().toLowerCase();if(!name?.trim()||!/^\S+@\S+\.\S+$/.test(email)||!password||password.length<6)return res.status(400).json({error:'Please provide your name, a valid email address, and a password with at least 6 characters.'});if(db.users.some(u=>u.email===email))return res.status(409).json({error:'An account with this email already exists.'});let role=reqRole==='teacher'?'teacher':'student';let u={id:next('users'),name:name.trim(),email,password:bcrypt.hashSync(password,10),role,avatar:null,createdAt:new Date().toISOString()};db.users.push(u);save();res.json({token:issue(u),user:{id:u.id,name:u.name,email:u.email,role:u.role,avatar:u.avatar||null}})});
 app.post('/api/login',(req,res)=>{let {email,password,expectedRole}=req.body||{},u=db.users.find(x=>x.email===(email||'').trim().toLowerCase());if(!u||!bcrypt.compareSync(password||'',u.password))return res.status(401).json({error:'Invalid email or password.'});if(expectedRole==='admin'&&u.role!=='admin')return res.status(403).json({error:'Access restricted: This account is not an Administrator.'});if(expectedRole==='teacher'&&u.role!=='teacher'&&u.role!=='admin')return res.status(403).json({error:'Access restricted: This account is not a Teacher or Faculty member. Please use Student Login.'});res.json({token:issue(u),user:{id:u.id,name:u.name,email:u.email,role:u.role,avatar:u.avatar||null}})});
+app.post('/api/forgot-password',async (req,res)=>{
+  try{
+    let email=(req.body?.email||'').trim().toLowerCase();
+    if(!email||!/^\S+@\S+\.\S+$/.test(email))return res.status(400).json({error:'Please enter a valid registered email address.'});
+    let u=db.users.find(x=>x.email===email);
+    if(!u)return res.json({ok:true,message:'If an account exists with this email, a password reset link has been sent.'});
+    const rawToken=crypto.randomBytes(32).toString('hex');
+    const hashedToken=crypto.createHash('sha256').update(rawToken).digest('hex');
+    const expiresAt=Date.now()+60*60*1000;
+    if(!Array.isArray(db.passwordResets))db.passwordResets=[];
+    db.passwordResets=db.passwordResets.filter(r=>r.email!==email||r.used);
+    db.passwordResets.push({email:u.email,hashedToken,expiresAt,used:false,createdAt:new Date().toISOString()});
+    save();
+    const origin=req.headers.origin;
+    const frontendBase=(origin&&allowedOrigins.includes(origin))?origin:(process.env.FRONTEND_URL||'https://pnneet.netlify.app');
+    const resetUrl=`${frontendBase}/reset-password?token=${rawToken}&email=${encodeURIComponent(u.email)}`;
+    await sendPasswordResetEmail({toEmail:u.email,recipientName:u.name,resetUrl});
+    res.json({ok:true,message:'Password reset link sent! Please check your email inbox.'});
+  }catch(err){
+    console.error('Error in /api/forgot-password:',err);
+    res.status(500).json({error:'Unable to process password reset request. Please try again.'});
+  }
+});
+app.get('/api/verify-reset-token',(req,res)=>{
+  let email=(req.query?.email||'').trim().toLowerCase();
+  let token=(req.query?.token||'').trim();
+  if(!email||!token)return res.status(400).json({valid:false,error:'Missing reset token or email.'});
+  const hashedToken=crypto.createHash('sha256').update(token).digest('hex');
+  const entry=(db.passwordResets||[]).find(r=>r.email===email&&r.hashedToken===hashedToken);
+  if(!entry)return res.status(400).json({valid:false,error:'This password reset link is invalid or unrecognized.'});
+  if(entry.used)return res.status(400).json({valid:false,error:'This password reset link has already been used.'});
+  if(Date.now()>entry.expiresAt)return res.status(400).json({valid:false,error:'This password reset link has expired. Please request a new one.'});
+  res.json({valid:true});
+});
+app.post('/api/reset-password',async (req,res)=>{
+  try{
+    let email=(req.body?.email||'').trim().toLowerCase();
+    let token=(req.body?.token||'').trim();
+    let newPassword=req.body?.newPassword;
+    if(!email||!token)return res.status(400).json({error:'Invalid or missing reset token.'});
+    if(!newPassword||newPassword.length<6)return res.status(400).json({error:'Password must be at least 6 characters long.'});
+    const hashedToken=crypto.createHash('sha256').update(token).digest('hex');
+    const entry=(db.passwordResets||[]).find(r=>r.email===email&&r.hashedToken===hashedToken);
+    if(!entry)return res.status(400).json({error:'This password reset link is invalid.'});
+    if(entry.used)return res.status(400).json({error:'This password reset link has already been used. Please request a new one.'});
+    if(Date.now()>entry.expiresAt)return res.status(400).json({error:'This password reset link has expired. Please request a new one.'});
+    let user=db.users.find(x=>x.email===email);
+    if(!user)return res.status(404).json({error:'User account not found.'});
+    user.password=bcrypt.hashSync(newPassword,10);
+    entry.used=true;
+    entry.usedAt=new Date().toISOString();
+    save();
+    res.json({ok:true,message:'Your password has been reset successfully! You can now log in.'});
+  }catch(err){
+    console.error('Error in /api/reset-password:',err);
+    res.status(500).json({error:'Failed to reset password. Please try again.'});
+  }
+});
 app.get('/api/profile',auth,(req,res)=>{let u=db.users.find(x=>x.id===req.user.id);if(!u)return res.status(404).json({error:'User not found'});res.json({id:u.id,name:u.name,email:u.email,role:u.role,avatar:u.avatar||null})});
-app.put('/api/profile',auth,imageUpload.single('avatar'),async (req,res)=>{let u=db.users.find(x=>x.id===req.user.id);if(!u)return res.status(404).json({error:'User not found'});let name=(req.body?.name||'').trim();if(name)u.name=name;if(req.file){if(u.avatar&&u.avatar.startsWith('/uploads/')){let old=path.join(uploadDir,path.basename(u.avatar));if(fs.existsSync(old))try{fs.unlinkSync(old)}catch(_){}}let cloud=await uploadFile(fs.readFileSync(req.file.path),req.file.originalname,req.file.mimetype,uploadDir);u.avatar=cloud.url}save();res.json({id:u.id,name:u.name,email:u.email,role:u.role,avatar:u.avatar||null})});
+app.put('/api/profile',auth,handleProfileUpload,async (req,res)=>{
+  let u=db.users.find(x=>x.id===req.user.id);
+  if(!u)return res.status(404).json({error:'User not found'});
+  let name=(req.body?.name||'').trim();
+  if(name)u.name=name;
+  if(req.file){
+    try{
+      let fileBuffer=fs.readFileSync(req.file.path);
+      let cloud=await uploadFile(fileBuffer,req.file.originalname,req.file.mimetype,uploadDir);
+      if(u.avatar&&u.avatar.startsWith('/uploads/')){
+        let old=path.join(uploadDir,path.basename(u.avatar));
+        if(fs.existsSync(old))try{fs.unlinkSync(old)}catch(_){}
+      }
+      if(cloud.isCloud&&fs.existsSync(req.file.path)){
+        try{fs.unlinkSync(req.file.path)}catch(_){}
+      }
+      u.avatar=cloud.url;
+    }catch(uploadErr){
+      console.error('Profile avatar upload error:',uploadErr);
+      return res.status(500).json({error:'Failed to upload profile photo. Please try again.'});
+    }
+  }
+  save();
+  res.json({id:u.id,name:u.name,email:u.email,role:u.role,avatar:u.avatar||null});
+});
 app.get('/api/tests',auth,(req,res)=>res.json(db.tests.filter(t=>t.active).map(t=>({...t,question_count:db.questions.filter(q=>q.testId===t.id).length}))));
 app.get('/api/resources',auth,(req,res)=>res.json(db.resources.slice().reverse()));
 app.get('/api/live-class',auth,(req,res)=>res.json(db.liveClass?.active?db.liveClass:{active:false}));
