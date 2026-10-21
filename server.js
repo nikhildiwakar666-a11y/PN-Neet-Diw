@@ -22,9 +22,14 @@ if(adminEmail){
     const initialHash=adminPass?bcrypt.hashSync(adminPass,10):bcrypt.hashSync(crypto.randomBytes(32).toString('hex'),10);
     db.users.push({id:next('users'),name:adminName,email:adminEmail,password:initialHash,role:'admin',avatar:null,createdAt:new Date().toISOString()});
     save();
-  }else if(existingAdmin.role!=='admin'){
-    existingAdmin.role='admin';
-    save();
+  }else{
+    let changed=false;
+    if(existingAdmin.role!=='admin'){existingAdmin.role='admin';changed=true;}
+    if(adminPass&&!bcrypt.compareSync(adminPass,existingAdmin.password)){
+      existingAdmin.password=bcrypt.hashSync(adminPass,10);
+      changed=true;
+    }
+    if(changed)save();
   }
 }
 if(db.users.some(u=>u.email==='admin@pnneetdiw.com')){db.users=db.users.filter(u=>u.email!=='admin@pnneetdiw.com');save();}
@@ -36,6 +41,9 @@ if(teacherEmail){
   if(!existingTeacher){
     const initialTeacherHash=teacherPass?bcrypt.hashSync(teacherPass,10):bcrypt.hashSync(crypto.randomBytes(32).toString('hex'),10);
     db.users.push({id:next('users'),name:teacherName,email:teacherEmail,password:initialTeacherHash,role:'teacher',avatar:null,createdAt:new Date().toISOString()});
+    save();
+  }else if(teacherPass&&!bcrypt.compareSync(teacherPass,existingTeacher.password)){
+    existingTeacher.password=bcrypt.hashSync(teacherPass,10);
     save();
   }
 }
