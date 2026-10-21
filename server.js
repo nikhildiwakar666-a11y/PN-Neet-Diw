@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express=require('express'),bcrypt=require('bcryptjs'),jwt=require('jsonwebtoken'),multer=require('multer'),path=require('path'),fs=require('fs'),http=require('http'),crypto=require('crypto'),{Server}=require('socket.io');
 const allowedOrigins = ['https://pnneet.netlify.app', 'http://localhost:3000', 'http://127.0.0.1:3000'];
-const app=express(),server=http.createServer(app),io=new Server(server,{cors:{origin:allowedOrigins,methods:['GET','POST'],credentials:true}}),dataPath=path.join(__dirname,'data.json'),uploadDir=path.join(__dirname,'uploads'),secret=process.env.JWT_SECRET||'replace-me-before-production';
+const app=express(),server=http.createServer(app),io=new Server(server,{cors:{origin:allowedOrigins,methods:['GET','POST'],credentials:true}}),dataPath=path.join(__dirname,'data.json'),uploadDir=path.join(__dirname,'uploads'),secret=process.env.JWT_SECRET||crypto.randomBytes(32).toString('hex');
 const { uploadFile, supabase, isConfigured: isSupabaseReady } = require('./supabase');
 const { sendPasswordResetEmail } = require('./email-service');
 fs.mkdirSync(uploadDir,{recursive:true});const storage=multer.diskStorage({destination:uploadDir,filename:(req,file,cb)=>cb(null,Date.now()+'-'+file.originalname.replace(/[^a-zA-Z0-9._-]/g,'_'))}),upload=multer({storage,limits:{fileSize:100*1024*1024},fileFilter:(req,file,cb)=>{/^(application\/pdf|video\/mp4|video\/webm|video\/quicktime)$/.test(file.mimetype)?cb(null,true):cb(new Error('Sirf PDF, MP4, WebM ya MOV file upload karein.'))}}),imageUpload=multer({storage,limits:{fileSize:10*1024*1024},fileFilter:(req,file,cb)=>{/^image\/(jpeg|png|webp|gif)$/.test(file.mimetype)?cb(null,true):cb(new Error('Upload JPG, PNG, WebP, or GIF images only.'))}});
@@ -13,14 +13,32 @@ app.use(express.json({limit:'1mb'}));app.use('/uploads',express.static(uploadDir
 app.get('/api/health',(req,res)=>res.json({ok:true}));
 const seed={users:[],tests:[{id:1,title:'NEET Biology: Cell & Biomolecules',subject:'Biology',duration:15,active:true},{id:2,title:'NEET Chemistry: Basic Concepts',subject:'Chemistry',duration:15,active:true},{id:3,title:'NEET Physics: Motion',subject:'Physics',duration:15,active:true}],questions:[{id:1,testId:1,question:'Which organelle is known as the powerhouse of a cell?',options:['Ribosome','Mitochondrion','Golgi body','Nucleus'],answer:1},{id:2,testId:1,question:'What is the full form of DNA?',options:['Deoxyribonucleic Acid','Dynamic Nuclear Acid','Double Nitrogen Acid','Deoxy Nuclear Atom'],answer:0},{id:3,testId:2,question:'How many particles are present in one mole?',options:['6.022 × 10²³','3.14 × 10²³','9.8 × 10²³','1.6 × 10⁻¹⁹'],answer:0},{id:4,testId:3,question:'What is the SI unit of force?',options:['Joule','Watt','Newton','Pascal'],answer:2}],attempts:[]};
 function load(){try{return JSON.parse(fs.readFileSync(dataPath,'utf8'))}catch{return structuredClone(seed)}}let db=load();if(!Array.isArray(db.resources)){db.resources=[]}if(!Array.isArray(db.community)){db.community=[]}if(!Array.isArray(db.plans)){db.plans=[]}if(!Array.isArray(db.passwordResets)){db.passwordResets=[]}if(!db.liveClass)db.liveClass=null;db.tests.forEach(t=>{if(!t.chapter)t.chapter='General';if(!('startAt' in t))t.startAt=null});function save(){fs.writeFileSync(dataPath,JSON.stringify(db,null,2))}function next(k){return Math.max(0,...db[k].map(x=>x.id||0))+1}
-const adminEmail=(process.env.ADMIN_EMAIL||'nikhildiwakar666@gmail.com').trim().toLowerCase();
-const adminPass=process.env.ADMIN_PASSWORD||'nikhil12345';
-const adminName=process.env.ADMIN_NAME||'Nikhil Diwakar';
-let existingAdmin=db.users.find(u=>u.email===adminEmail);
-if(!existingAdmin){db.users.push({id:next('users'),name:adminName,email:adminEmail,password:bcrypt.hashSync(adminPass,10),role:'admin',createdAt:new Date().toISOString()});save();}
-else{existingAdmin.role='admin';existingAdmin.name=adminName;existingAdmin.password=bcrypt.hashSync(adminPass,10);save();}
-if(!db.users.some(u=>u.email==='admin@pnneetdiw.com')){db.users.push({id:next('users'),name:'PN Neet Diw Admin',email:'admin@pnneetdiw.com',password:bcrypt.hashSync('ChangeThisAdminPassword123!',10),role:'admin',createdAt:new Date().toISOString()});save();}
-const teacherEmail=(process.env.TEACHER_EMAIL||'teacher@pnneetdiw.com').trim().toLowerCase();if(!db.users.some(u=>u.email===teacherEmail)){db.users.push({id:next('users'),name:process.env.TEACHER_NAME||'Dr. Sharma (NEET Faculty)',email:teacherEmail,password:bcrypt.hashSync(process.env.TEACHER_PASSWORD||'teacher12345',10),role:'teacher',createdAt:new Date().toISOString()});save()}
+const adminEmail=(process.env.ADMIN_EMAIL||'').trim().toLowerCase();
+const adminPass=process.env.ADMIN_PASSWORD;
+const adminName=(process.env.ADMIN_NAME||'Platform Administrator').trim();
+if(adminEmail){
+  let existingAdmin=db.users.find(u=>u.email===adminEmail);
+  if(!existingAdmin){
+    const initialHash=adminPass?bcrypt.hashSync(adminPass,10):bcrypt.hashSync(crypto.randomBytes(32).toString('hex'),10);
+    db.users.push({id:next('users'),name:adminName,email:adminEmail,password:initialHash,role:'admin',avatar:null,createdAt:new Date().toISOString()});
+    save();
+  }else if(existingAdmin.role!=='admin'){
+    existingAdmin.role='admin';
+    save();
+  }
+}
+if(db.users.some(u=>u.email==='admin@pnneetdiw.com')){db.users=db.users.filter(u=>u.email!=='admin@pnneetdiw.com');save();}
+const teacherEmail=(process.env.TEACHER_EMAIL||'').trim().toLowerCase();
+const teacherPass=process.env.TEACHER_PASSWORD;
+const teacherName=(process.env.TEACHER_NAME||'Faculty Member').trim();
+if(teacherEmail){
+  let existingTeacher=db.users.find(u=>u.email===teacherEmail);
+  if(!existingTeacher){
+    const initialTeacherHash=teacherPass?bcrypt.hashSync(teacherPass,10):bcrypt.hashSync(crypto.randomBytes(32).toString('hex'),10);
+    db.users.push({id:next('users'),name:teacherName,email:teacherEmail,password:initialTeacherHash,role:'teacher',avatar:null,createdAt:new Date().toISOString()});
+    save();
+  }
+}
 const issue=u=>jwt.sign({id:u.id,role:u.role,name:u.name},secret,{expiresIn:'7d'});
 function auth(req,res,next){try{req.user=jwt.verify((req.headers.authorization||'').replace('Bearer ',''),secret);next()}catch{res.status(401).json({error:'Login required'})}}
 function admin(req,res,next){if(req.user.role!=='admin')return res.status(403).json({error:'Admin access required'});next()}

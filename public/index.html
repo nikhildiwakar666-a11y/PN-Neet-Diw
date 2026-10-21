@@ -3000,7 +3000,7 @@
         $('authTabsBar').style.display = 'flex';
         $('tabRoleSignIn').textContent = 'Faculty Sign In';
         $('tabRoleRegister').textContent = 'Faculty Register';
-        $('authEmail').placeholder = 'teacher@pnneetdiw.com';
+        $('authEmail').placeholder = 'faculty@example.com';
         setAuthMode('login');
       } else if (role === 'admin') {
         $('authRoleBadge').textContent = '🛡️ Administrator Console';
@@ -3008,7 +3008,7 @@
         $('authRoleTitle').textContent = 'Admin Sign In';
         $('authRoleDesc').textContent = '“Manage the complete learning platform.”';
         $('authTabsBar').style.display = 'none'; // Strictly only Admin Login! No register tab
-        $('authEmail').placeholder = 'admin@pnneetdiw.com';
+        $('authEmail').placeholder = 'admin@example.com';
         setAuthMode('login');
       }
       hideAuthError();
@@ -4931,7 +4931,7 @@
     // 9. WEBSITE SETTINGS SECTION
     // =========================================================================
     function loadAdminSettings() {
-      if ($('adminSettingsEmail')) $('adminSettingsEmail').value = user?.email || 'admin@pnneetdiw.com';
+      if ($('adminSettingsEmail')) $('adminSettingsEmail').value = user?.email || '';
       if ($('adminSettingFocus')) {
         const val = localStorage.getItem('settings_focus');
         $('adminSettingFocus').checked = val === null ? true : val === 'true';
