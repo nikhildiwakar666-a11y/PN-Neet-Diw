@@ -3,8 +3,9 @@ const { createClient } = require('@supabase/supabase-js');
 const path = require('path');
 const fs = require('fs');
 
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
+const supabaseUrl = (process.env.SUPABASE_URL || '').trim();
+const anonKey = (process.env.SUPABASE_ANON_KEY || '').trim();
+const serviceKey = (process.env.SUPABASE_SERVICE_ROLE_KEY || '').trim();
 const bucketName = 'pnneet-uploads';
 
 let supabase = null;
@@ -12,27 +13,33 @@ let supabaseAdmin = null;
 let supabaseAnon = null;
 let isConfigured = false;
 
-const anonKey = process.env.SUPABASE_ANON_KEY;
-const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || anonKey;
+function getMissingConfig() {
+  const missing = [];
+  if (!supabaseUrl || supabaseUrl.includes('your-project')) missing.push('SUPABASE_URL');
+  if (!anonKey || anonKey.includes('your-supabase-anon-key')) missing.push('SUPABASE_ANON_KEY');
+  if (!serviceKey || serviceKey.includes('your-supabase-service-role-key')) missing.push('SUPABASE_SERVICE_ROLE_KEY');
+  return missing;
+}
 
-if (supabaseUrl && supabaseKey && !supabaseUrl.includes('your-project')) {
+const missingVars = getMissingConfig();
+
+if (missingVars.length > 0) {
+  console.error(`[Supabase Configuration Error] Central database is disabled. Missing required environment variable(s): ${missingVars.join(', ')}. Please set these variables in the Render Dashboard (Environment tab).`);
+} else {
   try {
-    supabase = createClient(supabaseUrl, serviceKey, {
+    supabaseAdmin = createClient(supabaseUrl, serviceKey, {
       auth: { persistSession: false, autoRefreshToken: false }
     });
-    supabaseAdmin = supabase;
+    supabase = supabaseAdmin;
 
-    if (anonKey) {
-      supabaseAnon = createClient(supabaseUrl, anonKey, {
-        auth: { persistSession: false, autoRefreshToken: false }
-      });
-    } else {
-      supabaseAnon = supabase;
-    }
+    supabaseAnon = createClient(supabaseUrl, anonKey, {
+      auth: { persistSession: false, autoRefreshToken: false }
+    });
 
     isConfigured = true;
+    console.log('✅ Supabase central authentication and storage clients successfully initialized.');
   } catch (err) {
-    console.warn('⚠️ Could not initialize Supabase client:', err.message);
+    console.error('⚠️ Could not initialize Supabase client:', err.message);
   }
 }
 
@@ -91,6 +98,7 @@ module.exports = {
   supabaseAnon,
   isConfigured,
   bucketName,
-  uploadFile
+  uploadFile,
+  getMissingConfig
 };
 

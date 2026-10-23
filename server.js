@@ -17,7 +17,7 @@ const app = express(),
   uploadDir = path.join(__dirname, 'uploads'),
   secret = process.env.JWT_SECRET || crypto.randomBytes(32).toString('hex');
 
-const { uploadFile, supabase, supabaseAdmin, supabaseAnon, isConfigured: isSupabaseReady } = require('./supabase');
+const { uploadFile, supabase, supabaseAdmin, supabaseAnon, isConfigured: isSupabaseReady, getMissingConfig } = require('./supabase');
 const { sendPasswordResetEmail, sendVerificationEmail, hasCustomSmtp } = require('./email-service');
 
 fs.mkdirSync(uploadDir, { recursive: true });
@@ -82,7 +82,11 @@ app.use(express.json({ limit: '1mb' }));
 app.use('/uploads', express.static(uploadDir));
 app.use(express.static(path.join(__dirname, 'public'), { index: false }));
 
-app.get('/api/health', (req, res) => res.json({ ok: true, supabase: isSupabaseReady }));
+app.get('/api/health', (req, res) => res.json({
+  ok: true,
+  supabase: isSupabaseReady,
+  missingConfig: isSupabaseReady ? [] : (getMissingConfig ? getMissingConfig() : [])
+}));
 
 const seed = {
   users: [],
@@ -148,7 +152,8 @@ async function findAuthUserByEmail(email) {
  */
 async function initProductionAdmin() {
   if (!isSupabaseReady || !supabaseAdmin) {
-    console.warn('⚠️ Supabase admin client not ready, skipping production admin bootstrap.');
+    const missing = getMissingConfig ? getMissingConfig() : [];
+    console.warn(`⚠️ Supabase admin client not ready (missing: ${missing.join(', ')}), skipping production admin bootstrap.`);
     return;
   }
   try {
@@ -281,6 +286,8 @@ app.post('/api/register', async (req, res) => {
     }
 
     if (!isSupabaseReady || !supabaseAdmin) {
+      const missing = getMissingConfig ? getMissingConfig() : [];
+      console.error(`[Central Auth Unavailable] Request to POST /api/register blocked: Supabase is not configured. Missing environment variable(s): ${missing.join(', ')}`);
       return res.status(503).json({ error: 'Central authentication database is unavailable. Please try again shortly.' });
     }
 
@@ -432,6 +439,8 @@ app.post('/api/resend-verification', async (req, res) => {
     }
 
     if (!isSupabaseReady || !supabaseAdmin) {
+      const missing = getMissingConfig ? getMissingConfig() : [];
+      console.error(`[Central Auth Unavailable] Request to POST /api/resend-verification blocked: Supabase is not configured. Missing environment variable(s): ${missing.join(', ')}`);
       return res.status(503).json({ error: 'Central authentication database is unavailable.' });
     }
 
@@ -538,6 +547,8 @@ app.post('/api/login', async (req, res) => {
     }
 
     if (!isSupabaseReady) {
+      const missing = getMissingConfig ? getMissingConfig() : [];
+      console.error(`[Central Auth Unavailable] Request to POST /api/login blocked: Supabase is not configured. Missing environment variable(s): ${missing.join(', ')}`);
       return res.status(503).json({ error: 'Central authentication service is temporarily unavailable. Please try again shortly.' });
     }
 
@@ -623,6 +634,8 @@ app.post('/api/forgot-password', async (req, res) => {
     }
 
     if (!isSupabaseReady || !supabaseAdmin) {
+      const missing = getMissingConfig ? getMissingConfig() : [];
+      console.error(`[Central Auth Unavailable] Request to POST /api/forgot-password blocked: Supabase is not configured. Missing environment variable(s): ${missing.join(', ')}`);
       return res.status(503).json({ error: 'Central authentication database is unavailable.' });
     }
 
@@ -738,6 +751,8 @@ app.post('/api/reset-password', async (req, res) => {
     if (Date.now() > entry.expiresAt) return res.status(400).json({ error: 'This password reset link has expired. Please request a new one.' });
 
     if (!isSupabaseReady || !supabaseAdmin) {
+      const missing = getMissingConfig ? getMissingConfig() : [];
+      console.error(`[Central Auth Unavailable] Request to POST /api/reset-password blocked: Supabase is not configured. Missing environment variable(s): ${missing.join(', ')}`);
       return res.status(503).json({ error: 'Central authentication database is unavailable. Please try again.' });
     }
 
