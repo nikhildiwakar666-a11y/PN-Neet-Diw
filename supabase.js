@@ -8,18 +8,34 @@ const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABAS
 const bucketName = 'pnneet-uploads';
 
 let supabase = null;
+let supabaseAdmin = null;
+let supabaseAnon = null;
 let isConfigured = false;
+
+const anonKey = process.env.SUPABASE_ANON_KEY;
+const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || anonKey;
 
 if (supabaseUrl && supabaseKey && !supabaseUrl.includes('your-project')) {
   try {
-    supabase = createClient(supabaseUrl, supabaseKey, {
-      auth: { persistSession: false }
+    supabase = createClient(supabaseUrl, serviceKey, {
+      auth: { persistSession: false, autoRefreshToken: false }
     });
+    supabaseAdmin = supabase;
+
+    if (anonKey) {
+      supabaseAnon = createClient(supabaseUrl, anonKey, {
+        auth: { persistSession: false, autoRefreshToken: false }
+      });
+    } else {
+      supabaseAnon = supabase;
+    }
+
     isConfigured = true;
   } catch (err) {
     console.warn('⚠️ Could not initialize Supabase client:', err.message);
   }
 }
+
 
 /**
  * Upload a file to Supabase Storage (bucket: pnneet-uploads).
@@ -71,7 +87,10 @@ async function uploadFile(fileBuffer, originalName, mimeType, localUploadDir) {
 
 module.exports = {
   supabase,
+  supabaseAdmin,
+  supabaseAnon,
   isConfigured,
   bucketName,
   uploadFile
 };
+

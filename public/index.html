@@ -1837,6 +1837,7 @@
       </div>
 
       <div class="gate-error-banner" id="authErrorBanner"></div>
+      <div class="gate-success-banner" id="authSuccessBanner" style="display:none;background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;padding:12px 14px;border-radius:10px;font-size:13px;margin-bottom:16px;line-height:1.5;"></div>
 
       <form id="authForm" onsubmit="handleAuthSubmit(event)">
         <div class="gate-field" id="authNameField" style="display:none">
@@ -1854,7 +1855,8 @@
           <input id="authPassword" type="password" placeholder="Minimum 6 characters" required autocomplete="current-password">
         </div>
 
-        <div class="auth-aux-row" id="authForgotPasswordRow" style="display:flex;justify-content:flex-end;margin-top:-6px;margin-bottom:14px;">
+        <div class="auth-aux-row" id="authForgotPasswordRow" style="display:flex;justify-content:space-between;align-items:center;margin-top:-6px;margin-bottom:14px;">
+          <a href="javascript:void(0)" onclick="openResendVerificationModal()" class="resend-verify-link" style="font-size:12.5px;color:#6b7280;font-weight:600;text-decoration:none;cursor:pointer;">Resend verification email</a>
           <a href="javascript:void(0)" onclick="openForgotPassword()" class="forgot-pass-link" style="font-size:12.5px;color:var(--brand-primary,#0070f3);font-weight:600;text-decoration:none;cursor:pointer;">Forgot Password?</a>
         </div>
 
@@ -1862,6 +1864,47 @@
       </form>
 
       <div class="gate-switch-link" id="authSwitchPrompt"></div>
+    </div>
+
+    <!-- EMAIL VERIFICATION SCREEN CONTAINER -->
+    <div class="role-auth-wrapper" id="emailVerificationContainer" style="display:none">
+      <div class="auth-brand-header">
+        <img src="/assets/logo.svg" alt="PN Neet Diw Logo" class="auth-official-logo">
+      </div>
+      <button type="button" class="auth-back-btn" onclick="backToSignInFromVerify()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        <span>Back to Sign In</span>
+      </button>
+
+      <div class="auth-role-hero">
+        <div class="auth-role-avatar-circle" style="background:#eff6ff;border-color:#bfdbfe;font-size:26px;">✉️</div>
+        <div>
+          <span class="role-card-badge" style="background:#dbeafe;color:#1e40af;border-color:#bfdbfe;margin-bottom:4px;">Verification Required</span>
+          <h2 style="margin:2px 0 0;font-size:20px;font-weight:800;color:#111111;">Check Your Email</h2>
+        </div>
+      </div>
+      <p style="margin:0 0 16px;font-size:14px;color:#4b5563;line-height:1.6;">
+        We have sent a verification link to <strong id="verifyEmailAddressDisplay" style="color:#111827;word-break:break-all;">your email address</strong>.
+      </p>
+      <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:14px;margin-bottom:20px;font-size:13px;color:#475569;line-height:1.55;">
+        📩 <b>Next steps:</b> Open your Gmail or email inbox, find the verification email from <b>PN Neet Diw</b>, and click <b>Verify My Account</b>. If you don't see it, check your <b>Spam or Promotions</b> folder.
+      </div>
+
+      <div class="gate-error-banner" id="verifyErrorBanner" style="display:none;margin-bottom:14px;"></div>
+      <div class="gate-success-banner" id="verifySuccessBanner" style="display:none;background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;padding:12px 14px;border-radius:10px;font-size:13px;margin-bottom:16px;line-height:1.5;"></div>
+
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <button type="button" class="gate-submit-btn" id="resendVerificationBtn" onclick="handleResendVerificationClick()">
+          Resend Verification Email ✉️
+        </button>
+        <button type="button" style="width:100%;padding:12px;border-radius:12px;background:#f3f4f6;color:#111827;font-weight:700;font-size:13.5px;border:1px solid #e5e7eb;cursor:pointer;" onclick="backToSignInFromVerify()">
+          Already verified? Sign In &rarr;
+        </button>
+      </div>
+
+      <div class="gate-switch-link" style="margin-top:16px;">
+        Need to change your email? <a href="javascript:void(0)" onclick="backToRegisterFromVerify()">Register again</a>
+      </div>
     </div>
 
     <!-- FORGOT PASSWORD CONTAINER -->
@@ -2980,6 +3023,7 @@
       $('roleSelectionScreen').style.display = 'none';
       if ($('forgotPasswordContainer')) $('forgotPasswordContainer').style.display = 'none';
       if ($('resetPasswordContainer')) $('resetPasswordContainer').style.display = 'none';
+      if ($('emailVerificationContainer')) $('emailVerificationContainer').style.display = 'none';
       $('roleAuthContainer').style.display = 'flex';
 
       if (role === 'student') {
@@ -3012,6 +3056,7 @@
         setAuthMode('login');
       }
       hideAuthError();
+      hideAuthSuccessBanner();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
@@ -3019,8 +3064,10 @@
       $('roleAuthContainer').style.display = 'none';
       if ($('forgotPasswordContainer')) $('forgotPasswordContainer').style.display = 'none';
       if ($('resetPasswordContainer')) $('resetPasswordContainer').style.display = 'none';
+      if ($('emailVerificationContainer')) $('emailVerificationContainer').style.display = 'none';
       $('roleSelectionScreen').style.display = 'flex';
       hideAuthError();
+      hideAuthSuccessBanner();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
@@ -3060,17 +3107,172 @@
       }
 
       hideAuthError();
+      hideAuthSuccessBanner();
     }
 
     function showAuthError(msg) {
       const banner = $('authErrorBanner');
-      banner.textContent = msg;
-      banner.style.display = 'block';
+      if (banner) {
+        banner.textContent = msg;
+        banner.style.display = 'block';
+      }
+      hideAuthSuccessBanner();
+    }
+
+    function showAuthErrorHTML(html) {
+      const banner = $('authErrorBanner');
+      if (banner) {
+        banner.innerHTML = html;
+        banner.style.display = 'block';
+      }
+      hideAuthSuccessBanner();
     }
 
     function hideAuthError() {
       const banner = $('authErrorBanner');
-      banner.style.display = 'none';
+      if (banner) banner.style.display = 'none';
+    }
+
+    function showAuthSuccessBanner(msg) {
+      const banner = $('authSuccessBanner');
+      if (banner) {
+        banner.innerHTML = msg;
+        banner.style.display = 'block';
+      }
+      hideAuthError();
+    }
+
+    function hideAuthSuccessBanner() {
+      const banner = $('authSuccessBanner');
+      if (banner) banner.style.display = 'none';
+    }
+
+    // =========================================================================
+    // EMAIL VERIFICATION CONTROLS
+    // =========================================================================
+    let resendCooldownTimer = null;
+    let resendSecondsRemaining = 0;
+
+    function openEmailVerificationScreen(email) {
+      $('roleSelectionScreen').style.display = 'none';
+      $('roleAuthContainer').style.display = 'none';
+      if ($('forgotPasswordContainer')) $('forgotPasswordContainer').style.display = 'none';
+      if ($('resetPasswordContainer')) $('resetPasswordContainer').style.display = 'none';
+      const vCont = $('emailVerificationContainer');
+      if (vCont) {
+        vCont.style.display = 'block';
+        const emailDisplay = $('verifyEmailAddressDisplay');
+        if (emailDisplay) emailDisplay.textContent = email || 'your email address';
+        hideVerifyBanners();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    function backToSignInFromVerify() {
+      if ($('emailVerificationContainer')) $('emailVerificationContainer').style.display = 'none';
+      $('roleAuthContainer').style.display = 'flex';
+      setAuthMode('login');
+      hideVerifyBanners();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function backToRegisterFromVerify() {
+      if ($('emailVerificationContainer')) $('emailVerificationContainer').style.display = 'none';
+      $('roleAuthContainer').style.display = 'flex';
+      setAuthMode('register');
+      hideVerifyBanners();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function showVerifyBanner(msg, isSuccess = false) {
+      const errBanner = $('verifyErrorBanner');
+      const succBanner = $('verifySuccessBanner');
+      if (isSuccess) {
+        if (errBanner) errBanner.style.display = 'none';
+        if (succBanner) {
+          succBanner.innerHTML = msg;
+          succBanner.style.display = 'block';
+        }
+      } else {
+        if (succBanner) succBanner.style.display = 'none';
+        if (errBanner) {
+          errBanner.textContent = msg;
+          errBanner.style.display = 'block';
+        }
+      }
+    }
+
+    function hideVerifyBanners() {
+      const errBanner = $('verifyErrorBanner');
+      const succBanner = $('verifySuccessBanner');
+      if (errBanner) errBanner.style.display = 'none';
+      if (succBanner) succBanner.style.display = 'none';
+    }
+
+    function openResendVerificationModal() {
+      const email = ($('authEmail')?.value || '').trim();
+      if (email) {
+        openEmailVerificationScreen(email);
+      } else {
+        showAuthError('Please enter your email address in the field above first, then click Resend verification email.');
+        $('authEmail')?.focus();
+      }
+    }
+
+    async function handleResendVerificationClick() {
+      const email = ($('verifyEmailAddressDisplay')?.textContent || $('authEmail')?.value || '').trim();
+      if (!email || email === 'your email address') {
+        return showVerifyBanner('Please enter a valid registered email address.');
+      }
+
+      if (resendSecondsRemaining > 0) return;
+
+      const btn = $('resendVerificationBtn');
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'Sending email...';
+      }
+      hideVerifyBanners();
+
+      try {
+        const res = await api('resend-verification', {
+          method: 'POST',
+          body: JSON.stringify({ email })
+        });
+        showVerifyBanner(res.message || 'Verification link sent! Please check your email inbox and spam folder.', true);
+        startResendCooldown(60);
+      } catch (err) {
+        showVerifyBanner(err.message || 'Failed to send verification email. Please try again.');
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = 'Resend Verification Email ✉️';
+        }
+      }
+    }
+
+    function startResendCooldown(seconds) {
+      resendSecondsRemaining = seconds;
+      const btn = $('resendVerificationBtn');
+      if (resendCooldownTimer) clearInterval(resendCooldownTimer);
+
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = `Resend available in ${resendSecondsRemaining}s`;
+      }
+
+      resendCooldownTimer = setInterval(() => {
+        resendSecondsRemaining--;
+        if (resendSecondsRemaining <= 0) {
+          clearInterval(resendCooldownTimer);
+          resendCooldownTimer = null;
+          if (btn) {
+            btn.disabled = false;
+            btn.textContent = 'Resend Verification Email ✉️';
+          }
+        } else if (btn) {
+          btn.textContent = `Resend available in ${resendSecondsRemaining}s`;
+        }
+      }, 1000);
     }
 
     // =========================================================================
@@ -3079,6 +3281,7 @@
     function openForgotPassword() {
       $('roleAuthContainer').style.display = 'none';
       if ($('resetPasswordContainer')) $('resetPasswordContainer').style.display = 'none';
+      if ($('emailVerificationContainer')) $('emailVerificationContainer').style.display = 'none';
       const fCont = $('forgotPasswordContainer');
       if (fCont) {
         fCont.style.display = 'block';
@@ -3091,6 +3294,7 @@
     function backToSignInFromForgot() {
       if ($('forgotPasswordContainer')) $('forgotPasswordContainer').style.display = 'none';
       if ($('resetPasswordContainer')) $('resetPasswordContainer').style.display = 'none';
+      if ($('emailVerificationContainer')) $('emailVerificationContainer').style.display = 'none';
       $('roleAuthContainer').style.display = 'flex';
       hideForgotBanner();
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -3099,6 +3303,7 @@
     function backToSignInFromReset() {
       if ($('forgotPasswordContainer')) $('forgotPasswordContainer').style.display = 'none';
       if ($('resetPasswordContainer')) $('resetPasswordContainer').style.display = 'none';
+      if ($('emailVerificationContainer')) $('emailVerificationContainer').style.display = 'none';
       $('roleAuthContainer').style.display = 'flex';
       setAuthMode('login');
       hideResetBanner();
@@ -3187,6 +3392,7 @@
       if (authCont) authCont.style.display = 'none';
       const forgotCont = $('forgotPasswordContainer');
       if (forgotCont) forgotCont.style.display = 'none';
+      if ($('emailVerificationContainer')) $('emailVerificationContainer').style.display = 'none';
       const dashArea = $('dashboardMainArea');
       if (dashArea) dashArea.style.display = 'none';
 
@@ -3255,6 +3461,7 @@
     async function handleAuthSubmit(e) {
       e.preventDefault();
       hideAuthError();
+      hideAuthSuccessBanner();
 
       const email = $('authEmail').value.trim();
       const password = $('authPassword').value;
@@ -3283,6 +3490,12 @@
           body: JSON.stringify(payload)
         });
 
+        if (d.requiresVerification) {
+          openEmailVerificationScreen(email);
+          showVerifyBanner('Account created! Please check your email to verify your account before signing in.', true);
+          return;
+        }
+
         token = d.token;
         user = d.user;
         localStorage.token = token;
@@ -3290,7 +3503,14 @@
 
         applyViewState();
       } catch (err) {
-        showAuthError(err.message || 'Login failed. Please check credentials.');
+        const errMsg = err.message || '';
+        if (errMsg.toLowerCase().includes('already registered') || errMsg.toLowerCase().includes('already exists')) {
+          showAuthErrorHTML('This email is already registered. Please <a onclick="setAuthMode(\'login\')" style="color:var(--brand-primary,#0070f3);font-weight:700;text-decoration:underline;cursor:pointer;">sign in</a> or <a onclick="openForgotPassword()" style="color:var(--brand-primary,#0070f3);font-weight:700;text-decoration:underline;cursor:pointer;">reset your password</a>.');
+        } else if (errMsg.toLowerCase().includes('not verified') || err.unverified) {
+          showAuthErrorHTML('Your email address is not verified yet. <a onclick="openEmailVerificationScreen(\'' + esc(email) + '\')" style="color:var(--brand-primary,#0070f3);font-weight:700;text-decoration:underline;cursor:pointer;">Click here to check email or resend verification link</a>.');
+        } else {
+          showAuthError(errMsg || 'Login failed. Please check credentials.');
+        }
       } finally {
         submitBtn.disabled = false;
         let submitLabel = 'Sign In to Dashboard →';
@@ -3313,13 +3533,22 @@
 
       // Check for password reset token in URL parameters or path
       const urlParams = new URLSearchParams(window.location.search);
+      const hashStr = window.location.hash || '';
       const resetToken = urlParams.get('token');
       const resetEmail = urlParams.get('email');
-      const isResetUrl = window.location.pathname.includes('reset-password') || urlParams.get('action') === 'reset_password' || !!resetToken;
+      const isResetUrl = window.location.pathname.includes('reset-password') || urlParams.get('action') === 'reset_password' || hashStr.includes('type=recovery') || !!resetToken;
 
       if (resetToken && resetEmail && isResetUrl) {
         openResetPasswordView(resetToken, resetEmail);
         return;
+      }
+
+      // Check for email verification confirmation redirect from Supabase
+      const isVerified = urlParams.get('verified') === 'true' || urlParams.get('type') === 'signup' || hashStr.includes('type=signup');
+      if (isVerified) {
+        try {
+          window.history.replaceState({}, document.title, window.location.pathname);
+        } catch (_) {}
       }
 
       const isLoggedIn = !!(token && user);
@@ -3334,6 +3563,13 @@
         $('roleAuthContainer').style.display = 'none';
         if ($('forgotPasswordContainer')) $('forgotPasswordContainer').style.display = 'none';
         if ($('resetPasswordContainer')) $('resetPasswordContainer').style.display = 'none';
+        if ($('emailVerificationContainer')) $('emailVerificationContainer').style.display = 'none';
+
+        if (isVerified) {
+          openRoleAuth('student');
+          setAuthMode('login');
+          showAuthSuccessBanner('✅ <b>Email verified successfully!</b> You can now sign in with your email and password.');
+        }
 
         $('dashboardMainArea').style.display = 'none';
         $('studentDashboardView').style.display = 'none';
