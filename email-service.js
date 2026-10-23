@@ -2,23 +2,37 @@ const nodemailer = require('nodemailer');
 const { generateBrandedEmail } = require('./email-template');
 
 let transporter = null;
+const hasCustomSmtp = !!(process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS);
 
-if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
-  transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: parseInt(process.env.SMTP_PORT || '587', 10),
-    secure: process.env.SMTP_PORT === '465',
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS
-    }
-  });
+if (hasCustomSmtp) {
+  try {
+    transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: parseInt(process.env.SMTP_PORT || '587', 10),
+      secure: String(process.env.SMTP_PORT || '') === '465',
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS
+      }
+    });
+  } catch (initErr) {
+    console.error('[Email Service] Failed to initialize custom SMTP transporter:', initErr.message);
+    transporter = null;
+  }
 }
 
 /**
  * Send a secure, branded password reset email.
  */
 async function sendPasswordResetEmail({ toEmail, recipientName, resetUrl }) {
+  if (!transporter) {
+    return {
+      success: false,
+      provider: 'none',
+      error: 'Custom SMTP is not configured in server environment variables.'
+    };
+  }
+
   const subject = 'Reset Your PN Neet Diw Password';
   const messageHtml = `
     <p style="margin:0 0 12px;font-size:15px;color:#18181b;">We received a request to reset the password for your account associated with <strong>${toEmail}</strong>.</p>
@@ -34,34 +48,34 @@ async function sendPasswordResetEmail({ toEmail, recipientName, resetUrl }) {
     actionUrl: resetUrl
   });
 
-  if (transporter) {
-    try {
-      const from = process.env.SMTP_FROM || `"PN Neet Diw" <${process.env.SMTP_USER}>`;
-      const info = await transporter.sendMail({
-        from,
-        to: toEmail,
-        subject,
-        html
-      });
-      console.log(`[Email Service] Password reset email sent to ${toEmail}. MessageId: ${info.messageId}`);
-      return { sent: true, provider: 'smtp', messageId: info.messageId };
-    } catch (err) {
-      console.error(`[Email Service] Failed to send email via SMTP to ${toEmail}:`, err.message);
-    }
+  try {
+    const from = process.env.SMTP_FROM || `"PN Neet Diw" <${process.env.SMTP_USER}>`;
+    const info = await transporter.sendMail({
+      from,
+      to: toEmail,
+      subject,
+      html
+    });
+    console.log(`[Email Service] Password reset email sent via custom SMTP to ${toEmail}. MessageId: ${info.messageId}`);
+    return { success: true, provider: 'smtp', messageId: info.messageId };
+  } catch (err) {
+    console.error(`[Email Delivery Failure] Action: password-reset, Email: ${toEmail}, Error: ${err.message}`);
+    return { success: false, provider: 'smtp', error: err.message };
   }
-
-  // Fallback logging for development or when SMTP is not configured
-  console.log('====================================================');
-  console.log(`[PASSWORD RESET LINK for ${toEmail}]`);
-  console.log(`Reset URL: ${resetUrl}`);
-  console.log('====================================================');
-  return { sent: false, provider: 'console', resetUrl };
 }
 
 /**
  * Send a secure, branded account verification email.
  */
 async function sendVerificationEmail({ toEmail, recipientName, verificationUrl }) {
+  if (!transporter) {
+    return {
+      success: false,
+      provider: 'none',
+      error: 'Custom SMTP is not configured in server environment variables.'
+    };
+  }
+
   const subject = 'Verify Your Email Address — PN Neet Diw';
   const messageHtml = `
     <p style="margin:0 0 12px;font-size:15px;color:#18181b;">Welcome to <strong>PN Neet Diw</strong>! We're excited to help you prepare for your NEET exam.</p>
@@ -77,28 +91,24 @@ async function sendVerificationEmail({ toEmail, recipientName, verificationUrl }
     actionUrl: verificationUrl
   });
 
-  if (transporter) {
-    try {
-      const from = process.env.SMTP_FROM || `"PN Neet Diw" <${process.env.SMTP_USER}>`;
-      const info = await transporter.sendMail({
-        from,
-        to: toEmail,
-        subject,
-        html
-      });
-      console.log(`[Email Service] Verification email sent to ${toEmail}. MessageId: ${info.messageId}`);
-      return { sent: true, provider: 'smtp', messageId: info.messageId };
-    } catch (err) {
-      console.error(`[Email Service] Failed to send verification email via SMTP to ${toEmail}:`, err.message);
-    }
+  try {
+    const from = process.env.SMTP_FROM || `"PN Neet Diw" <${process.env.SMTP_USER}>`;
+    const info = await transporter.sendMail({
+      from,
+      to: toEmail,
+      subject,
+      html
+    });
+    console.log(`[Email Service] Verification email sent via custom SMTP to ${toEmail}. MessageId: ${info.messageId}`);
+    return { success: true, provider: 'smtp', messageId: info.messageId };
+  } catch (err) {
+    console.error(`[Email Delivery Failure] Action: account-verification, Email: ${toEmail}, Error: ${err.message}`);
+    return { success: false, provider: 'smtp', error: err.message };
   }
-
-  // Fallback logging for development or when SMTP is not configured
-  console.log('====================================================');
-  console.log(`[ACCOUNT VERIFICATION LINK for ${toEmail}]`);
-  console.log(`Verification URL: ${verificationUrl}`);
-  console.log('====================================================');
-  return { sent: false, provider: 'console', verificationUrl };
 }
 
-module.exports = { sendPasswordResetEmail, sendVerificationEmail };
+module.exports = {
+  sendPasswordResetEmail,
+  sendVerificationEmail,
+  hasCustomSmtp
+};

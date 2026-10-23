@@ -18,7 +18,7 @@ const app = express(),
   secret = process.env.JWT_SECRET || crypto.randomBytes(32).toString('hex');
 
 const { uploadFile, supabase, supabaseAdmin, supabaseAnon, isConfigured: isSupabaseReady } = require('./supabase');
-const { sendPasswordResetEmail, sendVerificationEmail } = require('./email-service');
+const { sendPasswordResetEmail, sendVerificationEmail, hasCustomSmtp } = require('./email-service');
 
 fs.mkdirSync(uploadDir, { recursive: true });
 const storage = multer.diskStorage({
@@ -265,7 +265,7 @@ function teacherOrAdmin(req, res, next) {
 
 /**
  * POST /api/register
- * Creates a student/teacher account centrally in Supabase Auth with email verification required.
+ * Creates a student/teacher account centrally in Supabase Auth with confirmed email delivery.
  */
 app.post('/api/register', async (req, res) => {
   try {
@@ -286,80 +286,143 @@ app.post('/api/register', async (req, res) => {
 
     // Check if account already exists with this email
     const existingUser = await findAuthUserByEmail(email);
-    if (existingUser) {
+    if (existingUser && existingUser.email_confirmed_at) {
       return res.status(409).json({
         error: 'This email is already registered. Please sign in or reset your password.'
       });
     }
 
     const role = reqRole === 'teacher' ? 'teacher' : 'student';
-
-    // Create user in Supabase Auth (unconfirmed email)
-    const { data: newUser, error: createError } = await supabaseAdmin.auth.admin.createUser({
-      email,
-      password,
-      email_confirm: false,
-      user_metadata: { full_name: name, role }
-    });
-
-    if (createError) {
-      console.error('Supabase createUser error:', createError);
-      if (
-        createError.message?.toLowerCase().includes('already registered') ||
-        createError.message?.toLowerCase().includes('already exists') ||
-        createError.status === 422
-      ) {
-        return res.status(409).json({
-          error: 'This email is already registered. Please sign in or reset your password.'
-        });
-      }
-      return res.status(400).json({ error: createError.message || 'Could not create account.' });
-    }
-
-    const userId = newUser.user.id;
-
-    // Create profile row in public.profiles table
-    await supabaseAdmin.from('profiles').upsert({
-      id: userId,
-      full_name: name,
-      role
-    });
-
-    // Generate official Supabase verification link
     const origin = req.headers.origin;
     const frontendBase = (origin && allowedOrigins.includes(origin)) ? origin : (process.env.FRONTEND_URL || 'https://pnneet.netlify.app');
-    const { data: linkData } = await supabaseAdmin.auth.admin.generateLink({
-      type: 'signup',
-      email,
-      options: {
-        redirectTo: `${frontendBase}?verified=true`
+    const redirectUrl = `${frontendBase}?verified=true`;
+
+    if (hasCustomSmtp) {
+      // -------------------------------------------------------------
+      // STRATEGY A: Custom SMTP configured via server environment variables
+      // -------------------------------------------------------------
+      let userId;
+      if (!existingUser) {
+        const { data: newUser, error: createError } = await supabaseAdmin.auth.admin.createUser({
+          email,
+          password,
+          email_confirm: false,
+          user_metadata: { full_name: name, role }
+        });
+        if (createError) {
+          console.error(`[Email Delivery Failure] Action: register-createUser, Email: ${email}, Error: ${createError.message}`);
+          if (createError.message?.toLowerCase().includes('already registered') || createError.status === 422) {
+            return res.status(409).json({ error: 'This email is already registered. Please sign in or reset your password.' });
+          }
+          return res.status(400).json({ error: createError.message || 'Could not create account.' });
+        }
+        userId = newUser.user.id;
+      } else {
+        userId = existingUser.id;
+        await supabaseAdmin.auth.admin.updateUserById(userId, {
+          password,
+          user_metadata: { full_name: name, role }
+        });
       }
-    });
 
-    const verificationUrl = linkData?.properties?.action_link || `${frontendBase}?verified=true`;
+      await supabaseAdmin.from('profiles').upsert({ id: userId, full_name: name, role });
 
-    // Send verification email via nodemailer / branded email template
-    await sendVerificationEmail({
-      toEmail: email,
-      recipientName: name,
-      verificationUrl
-    });
+      const { data: linkData, error: linkErr } = await supabaseAdmin.auth.admin.generateLink({
+        type: 'signup',
+        email,
+        options: { redirectTo: redirectUrl }
+      });
 
-    res.json({
-      ok: true,
-      requiresVerification: true,
-      email,
-      message: 'Account created! Please check your email to verify your account.'
-    });
+      if (linkErr || !linkData?.properties?.action_link) {
+        console.error(`[Email Delivery Failure] Action: generate-link, Email: ${email}, Error: ${linkErr?.message || 'Link error'}`);
+        return res.status(500).json({ error: 'Failed to generate verification link: ' + (linkErr?.message || 'Unknown link error') });
+      }
+
+      const verificationUrl = linkData.properties.action_link;
+      const sendRes = await sendVerificationEmail({ toEmail: email, recipientName: name, verificationUrl });
+
+      if (!sendRes.success) {
+        console.error(`[Email Delivery Failure] Action: custom-smtp-send, Email: ${email}, Error: ${sendRes.error}`);
+        return res.status(502).json({
+          error: `Verification email could not be delivered: ${sendRes.error}. Please check your SMTP configuration in server environment variables.`
+        });
+      }
+
+      console.log(`[Email Service] Verification email delivered via custom SMTP to ${email}`);
+      return res.json({
+        ok: true,
+        requiresVerification: true,
+        email,
+        message: 'Account created! Verification email has been sent. Please check your inbox and spam folder.'
+      });
+    } else {
+      // -------------------------------------------------------------
+      // STRATEGY B: Supabase Auth native email service (with rate-limit detection)
+      // -------------------------------------------------------------
+      const client = supabaseAnon || supabaseAdmin;
+      let authRes;
+
+      if (!existingUser) {
+        authRes = await client.auth.signUp({
+          email,
+          password,
+          options: {
+            data: { full_name: name, role },
+            emailRedirectTo: redirectUrl
+          }
+        });
+      } else {
+        authRes = await client.auth.resend({
+          type: 'signup',
+          email,
+          options: {
+            emailRedirectTo: redirectUrl
+          }
+        });
+      }
+
+      if (authRes.error) {
+        const err = authRes.error;
+        console.error(`[Email Delivery Failure] Action: supabase-native-signup, Email: ${email}, Error: ${err.message} (status: ${err.status}, code: ${err.code})`);
+
+        if (err.code === 'over_email_send_rate_limit' || err.status === 429 || err.message?.toLowerCase().includes('rate limit')) {
+          return res.status(429).json({
+            error: 'Email delivery restricted: Supabase default email service rate limit exceeded (limit: 3-4 emails/hour). Please wait a few minutes before trying again, or configure custom SMTP in Supabase Project Settings or server environment variables.',
+            code: 'over_email_send_rate_limit'
+          });
+        }
+
+        if (err.message?.toLowerCase().includes('already registered') || err.status === 422) {
+          return res.status(409).json({ error: 'This email is already registered. Please sign in or reset your password.' });
+        }
+
+        return res.status(400).json({
+          error: `Email delivery failed: ${err.message}`
+        });
+      }
+
+      const uid = authRes.data?.user?.id || existingUser?.id;
+      if (uid) {
+        await supabaseAdmin.from('profiles').upsert({ id: uid, full_name: name, role });
+      }
+
+      console.log(`[Email Service] Supabase native verification email successfully requested for ${email}`);
+      return res.json({
+        ok: true,
+        requiresVerification: true,
+        email,
+        message: 'Account created! Verification email has been sent. Please check your inbox and spam folder.'
+      });
+    }
   } catch (err) {
-    console.error('Error in /api/register:', err);
-    res.status(500).json({ error: 'Server error during registration. Please try again.' });
+    console.error(`[Email Delivery Failure] Action: register-exception, Email: ${req.body?.email || 'unknown'}, Error: ${err.message}`);
+    res.status(500).json({ error: 'Server error during registration: ' + err.message });
   }
 });
 
 /**
  * POST /api/resend-verification
- * Resends verification email to an unverified user.
+ * Resends verification email to an unverified user with verified delivery confirmation.
  */
 app.post('/api/resend-verification', async (req, res) => {
   try {
@@ -388,32 +451,77 @@ app.post('/api/resend-verification', async (req, res) => {
 
     const origin = req.headers.origin;
     const frontendBase = (origin && allowedOrigins.includes(origin)) ? origin : (process.env.FRONTEND_URL || 'https://pnneet.netlify.app');
-    const { data: linkData } = await supabaseAdmin.auth.admin.generateLink({
-      type: 'signup',
-      email,
-      options: {
-        redirectTo: `${frontendBase}?verified=true`
+    const redirectUrl = `${frontendBase}?verified=true`;
+
+    if (hasCustomSmtp) {
+      const { data: linkData, error: linkErr } = await supabaseAdmin.auth.admin.generateLink({
+        type: 'signup',
+        email,
+        options: { redirectTo: redirectUrl }
+      });
+
+      if (linkErr || !linkData?.properties?.action_link) {
+        console.error(`[Email Delivery Failure] Action: resend-generate-link, Email: ${email}, Error: ${linkErr?.message || 'Link error'}`);
+        return res.status(500).json({ error: 'Failed to generate verification link: ' + (linkErr?.message || '') });
       }
-    });
 
-    const recipientName = user.user_metadata?.full_name || user.user_metadata?.name || 'Student';
-    const verificationUrl = linkData?.properties?.action_link || `${frontendBase}?verified=true`;
+      const recipientName = user.user_metadata?.full_name || user.user_metadata?.name || 'Student';
+      const sendRes = await sendVerificationEmail({
+        toEmail: email,
+        recipientName,
+        verificationUrl: linkData.properties.action_link
+      });
 
-    await sendVerificationEmail({
-      toEmail: email,
-      recipientName,
-      verificationUrl
-    });
+      if (!sendRes.success) {
+        console.error(`[Email Delivery Failure] Action: resend-custom-smtp, Email: ${email}, Error: ${sendRes.error}`);
+        return res.status(502).json({
+          error: `Failed to deliver verification email: ${sendRes.error}. Please check server SMTP configuration.`
+        });
+      }
 
-    res.json({
-      ok: true,
-      message: 'A fresh verification email has been sent. Please check your inbox and spam folder.'
-    });
+      console.log(`[Email Service] Verification email resent via custom SMTP to ${email}`);
+      return res.json({
+        ok: true,
+        message: 'A fresh verification email has been sent! Please check your inbox and spam folder.'
+      });
+    } else {
+      const client = supabaseAnon || supabaseAdmin;
+      const resendRes = await client.auth.resend({
+        type: 'signup',
+        email,
+        options: {
+          emailRedirectTo: redirectUrl
+        }
+      });
+
+      if (resendRes.error) {
+        const err = resendRes.error;
+        console.error(`[Email Delivery Failure] Action: resend-supabase-email, Email: ${email}, Error: ${err.message} (status: ${err.status}, code: ${err.code})`);
+
+        if (err.code === 'over_email_send_rate_limit' || err.status === 429 || err.message?.toLowerCase().includes('rate limit')) {
+          return res.status(429).json({
+            error: 'Email delivery restricted: Supabase default email service rate limit exceeded (limit: 3-4 emails/hour). Please wait a few minutes before resending, or configure custom SMTP in Supabase / server environment variables.',
+            code: 'over_email_send_rate_limit'
+          });
+        }
+
+        return res.status(400).json({
+          error: `Failed to resend verification email: ${err.message}`
+        });
+      }
+
+      console.log(`[Email Service] Supabase native verification resend successfully requested for ${email}`);
+      return res.json({
+        ok: true,
+        message: 'A fresh verification email has been sent! Please check your inbox and spam folder.'
+      });
+    }
   } catch (err) {
-    console.error('Error in /api/resend-verification:', err);
-    res.status(500).json({ error: 'Unable to resend verification email. Please try again.' });
+    console.error(`[Email Delivery Failure] Action: resend-exception, Email: ${req.body?.email || 'unknown'}, Error: ${err.message}`);
+    res.status(500).json({ error: 'Unable to resend verification email: ' + err.message });
   }
 });
+
 
 /**
  * POST /api/login
@@ -524,37 +632,71 @@ app.post('/api/forgot-password', async (req, res) => {
       return res.json({ ok: true, message: 'If an account exists with this email, a password reset link has been sent.' });
     }
 
-    const rawToken = crypto.randomBytes(32).toString('hex');
-    const hashedToken = crypto.createHash('sha256').update(rawToken).digest('hex');
-    const expiresAt = Date.now() + 60 * 60 * 1000; // 1 hour
-
-    if (!Array.isArray(db.passwordResets)) db.passwordResets = [];
-    db.passwordResets = db.passwordResets.filter((r) => r.email !== email || r.used);
-    db.passwordResets.push({
-      email: user.email,
-      userId: user.id,
-      hashedToken,
-      expiresAt,
-      used: false,
-      createdAt: new Date().toISOString()
-    });
-    save();
-
     const origin = req.headers.origin;
     const frontendBase = (origin && allowedOrigins.includes(origin)) ? origin : (process.env.FRONTEND_URL || 'https://pnneet.netlify.app');
-    const resetUrl = `${frontendBase}/reset-password?token=${rawToken}&email=${encodeURIComponent(user.email)}`;
 
-    const recipientName = user.user_metadata?.full_name || user.user_metadata?.name || 'User';
-    await sendPasswordResetEmail({
-      toEmail: user.email,
-      recipientName,
-      resetUrl
-    });
+    if (hasCustomSmtp) {
+      const rawToken = crypto.randomBytes(32).toString('hex');
+      const hashedToken = crypto.createHash('sha256').update(rawToken).digest('hex');
+      const expiresAt = Date.now() + 60 * 60 * 1000; // 1 hour
 
-    res.json({ ok: true, message: 'Password reset link sent! Please check your email inbox.' });
+      if (!Array.isArray(db.passwordResets)) db.passwordResets = [];
+      db.passwordResets = db.passwordResets.filter((r) => r.email !== email || r.used);
+      db.passwordResets.push({
+        email: user.email,
+        userId: user.id,
+        hashedToken,
+        expiresAt,
+        used: false,
+        createdAt: new Date().toISOString()
+      });
+      save();
+
+      const resetUrl = `${frontendBase}/reset-password?token=${rawToken}&email=${encodeURIComponent(user.email)}`;
+      const recipientName = user.user_metadata?.full_name || user.user_metadata?.name || 'User';
+      const sendRes = await sendPasswordResetEmail({
+        toEmail: user.email,
+        recipientName,
+        resetUrl
+      });
+
+      if (!sendRes.success) {
+        console.error(`[Email Delivery Failure] Action: forgot-password-custom-smtp, Email: ${user.email}, Error: ${sendRes.error}`);
+        return res.status(502).json({
+          error: `Failed to deliver password reset email: ${sendRes.error}. Please check server SMTP configuration.`
+        });
+      }
+
+      console.log(`[Email Service] Password reset email delivered via custom SMTP to ${user.email}`);
+      return res.json({ ok: true, message: 'Password reset link sent! Please check your email inbox.' });
+    } else {
+      const client = supabaseAnon || supabaseAdmin;
+      const resetRes = await client.auth.resetPasswordForEmail(user.email, {
+        redirectTo: `${frontendBase}/reset-password`
+      });
+
+      if (resetRes.error) {
+        const err = resetRes.error;
+        console.error(`[Email Delivery Failure] Action: forgot-password-supabase-native, Email: ${user.email}, Error: ${err.message} (status: ${err.status}, code: ${err.code})`);
+
+        if (err.code === 'over_email_send_rate_limit' || err.status === 429 || err.message?.toLowerCase().includes('rate limit')) {
+          return res.status(429).json({
+            error: 'Email delivery restricted: Supabase default email service rate limit exceeded (limit: 3-4 emails/hour). Please wait a few minutes before requesting another reset, or configure custom SMTP in Supabase Project Settings or server environment variables.',
+            code: 'over_email_send_rate_limit'
+          });
+        }
+
+        return res.status(400).json({
+          error: `Failed to deliver password reset email: ${err.message}`
+        });
+      }
+
+      console.log(`[Email Service] Supabase native password reset email requested for ${user.email}`);
+      return res.json({ ok: true, message: 'Password reset link sent! Please check your email inbox.' });
+    }
   } catch (err) {
-    console.error('Error in /api/forgot-password:', err);
-    res.status(500).json({ error: 'Unable to process password reset request. Please try again.' });
+    console.error(`[Email Delivery Failure] Action: forgot-password-exception, Email: ${req.body?.email || 'unknown'}, Error: ${err.message}`);
+    res.status(500).json({ error: 'Unable to process password reset request: ' + err.message });
   }
 });
 
