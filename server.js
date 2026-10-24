@@ -82,6 +82,10 @@ app.use(express.json({ limit: '1mb' }));
 app.use('/uploads', express.static(uploadDir));
 app.use(express.static(path.join(__dirname, 'public'), { index: false }));
 
+app.get('/email-verified', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'email-verified.html'));
+});
+
 app.get('/api/health', (req, res) => res.json({
   ok: true,
   supabase: isSupabaseReady,
@@ -302,7 +306,7 @@ app.post('/api/register', async (req, res) => {
     const role = reqRole === 'teacher' ? 'teacher' : 'student';
     const origin = req.headers.origin;
     const frontendBase = (origin && allowedOrigins.includes(origin)) ? origin : (process.env.FRONTEND_URL || 'https://pnneet.netlify.app');
-    const redirectUrl = `${frontendBase}?verified=true`;
+    const redirectUrl = `${frontendBase.replace(/\/+$/, '')}/email-verified`;
 
     if (hasCustomSmtp) {
       // -------------------------------------------------------------
@@ -460,7 +464,7 @@ app.post('/api/resend-verification', async (req, res) => {
 
     const origin = req.headers.origin;
     const frontendBase = (origin && allowedOrigins.includes(origin)) ? origin : (process.env.FRONTEND_URL || 'https://pnneet.netlify.app');
-    const redirectUrl = `${frontendBase}?verified=true`;
+    const redirectUrl = `${frontendBase.replace(/\/+$/, '')}/email-verified`;
 
     if (hasCustomSmtp) {
       const { data: linkData, error: linkErr } = await supabaseAdmin.auth.admin.generateLink({

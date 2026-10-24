@@ -21,3 +21,16 @@ Open **Notes & Videos** as an admin to upload PDF notes or MP4/WebM/MOV videos (
 ## Publish online
 
 Deploy the folder to Render or Railway using `npm install` as the build command and `npm start` as the start command. Add `JWT_SECRET`, `ADMIN_NAME`, `ADMIN_EMAIL`, and `ADMIN_PASSWORD` as environment variables. Configure persistent storage for both `data.json` and `uploads`.
+
+## Supabase Auth URL Configuration
+
+For email verification redirects to function properly:
+1. Open your **Supabase Dashboard** -> **Authentication** -> **URL Configuration**.
+2. Set **Site URL** to:
+   - `https://pnneet.netlify.app`
+3. In **Redirect URLs**, add the following URLs:
+   - `https://pnneet.netlify.app/email-verified`
+   - `https://pnneet.netlify.app/**`
+   - `http://localhost:3000/email-verified`
+   - `http://127.0.0.1:3000/email-verified`
+4. Click **Save Changes**.

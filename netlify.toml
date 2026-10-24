@@ -3,6 +3,12 @@
   command = "npm run build"
 
 [[redirects]]
+  from = "/email-verified"
+  to = "/email-verified.html"
+  status = 200
+
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
+
