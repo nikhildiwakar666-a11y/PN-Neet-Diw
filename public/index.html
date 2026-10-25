@@ -14,19 +14,22 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
   <style>
     :root {
-      --p: #111111;
-      --ink: #171717;
-      --m: #666662;
-      --line: #e2e2dc;
-      --bg: #f7f7f5;
+      --p: #2563eb;
+      --p-hover: #1d4ed8;
+      --purple: #7c3aed;
+      --ink: #0f172a;
+      --m: #64748b;
+      --line: #e2e8f0;
+      --bg: #f8fafc;
       --card-bg: #ffffff;
-      --red: #c53030;
-      --red-bg: #fff0f0;
-      --green: #15803d;
+      --red: #ef4444;
+      --red-bg: #fef2f2;
+      --green: #10b981;
       --green-bg: #ecfdf5;
-      --radius: 12px;
+      --radius: 14px;
     }
     * { box-sizing: border-box; }
     body {
@@ -1815,65 +1818,244 @@
        LOGIN GATE (VISIBLE ONLY WHEN LOGGED OUT)
        ========================================================================== -->
   <main id="loginGateContainer">
-    <!-- MANDATORY FIRST PAGE: THREE CIRCULAR ROLE CARDS -->
+    <!-- SCREEN 1: MODERN NEET PREPARATION LANDING PAGE -->
     <div class="role-selection-wrapper" id="roleSelectionScreen">
-      <div class="landing-brand-container">
-        <img src="/assets/logo.png" alt="PN Neet Diw Logo" class="landing-official-logo">
-      </div>
-      <h1 class="landing-heading">Welcome to PN Neet Diw</h1>
-      <p class="landing-subheading">Choose your role to continue your learning journey.</p>
-      <div class="landing-motto-pill">
-        ✨ <span>“Every focused step today brings you closer to your goal.”</span>
-      </div>
+      <!-- 1. Hero Section -->
+      <section class="landing-hero">
+        <div class="landing-brand-container">
+          <img src="/assets/logo.png" alt="PN Neet Diw Logo" class="landing-official-logo">
+        </div>
+        <div class="landing-hero-badge">
+          <span>✨ India's Focused NEET-UG Preparation Platform</span>
+        </div>
+        <h1 class="landing-heading landing-hero-title">
+          Crack NEET-UG with Precision Practice &amp; Deep Analytics
+        </h1>
+        <p class="landing-subheading landing-hero-subtitle">
+          Master Biology, Chemistry, and Physics with NCERT-aligned mock tests, authentic NTA exam simulations, instant faculty explanations, and personalized weak-topic diagnostics.
+        </p>
 
-      <!-- Three Large Circular Role Cards in a Centered Row -->
-      <div class="role-cards-grid">
-        <!-- 1. Student Login -->
-        <article class="role-card" onclick="openRoleAuth('student')">
-          <div class="role-circle-pod">
-            <span class="role-circle-icon">🎓</span>
-          </div>
-          <span class="role-card-badge">NEET Aspirant</span>
-          <h2 class="role-card-title">Student Login</h2>
-          <p class="role-card-desc">“Practice, learn, and track your progress.”</p>
-          <button type="button" class="role-card-btn" onclick="event.stopPropagation();openRoleAuth('student')">
-            <span>Continue as Student</span>
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        <div class="landing-cta-group">
+          <button type="button" class="landing-btn-primary" onclick="openRoleAuth('student')">
+            <span>🚀 Start Student Practice</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </button>
-        </article>
-
-        <!-- 2. Teacher Login -->
-        <article class="role-card" onclick="openRoleAuth('teacher')">
-          <div class="role-circle-pod">
-            <span class="role-circle-icon">👨‍🏫</span>
-          </div>
-          <span class="role-card-badge">Faculty & Mentor</span>
-          <h2 class="role-card-title">Teacher Login</h2>
-          <p class="role-card-desc">“Teach, guide, and conduct live classes.”</p>
-          <button type="button" class="role-card-btn" onclick="event.stopPropagation();openRoleAuth('teacher')">
-            <span>Continue as Teacher</span>
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          <button type="button" class="landing-btn-secondary" onclick="document.getElementById('portalRolesSection').scrollIntoView({behavior:'smooth'})">
+            <span>Select Portal &darr;</span>
           </button>
-        </article>
+        </div>
 
-        <!-- 3. Admin Login -->
-        <article class="role-card" onclick="openRoleAuth('admin')">
-          <div class="role-circle-pod">
-            <span class="role-circle-icon">🛡️</span>
+        <!-- Trust Stats Strip -->
+        <div class="landing-stats-strip">
+          <div class="landing-stat-item">
+            <span class="landing-stat-num">720 / 720</span>
+            <span class="landing-stat-lbl">Full NTA NEET Pattern</span>
           </div>
-          <span class="role-card-badge">Platform Admin</span>
-          <h2 class="role-card-title">Admin Login</h2>
-          <p class="role-card-desc">“Manage the complete learning platform.”</p>
-          <button type="button" class="role-card-btn" onclick="event.stopPropagation();openRoleAuth('admin')">
-            <span>Continue as Admin</span>
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </button>
-        </article>
-      </div>
+          <div class="landing-stat-item">
+            <span class="landing-stat-num">100%</span>
+            <span class="landing-stat-lbl">NCERT Line-by-Line</span>
+          </div>
+          <div class="landing-stat-item">
+            <span class="landing-stat-num">3 Subjects</span>
+            <span class="landing-stat-lbl">Bio · Chem · Phy</span>
+          </div>
+          <div class="landing-stat-item">
+            <span class="landing-stat-num">Instant</span>
+            <span class="landing-stat-lbl">AI &amp; Faculty Review</span>
+          </div>
+        </div>
+      </section>
 
-      <p class="muted" style="font-size:12.5px;margin:10px 0 0">
-        🔒 Role-authenticated portal. Access permissions are strictly managed for student, faculty, and administrative security.
-      </p>
+      <!-- 2. Key Benefits Section -->
+      <section style="width:100%;margin-bottom:48px;">
+        <h2 class="landing-section-title">Built for NEET-UG Rank Achievers</h2>
+        <p class="landing-section-desc">Everything you need to boost your mock score from 500 to 650+ with disciplined chapter testing.</p>
+
+        <div class="benefits-grid">
+          <div class="benefit-card">
+            <div class="benefit-icon">🎯</div>
+            <h3>NCERT Line-by-Line MCQs</h3>
+            <p>Every single question is strictly curated from current NCERT textbooks, high-yield diagrams, summary tables, and previous years' trend analysis.</p>
+          </div>
+          <div class="benefit-card">
+            <div class="benefit-icon">⏱️</div>
+            <h3>Authentic NTA Exam Interface</h3>
+            <p>Experience real test-day pressure with live countdown timer, interactive question palette, review tags, and negative marking (-1) simulation.</p>
+          </div>
+          <div class="benefit-card">
+            <div class="benefit-icon">📊</div>
+            <h3>Weak Topic Diagnostics</h3>
+            <p>Instant post-test analytics detect your accuracy by chapter and topic, highlighting exact concepts to revise before your next attempt.</p>
+          </div>
+          <div class="benefit-card">
+            <div class="benefit-icon">👨‍🏫</div>
+            <h3>Expert Faculty Explanations</h3>
+            <p>Comprehensive step-by-step solutions with NCERT page references, shortcut tricks for numericals, and direct community doubt discussions.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. Subject Cards Showcase -->
+      <section style="width:100%;margin-bottom:48px;">
+        <h2 class="landing-section-title">Comprehensive Subject Coverage</h2>
+        <p class="landing-section-desc">Targeted practice modules designed specifically for high-yield NEET weightage.</p>
+
+        <div class="subjects-grid">
+          <!-- Biology -->
+          <div class="subject-card bio">
+            <div class="subject-card-icon">🧬</div>
+            <span class="subject-tag">Target: 360 / 360</span>
+            <h3>Biology (Botany &amp; Zoology)</h3>
+            <p>Master NCERT line-by-line questions, cell biology, genetics &amp; evolution, human physiology, ecology, and diagram-based questions.</p>
+            <ul style="margin:12px 0 0;padding-left:18px;font-size:13px;color:var(--text-secondary);line-height:1.7;">
+              <li>High-Yield Genetics &amp; Biotech</li>
+              <li>Complete Diagram Spotting</li>
+              <li>Statement-Assertion Drills</li>
+            </ul>
+          </div>
+
+          <!-- Chemistry -->
+          <div class="subject-card chem">
+            <div class="subject-card-icon">🧪</div>
+            <span class="subject-tag">Target: 180 / 180</span>
+            <h3>Chemistry (Org · Inorg · Phys)</h3>
+            <p>Sharpen your reaction mechanisms, NCERT inorganic trends, periodic properties, coordination compounds, and physical chemistry formula calculations.</p>
+            <ul style="margin:12px 0 0;padding-left:18px;font-size:13px;color:var(--text-secondary);line-height:1.7;">
+              <li>Organic Name Reactions</li>
+              <li>NCERT Inorganic Tables</li>
+              <li>Physical Chemistry Numericals</li>
+            </ul>
+          </div>
+
+          <!-- Physics -->
+          <div class="subject-card phy">
+            <div class="subject-card-icon">⚡</div>
+            <span class="subject-tag">Target: 180 / 180</span>
+            <h3>Physics (Mechanics &amp; Modern)</h3>
+            <p>Tackle challenging numericals with formula sheets, mechanics shortcuts, electrodynamics, optics, and high-scoring modern physics practice.</p>
+            <ul style="margin:12px 0 0;padding-left:18px;font-size:13px;color:var(--text-secondary);line-height:1.7;">
+              <li>Mechanics &amp; Motion Tactics</li>
+              <li>Electromagnetism Formulas</li>
+              <li>Modern Physics Quick Points</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. Mock Test CTA Banner -->
+      <section class="mock-cta-banner">
+        <h2>Ready to Test Your NEET Rank Readiness?</h2>
+        <p>Take an instant chapter mock test now. Get your score, negative marking impact, accuracy rate, and faculty solutions within seconds.</p>
+        <button type="button" class="mock-cta-btn" onclick="openRoleAuth('student')">
+          <span>Take a Free Practice Test Now →</span>
+        </button>
+      </section>
+
+      <!-- 5. Student Testimonials -->
+      <section style="width:100%;margin-bottom:48px;">
+        <h2 class="landing-section-title">Trusted by Serious NEET Aspirants</h2>
+        <p class="landing-section-desc">See how students are transforming their preparation accuracy with PN Neet Diw.</p>
+
+        <div class="testimonials-grid">
+          <div class="testimonial-card">
+            <div class="testimonial-rating">★★★★★</div>
+            <p class="testimonial-text">“The weak topic diagnostic was an eye-opener. It pinpointed that I was losing 20 marks in Optics and Genetics, which I resolved within two weeks!”</p>
+            <div class="testimonial-author">
+              <div class="author-avatar">AS</div>
+              <div class="author-info">
+                <strong>Aarav Sharma</strong>
+                <span>Scored 665/720 · NEET Aspirant</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="testimonial-card">
+            <div class="testimonial-rating">★★★★★</div>
+            <p class="testimonial-text">“The test taking interface feels exactly like the real NTA examination computer. The timer and palette helped me conquer exam anxiety completely.”</p>
+            <div class="testimonial-author">
+              <div class="author-avatar">PN</div>
+              <div class="author-info">
+                <strong>Pooja Nair</strong>
+                <span>NEET Aspirant 2026</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="testimonial-card">
+            <div class="testimonial-rating">★★★★★</div>
+            <p class="testimonial-text">“Instant faculty solutions with NCERT page references save hours of doubt solving. Best platform for daily biology and chemistry practice.”</p>
+            <div class="testimonial-author">
+              <div class="author-avatar">RV</div>
+              <div class="author-info">
+                <strong>Rahul Verma</strong>
+                <span>Scored 680/720 · Medical Aspirant</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. Role Portals Access Hub -->
+      <section style="width:100%;margin-bottom:36px;" id="portalRolesSection">
+        <h2 class="landing-section-title">Select Your Portal</h2>
+        <p class="landing-section-desc">Choose your dedicated environment to continue your learning journey.</p>
+
+        <div class="role-cards-grid">
+          <!-- 1. Student Login -->
+          <article class="role-card" onclick="openRoleAuth('student')">
+            <div class="role-circle-pod">
+              <span class="role-circle-icon">🎓</span>
+            </div>
+            <span class="role-card-badge">NEET Aspirant</span>
+            <h2 class="role-card-title">Student Portal</h2>
+            <p class="role-card-desc">“Practice chapter tests, track weak topics, and achieve target rank.”</p>
+            <button type="button" class="role-card-btn" onclick="event.stopPropagation();openRoleAuth('student')">
+              <span>Enter Student Portal</span>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+          </article>
+
+          <!-- 2. Teacher Login -->
+          <article class="role-card" onclick="openRoleAuth('teacher')">
+            <div class="role-circle-pod">
+              <span class="role-circle-icon">👨‍🏫</span>
+            </div>
+            <span class="role-card-badge">Faculty &amp; Mentor</span>
+            <h2 class="role-card-title">Faculty Portal</h2>
+            <p class="role-card-desc">“Conduct live broadcast classes, answer doubts, and guide students.”</p>
+            <button type="button" class="role-card-btn" onclick="event.stopPropagation();openRoleAuth('teacher')">
+              <span>Enter Faculty Portal</span>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+          </article>
+
+          <!-- 3. Admin Login -->
+          <article class="role-card" onclick="openRoleAuth('admin')">
+            <div class="role-circle-pod">
+              <span class="role-circle-icon">🛡️</span>
+            </div>
+            <span class="role-card-badge">Platform Admin</span>
+            <h2 class="role-card-title">Admin Console</h2>
+            <p class="role-card-desc">“Manage test banks, questions, students, and institutional analytics.”</p>
+            <button type="button" class="role-card-btn" onclick="event.stopPropagation();openRoleAuth('admin')">
+              <span>Enter Admin Console</span>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+          </article>
+        </div>
+      </section>
+
+      <!-- 7. Modern Landing Footer -->
+      <footer class="landing-footer">
+        <div class="landing-footer-brand">
+          <img src="/assets/logo.png" alt="PN Neet Diw Logo">
+          <span>PN Neet Diw</span>
+        </div>
+        <p class="landing-footer-copy">
+          &copy; 2026 PN Neet Diw. Dedicated to empowering medical aspirants with NCERT-aligned testing and high-yield analytics.<br>
+          <span style="font-size:12px;opacity:0.85;">🔒 Secure Role-Authenticated Learning Environment.</span>
+        </p>
+      </footer>
     </div>
 
     <!-- TAILORED ROLE LOGIN & REGISTRATION CONTAINER -->
@@ -1916,7 +2098,13 @@
 
         <div class="gate-field">
           <label>Password</label>
-          <input id="authPassword" type="password" placeholder="Minimum 6 characters" required autocomplete="current-password">
+          <div class="password-input-wrap">
+            <input id="authPassword" type="password" placeholder="Minimum 6 characters" required autocomplete="current-password">
+            <button type="button" class="password-toggle-btn" aria-label="Toggle password visibility" onclick="togglePasswordVisibility('authPassword', this)">
+              <svg class="eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg class="eye-closed" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+            </button>
+          </div>
         </div>
 
         <div class="auth-aux-row" id="authForgotPasswordRow" style="display:flex;justify-content:space-between;align-items:center;margin-top:-6px;margin-bottom:14px;">
@@ -2035,12 +2223,24 @@
 
         <div class="gate-field">
           <label>New Password</label>
-          <input id="resetNewPassword" type="password" placeholder="Minimum 6 characters" required autocomplete="new-password">
+          <div class="password-input-wrap">
+            <input id="resetNewPassword" type="password" placeholder="Minimum 6 characters" required autocomplete="new-password">
+            <button type="button" class="password-toggle-btn" aria-label="Toggle password visibility" onclick="togglePasswordVisibility('resetNewPassword', this)">
+              <svg class="eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg class="eye-closed" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+            </button>
+          </div>
         </div>
 
         <div class="gate-field">
           <label>Confirm New Password</label>
-          <input id="resetConfirmPassword" type="password" placeholder="Re-enter new password" required autocomplete="new-password">
+          <div class="password-input-wrap">
+            <input id="resetConfirmPassword" type="password" placeholder="Re-enter new password" required autocomplete="new-password">
+            <button type="button" class="password-toggle-btn" aria-label="Toggle password visibility" onclick="togglePasswordVisibility('resetConfirmPassword', this)">
+              <svg class="eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg class="eye-closed" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+            </button>
+          </div>
         </div>
 
         <button type="submit" class="gate-submit-btn" id="resetSubmitBtn">Update Password & Sign In →</button>
@@ -2085,6 +2285,99 @@
           <p style="margin:0;font-size:13px;color:#d4d4cd" id="studentLiveTeacher">Teacher is currently broadcasting live.</p>
         </div>
         <button onclick="joinLiveClass()">Join Live Class →</button>
+      </div>
+
+      <!-- SCREEN 3: STUDENT OVERALL PROGRESS & STREAK BANNER -->
+      <div class="overall-progress-card" style="margin-bottom:20px;">
+        <div class="progress-streak-header">
+          <div>
+            <span class="role-card-badge" style="background:#eff6ff;color:var(--primary);border-color:#bfdbfe;margin-bottom:6px;display:inline-block;">NEET-UG Target 680+</span>
+            <h2 style="margin:2px 0 4px;font-size:22px;font-weight:800;color:var(--text-primary)">Preparation Progress &amp; Readiness</h2>
+            <p style="margin:0;font-size:13.5px;color:var(--text-secondary)">Keep up your daily chapter practice to maintain rank trajectory.</p>
+          </div>
+          <div class="streak-badge">
+            <span style="font-size:20px">🔥</span>
+            <div>
+              <strong style="font-size:15px;display:block;line-height:1.2;">5-Day Streak!</strong>
+              <small style="color:var(--text-muted);font-size:11.5px">3 tests completed this week</small>
+            </div>
+            <div class="streak-dots">
+              <span class="streak-dot active" title="Monday: Completed">M</span>
+              <span class="streak-dot active" title="Tuesday: Completed">T</span>
+              <span class="streak-dot active" title="Wednesday: Completed">W</span>
+              <span class="streak-dot active" title="Thursday: Completed">T</span>
+              <span class="streak-dot active" title="Friday: Completed">F</span>
+              <span class="streak-dot today" title="Saturday: In Progress">S</span>
+              <span class="streak-dot" title="Sunday">S</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:16px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-size:13px;font-weight:700;">
+            <span style="color:var(--text-primary)">Overall Syllabus Readiness</span>
+            <span style="color:var(--primary);font-size:14px">68% Complete</span>
+          </div>
+          <div class="sub-prog-bar" style="height:10px;background:#e2e8f0;border-radius:999px;overflow:hidden;">
+            <div class="sub-prog-fill" style="width:68%;height:100%;background:linear-gradient(90deg, var(--primary), var(--purple));border-radius:999px;"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;gap:12px;margin-top:10px;font-size:12px;color:var(--text-muted);flex-wrap:wrap;">
+            <span>📚 Target Exam: NEET 2026</span>
+            <span>⚡ Average Accuracy: 84.5%</span>
+            <span>🎯 Target Score: 680+ / 720</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Subject-Wise Progress Cards -->
+      <div class="subject-progress-grid" style="margin-bottom:20px;">
+        <!-- Biology Card -->
+        <div class="sub-prog-card bio">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span class="sub-badge bio">🧬 Biology</span>
+            <strong style="color:var(--emerald);font-size:14px;">76% Acc.</strong>
+          </div>
+          <h4 style="margin:10px 0 4px;font-size:16px;color:var(--text-primary);">Botany &amp; Zoology</h4>
+          <p style="margin:0 0 10px;font-size:12.5px;color:var(--text-secondary);">Target: 360/360 · 180 MCQs Solved</p>
+          <div class="sub-prog-bar">
+            <div class="sub-prog-fill bio" style="width:76%"></div>
+          </div>
+          <div style="margin-top:8px;font-size:11.5px;color:var(--emerald);font-weight:600;">
+            ✓ High Mastery in Genetics &amp; Ecology
+          </div>
+        </div>
+
+        <!-- Chemistry Card -->
+        <div class="sub-prog-card chem">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span class="sub-badge chem">🧪 Chemistry</span>
+            <strong style="color:var(--amber);font-size:14px;">64% Acc.</strong>
+          </div>
+          <h4 style="margin:10px 0 4px;font-size:16px;color:var(--text-primary);">Organic &amp; Inorganic</h4>
+          <p style="margin:0 0 10px;font-size:12.5px;color:var(--text-secondary);">Target: 180/180 · 120 MCQs Solved</p>
+          <div class="sub-prog-bar">
+            <div class="sub-prog-fill chem" style="width:64%"></div>
+          </div>
+          <div style="margin-top:8px;font-size:11.5px;color:var(--amber);font-weight:600;">
+            ⚠️ Revise Chemical Equilibrium &amp; P-Block
+          </div>
+        </div>
+
+        <!-- Physics Card -->
+        <div class="sub-prog-card phy">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span class="sub-badge phy">⚡ Physics</span>
+            <strong style="color:var(--primary);font-size:14px;">58% Acc.</strong>
+          </div>
+          <h4 style="margin:10px 0 4px;font-size:16px;color:var(--text-primary);">Mechanics &amp; Modern</h4>
+          <p style="margin:0 0 10px;font-size:12.5px;color:var(--text-secondary);">Target: 180/180 · 95 MCQs Solved</p>
+          <div class="sub-prog-bar">
+            <div class="sub-prog-fill phy" style="width:58%"></div>
+          </div>
+          <div style="margin-top:8px;font-size:11.5px;color:var(--primary);font-weight:600;">
+            ⚠️ Practice Rotational Dynamics &amp; Ray Optics
+          </div>
+        </div>
       </div>
 
       <!-- Quick Action Tools for Students -->
@@ -2191,6 +2484,30 @@
 
     <!-- 3. ADMIN DASHBOARD VIEW -->
     <div id="adminDashboardView" style="display:none">
+      <!-- SCREEN 8: ADMIN ANALYTICS OVERVIEW CARDS -->
+      <div class="kpi-grid" style="margin-bottom:20px;">
+        <div class="kpi-card" onclick="switchAdminActiveSection('accounts')" style="cursor:pointer">
+          <div class="kpi-label">👥 Registered Students</div>
+          <div class="kpi-value" id="adminAnalyticsStudents">Active Batch</div>
+          <div class="kpi-desc">Verified NEET Aspirants</div>
+        </div>
+        <div class="kpi-card" onclick="switchAdminActiveSection('tests')" style="cursor:pointer">
+          <div class="kpi-label">📝 Configured Mock Tests</div>
+          <div class="kpi-value" id="adminAnalyticsTests">NTA Pattern</div>
+          <div class="kpi-desc">Bio · Chem · Phy Tests</div>
+        </div>
+        <div class="kpi-card" onclick="switchAdminActiveSection('questions')" style="cursor:pointer">
+          <div class="kpi-label">❓ Curated Question Bank</div>
+          <div class="kpi-value" id="adminAnalyticsQuestions">High-Yield</div>
+          <div class="kpi-desc">NCERT Line-by-Line MCQs</div>
+        </div>
+        <div class="kpi-card" onclick="switchAdminActiveSection('results')" style="cursor:pointer">
+          <div class="kpi-label">🎯 Student Attempts</div>
+          <div class="kpi-value" id="adminAnalyticsAttempts">Evaluated</div>
+          <div class="kpi-desc">Real-time Performance</div>
+        </div>
+      </div>
+
       <!-- Clean Horizontal Sticky Navigation Row Only -->
       <div class="admin-nav-wrapper" id="adminStickyNav">
         <div class="admin-nav-bar" id="adminNavBar" role="tablist" aria-label="Admin Controls Navigation">
@@ -2725,35 +3042,83 @@
        MODALS: PROFILE, SETTINGS, TEST TAKING, RESULTS, LIBRARY, UPLOAD
        ========================================================================== -->
 
-  <!-- Profile Modal -->
+  <!-- SCREEN 7: PROFILE & ACCOUNT SETTINGS MODAL -->
   <div class="modal" id="profileModal">
-    <div class="box" style="max-width:480px">
+    <div class="box" style="max-width:520px;border-radius:20px;">
       <button class="close" onclick="hide('profileModal')">✕</button>
-      <h2 style="margin-top:0">My Profile</h2>
-      <p class="muted" style="margin-top:0">Update your display name and photo.</p>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+        <span style="font-size:24px">👤</span>
+        <h2 style="margin:0;font-size:22px;font-weight:800;color:var(--text-primary);">Student Profile &amp; Settings</h2>
+      </div>
+      <p class="muted" style="margin:0 0 20px;font-size:13.5px;">Manage your NEET aspirant identity and account security preferences.</p>
 
-      <div class="profile-card-top">
-        <div class="profile-avatar-large" id="profileAvatarLarge">
-          <span id="profileLargeLetter">👤</span>
+      <!-- Editable Profile Card -->
+      <div class="panel" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:16px;padding:18px;margin-bottom:18px;">
+        <div class="profile-card-top" style="margin-bottom:16px;">
+          <div class="profile-avatar-large" id="profileAvatarLarge" style="width:72px;height:72px;border:3px solid var(--primary);border-radius:50%;overflow:hidden;box-shadow:0 4px 14px rgba(37,99,235,0.15);">
+            <span id="profileLargeLetter" style="font-size:28px;">👤</span>
+          </div>
+          <div>
+            <button class="light" type="button" onclick="$('profilePhotoInput').click()" style="padding:8px 16px;font-size:13px;font-weight:700;">📷 Upload New Photo</button>
+            <input type="file" id="profilePhotoInput" accept="image/jpeg,image/png,image/webp,image/gif" style="display:none">
+            <p class="muted" style="font-size:11.5px;margin:6px 0 0">JPG, PNG or WebP (Max 5 MB)</p>
+          </div>
         </div>
-        <div>
-          <button class="light" type="button" onclick="$('profilePhotoInput').click()" style="padding:8px 14px">📷 Change Photo</button>
-          <input type="file" id="profilePhotoInput" accept="image/jpeg,image/png,image/webp,image/gif" style="display:none">
-          <p class="muted" style="font-size:11.5px;margin:6px 0 0">JPG, PNG, WebP or GIF (Max 5 MB)</p>
+
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <div>
+            <label style="font-size:12.5px;font-weight:700;color:var(--text-secondary);display:block;margin-bottom:4px;">Full Name</label>
+            <input id="profileNameInput" placeholder="Your display name" style="width:100%;border-radius:10px;">
+          </div>
+
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+              <label style="font-size:12.5px;font-weight:700;color:var(--text-secondary);margin:0;">Registered Email</label>
+              <span style="font-size:11px;font-weight:700;color:var(--emerald);background:#ecfdf5;padding:2px 8px;border-radius:999px;border:1px solid #a7f3d0;">Verified ✓</span>
+            </div>
+            <input id="profileEmailDisplay" disabled style="width:100%;background:#f1f5f9;color:#64748b;cursor:not-allowed;border-radius:10px;">
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div>
+              <label style="font-size:12.5px;font-weight:700;color:var(--text-secondary);display:block;margin-bottom:4px;">Target NEET Exam</label>
+              <select id="profileTargetYear" style="width:100%;border-radius:10px;padding:9px 12px;font-size:13px;border:1px solid #cbd5e1;background:#ffffff;">
+                <option value="2025">NEET-UG 2025</option>
+                <option value="2026" selected>NEET-UG 2026</option>
+                <option value="2027">NEET-UG 2027</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:12.5px;font-weight:700;color:var(--text-secondary);display:block;margin-bottom:4px;">Account Role</label>
+              <div id="profileRoleBadge" class="tag" style="padding:9px 12px;font-size:12px;border-radius:10px;width:100%;text-align:center;justify-content:center;box-sizing:border-box;">🎓 NEET Student</div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <label>Display Name</label>
-      <input id="profileNameInput" placeholder="Your display name">
+      <!-- Account Security Section -->
+      <div class="panel" style="background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;padding:18px;margin-bottom:20px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+          <div>
+            <h4 style="margin:0;font-size:14.5px;font-weight:800;color:var(--text-primary);display:flex;align-items:center;gap:6px;">
+              <span>🛡️</span> Account Security
+            </h4>
+            <p style="margin:2px 0 0;font-size:12px;color:var(--text-secondary);">Manage authentication credentials and device security.</p>
+          </div>
+          <span style="font-size:11.5px;font-weight:700;color:var(--primary);background:#eff6ff;padding:4px 10px;border-radius:999px;">Standard Active</span>
+        </div>
 
-      <label>Email Address</label>
-      <input id="profileEmailDisplay" disabled style="background:#f7f7f5;color:#666662;cursor:not-allowed">
+        <div style="background:#f8fafc;border:1px solid #f1f5f9;border-radius:12px;padding:12px;margin-bottom:12px;font-size:12.5px;color:var(--text-secondary);line-height:1.5;">
+          🔑 <b>Password Management:</b> Need to change your access password? We'll send a secure password reset link to your registered email.
+        </div>
 
-      <label>Account Role</label>
-      <div id="profileRoleBadge" class="tag" style="padding:6px 12px;font-size:12px;margin-bottom:18px">🎓 NEET Student</div>
+        <button type="button" class="out" style="width:100%;font-size:13px;padding:10px;" onclick="hide('profileModal');openForgotPassword();">
+          Send Password Reset Email ✉️
+        </button>
+      </div>
 
-      <div style="display:flex;gap:10px;margin-top:20px">
-        <button type="button" style="flex:1" id="saveProfileBtn" onclick="saveProfileChanges()">Save Profile</button>
+      <div style="display:flex;gap:10px;">
+        <button type="button" style="flex:1" id="saveProfileBtn" onclick="saveProfileChanges()">Save Profile Changes</button>
         <button type="button" class="out" onclick="hide('profileModal')">Cancel</button>
       </div>
     </div>
@@ -4209,19 +4574,33 @@
 
       container.innerHTML = filtered.map(t => {
         let locked = t.startAt && Date.now() < new Date(t.startAt);
-        return `<article class="card">
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px">
-            <span class="tag">${esc(t.subject)} · ${esc(t.chapter || 'General')}</span>
-            <span style="font-size:11px;font-weight:700;color:var(--m)">${t.duration} MIN</span>
+        const subLower = (t.subject || '').toLowerCase();
+        let badgeClass = subLower.includes('bio') ? 'bio' : (subLower.includes('chem') ? 'chem' : 'phy');
+        let subIcon = subLower.includes('bio') ? '🧬' : (subLower.includes('chem') ? '🧪' : '⚡');
+        let diffBadge = (t.question_count > 30 || (t.duration && t.duration >= 45)) 
+          ? '<span class="diff-badge diff-high-yield">🔥 High Yield NEET</span>' 
+          : '<span class="diff-badge diff-ncert">📖 NCERT Pattern</span>';
+
+        return `<article class="card test-card-premium">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px">
+            <span class="sub-badge ${badgeClass}">${subIcon} ${esc(t.subject || 'NEET')}</span>
+            ${diffBadge}
           </div>
-          <h3 style="margin:8px 0 6px">${esc(t.title)}</h3>
-          <div class="meta" style="margin:12px 0 16px">
-            📚 Chapter: <b>${esc(t.chapter || 'General')}</b><br>
-            📝 Questions: <b>${t.question_count} questions</b><br>
-            📅 Schedule: <b>${when(t.startAt)}</b>
+          <h3 style="margin:4px 0 8px;font-size:18px;font-weight:800;color:var(--text-primary);line-height:1.35">${esc(t.title)}</h3>
+          <p style="margin:0 0 14px;font-size:13px;color:var(--text-secondary);line-height:1.5">
+            📖 Chapter: <b>${esc(t.chapter || 'All Units / Full Syllabus')}</b>
+          </p>
+          <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+            <span class="pill-stat">⏱️ ${t.duration} Mins</span>
+            <span class="pill-stat">📝 ${t.question_count} Questions</span>
+            <span class="pill-stat">🎯 +4 / -1 Marks</span>
           </div>
-          <button ${locked ? 'disabled' : ''} onclick="start(${t.id})">
-            ${locked ? '🔒 Opens ' + new Date(t.startAt).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}) : 'Start Practice Test →'}
+          <div style="font-size:12px;color:var(--text-muted);margin-bottom:14px">
+            📅 Availability: <b>${when(t.startAt)}</b>
+          </div>
+          <button class="start-practice-btn" ${locked ? 'disabled' : ''} onclick="start(${t.id})">
+            <span>${locked ? '🔒 Opens ' + new Date(t.startAt).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}) : 'Start Practice Test'}</span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </button>
         </article>`;
       }).join('');
@@ -4359,6 +4738,8 @@
       }
 
       if ($('testTotalBadge')) $('testTotalBadge').textContent = dashboard.tests.length;
+      if ($('adminAnalyticsTests')) $('adminAnalyticsTests').textContent = dashboard.tests.length + ' Tests';
+      if ($('adminAnalyticsQuestions') && dashboard.questions) $('adminAnalyticsQuestions').textContent = dashboard.questions.length + ' MCQs';
 
       if (!list.length) {
         container.innerHTML = `
@@ -5008,6 +5389,7 @@
       if ($('kpiAccountsStudents')) $('kpiAccountsStudents').textContent = students;
       if ($('kpiAccountsTeachers')) $('kpiAccountsTeachers').textContent = teachers;
       if ($('kpiAccountsAdmins')) $('kpiAccountsAdmins').textContent = admins;
+      if ($('adminAnalyticsStudents')) $('adminAnalyticsStudents').textContent = students + ' Students';
 
       const search = ($('searchUsersInput')?.value || '').trim().toLowerCase();
 
