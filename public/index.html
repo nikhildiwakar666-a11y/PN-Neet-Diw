@@ -14,7 +14,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/style.css">
   <style>
     :root {
       --p: #2563eb;
@@ -1737,6 +1736,7 @@
       .landing-heading { font-size: 26px; }
       .landing-subheading { font-size: 14.5px; }
       .landing-motto-pill { font-size: 12px; padding: 7px 14px; }
+    }
     /* Responsive Navbar Overrides */
     @media (max-width: 900px) {
       .desktop-nav { display: none !important; }
@@ -1760,6 +1760,7 @@
       .hamburger-btn { width: 36px; height: 36px; min-width: 36px; min-height: 36px; }
     }
   </style>
+  <link rel="stylesheet" href="/style.css">
 </head>
 <body>
   <!-- Initial Brand Loading Screen -->
@@ -1912,8 +1913,50 @@
           </div>
         </div>
       </div>
-    </div>
   </header>
+
+  <!-- Fixed Mobile Bottom Navigation Bar (max-width: 768px) -->
+  <nav class="mobile-bottom-nav" id="mobileBottomNav" aria-label="Mobile Navigation">
+    <button type="button" class="bottom-nav-item active" data-bottom-nav="home" onclick="bottomNavGoTo('home')">
+      <span class="bottom-nav-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </span>
+      <span class="bottom-nav-label">Home</span>
+      <span class="bottom-nav-indicator"></span>
+    </button>
+
+    <button type="button" class="bottom-nav-item" data-bottom-nav="practice" onclick="bottomNavGoTo('practice')">
+      <span class="bottom-nav-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+      </span>
+      <span class="bottom-nav-label">Practice</span>
+      <span class="bottom-nav-indicator"></span>
+    </button>
+
+    <button type="button" class="bottom-nav-item" data-bottom-nav="mock-tests" onclick="bottomNavGoTo('mock-tests')">
+      <span class="bottom-nav-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      </span>
+      <span class="bottom-nav-label">Tests</span>
+      <span class="bottom-nav-indicator"></span>
+    </button>
+
+    <button type="button" class="bottom-nav-item" data-bottom-nav="results" onclick="bottomNavGoTo('results')">
+      <span class="bottom-nav-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+      </span>
+      <span class="bottom-nav-label">Results</span>
+      <span class="bottom-nav-indicator"></span>
+    </button>
+
+    <button type="button" class="bottom-nav-item" data-bottom-nav="profile" onclick="bottomNavGoTo('profile')">
+      <span class="bottom-nav-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </span>
+      <span class="bottom-nav-label" id="bottomNavProfileLabel">Profile</span>
+      <span class="bottom-nav-indicator"></span>
+    </button>
+  </nav>
 
   <!-- ==========================================================================
        LOGIN GATE (VISIBLE ONLY WHEN LOGGED OUT)
@@ -4273,6 +4316,35 @@
           btn.removeAttribute('aria-current');
         }
       });
+
+      const bottomNavButtons = document.querySelectorAll('.bottom-nav-item');
+      bottomNavButtons.forEach(btn => {
+        const isTarget = btn.getAttribute('data-bottom-nav') === currentActiveNav;
+        btn.classList.toggle('active', isTarget);
+        if (isTarget) {
+          btn.setAttribute('aria-current', 'page');
+        } else {
+          btn.removeAttribute('aria-current');
+        }
+      });
+    }
+
+    function bottomNavGoTo(dest) {
+      closeMobileNav();
+      closeUserMenu();
+      setActiveNavLink(dest);
+      const isLoggedIn = !!(token && user);
+
+      if (dest === 'profile') {
+        if (isLoggedIn) {
+          openProfileModal();
+        } else {
+          navSignInClick();
+        }
+        return;
+      }
+
+      navGoTo(dest);
     }
 
     function updateNavbarState() {
