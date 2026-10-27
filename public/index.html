@@ -50,11 +50,13 @@
       border-bottom: 1px solid var(--line);
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      padding: 0 max(20px, calc((100% - 1180px)/2));
+      justify-content: center;
+      padding: 0 20px;
       position: sticky;
       top: 0;
-      z-index: 100;
+      z-index: 1000;
+      box-sizing: border-box;
+      width: 100%;
     }
     .brand {
       display: flex;
@@ -1735,6 +1737,27 @@
       .landing-heading { font-size: 26px; }
       .landing-subheading { font-size: 14.5px; }
       .landing-motto-pill { font-size: 12px; padding: 7px 14px; }
+    /* Responsive Navbar Overrides */
+    @media (max-width: 900px) {
+      .desktop-nav { display: none !important; }
+      .nav-btn-dashboard, .nav-btn-profile, .nav-btn-logout, .nav-btn-signin, .nav-btn-register { display: none !important; }
+      .hamburger-btn { display: inline-flex !important; }
+    }
+    @media (max-width: 520px) {
+      header#globalHeader, header.pn-navbar { height: 60px; padding: 0 12px; }
+      .mobile-nav-drawer { top: 60px; max-height: calc(100vh - 60px); }
+      .brand-official-logo { width: 34px; height: 34px; }
+      .brand-text-name { font-size: 17px; gap: 5px; }
+      .brand-diw-badge { font-size: 10px; padding: 1.5px 5.5px; }
+      .hamburger-btn { width: 38px; height: 38px; min-width: 38px; min-height: 38px; }
+    }
+    @media (max-width: 340px) {
+      header#globalHeader, header.pn-navbar { padding: 0 8px; }
+      .brand { gap: 6px; }
+      .brand-official-logo { width: 30px; height: 30px; }
+      .brand-text-name { font-size: 15.5px; }
+      .brand-diw-badge { font-size: 9.5px; padding: 1px 4.5px; }
+      .hamburger-btn { width: 36px; height: 36px; min-width: 36px; min-height: 36px; }
     }
   </style>
 </head>
@@ -1773,43 +1796,121 @@
     </div>
   </div>
 
-  <!-- Global Header (Visible after login) -->
-  <header id="globalHeader" style="display:none">
-    <div class="brand" onclick="brandHomeClick()" title="PN Neet Diw — Home" aria-label="PN Neet Diw Logo">
-      <img src="/assets/logo.png" alt="PN Neet Diw Logo" class="brand-official-logo">
-      <span class="brand-text-name">PN Neet <span class="brand-diw-badge">Diw</span></span>
-    </div>
+  <!-- Global Sticky Navbar (Fully Responsive for Desktop & Mobile) -->
+  <header id="globalHeader" class="pn-navbar" role="banner">
+    <div class="pn-navbar-container">
+      <!-- Left: Brand Logo & Title -->
+      <a href="javascript:void(0)" class="brand" onclick="navBrandClick()" title="PN Neet Diw — Home" aria-label="PN Neet Diw Home">
+        <img src="/assets/logo.png" alt="PN Neet Diw Logo" class="brand-official-logo">
+        <span class="brand-text-name">PN Neet <span class="brand-diw-badge">Diw</span></span>
+      </a>
 
-    <!-- Role-Based Navigation Links (Visible when logged in) -->
-    <nav class="nav-links" id="mainNavLinks" style="display:none"></nav>
+      <!-- Center/Right: Desktop Navigation Links -->
+      <nav class="desktop-nav" id="desktopNav" aria-label="Primary Navigation">
+        <ul class="desktop-nav-list" id="desktopNavList">
+          <li><button type="button" class="nav-link-btn active" data-nav="home" onclick="navGoTo('home')">Home</button></li>
+          <li><button type="button" class="nav-link-btn" data-nav="practice" onclick="navGoTo('practice')">Practice</button></li>
+          <li><button type="button" class="nav-link-btn" data-nav="mock-tests" onclick="navGoTo('mock-tests')">Mock Tests</button></li>
+          <li><button type="button" class="nav-link-btn" data-nav="results" onclick="navGoTo('results')">Results</button></li>
+          <li><button type="button" class="nav-link-btn" data-nav="about" onclick="navGoTo('about')">About</button></li>
+          <li id="desktopAdminItem" style="display:none">
+            <button type="button" class="nav-link-btn nav-link-admin" data-nav="admin" onclick="navGoTo('admin')">
+              <span class="admin-badge-dot"></span>Admin Dashboard
+            </button>
+          </li>
+        </ul>
+      </nav>
 
-    <!-- Top-Right Actions -->
-    <div class="header-right" id="headerRightArea">
-      <!-- In Logged Out state -->
-      <span class="tag" id="loggedOutBadge" style="display:none">Sign In Required</span>
+      <!-- Right Side Controls (Desktop & Mobile) -->
+      <div class="header-right" id="headerRightArea">
+        <!-- Logged Out State Actions -->
+        <div class="nav-auth-actions" id="navLoggedOutActions">
+          <button type="button" class="nav-btn-signin" id="navSignInBtn" onclick="navSignInClick()">Sign In</button>
+          <button type="button" class="nav-btn-register" id="navRegisterBtn" onclick="navRegisterClick()">Create Account</button>
+        </div>
 
-      <!-- In Logged In state: Admin Controls (Admin only) & Account Menu -->
-      <div id="loggedInControls" style="display:none;align-items:center;gap:10px">
+        <!-- Logged In State Actions -->
+        <div class="nav-auth-actions" id="navLoggedInActions" style="display:none">
+          <button type="button" class="nav-btn-dashboard" id="navDashboardBtn" onclick="navDashboardClick()" title="Go to Dashboard">Dashboard</button>
+          <button type="button" class="nav-btn-profile" id="navProfileBtn" onclick="navProfileClick()" title="Profile & Account">Profile</button>
+          <button type="button" class="nav-btn-logout" id="navLogoutBtn" onclick="navLogoutClick()" title="Sign Out">Logout</button>
 
-        <!-- 2. User Greeting (Name & Role Pill) -->
+          <!-- User Avatar & Existing Three Dot Menu preserved for full feature compatibility -->
+          <button class="user-menu-btn" id="userMenuBtn" onclick="toggleUserMenu()" aria-label="Account Menu" title="Open Account Menu">
+            <div class="avatar-circle" id="navAvatar">
+              <span class="nav-avatar-letter" id="navAvatarInitials">👤</span>
+            </div>
+            <svg class="menu-dots-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <circle cx="12" cy="5" r="2"/>
+              <circle cx="12" cy="12" r="2"/>
+              <circle cx="12" cy="19" r="2"/>
+            </svg>
+          </button>
+          <div class="three-dot-menu" id="threeDotMenu" role="menu"></div>
+        </div>
+
+        <!-- Legacy compatibility nodes -->
+        <nav class="nav-links" id="mainNavLinks" style="display:none"></nav>
+        <span class="tag" id="loggedOutBadge" style="display:none">Sign In Required</span>
+        <div id="loggedInControls" style="display:none"></div>
         <div class="nav-user-greeting" id="navUserGreeting" style="display:none">
           <span class="nav-greeting-role" id="navGreetingRole">NEET Aspirant</span>
           <span class="nav-greeting-name" id="navGreetingName">Student</span>
         </div>
 
-        <!-- 3. User Avatar & Professional Menu Icon Button -->
-        <button class="user-menu-btn" id="userMenuBtn" onclick="toggleUserMenu()" aria-label="Account Menu" title="Open Account Menu">
-          <div class="avatar-circle" id="navAvatar">
-            <span class="nav-avatar-letter" id="navAvatarInitials">👤</span>
-          </div>
-          <svg class="menu-dots-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-            <circle cx="12" cy="5" r="2"/>
-            <circle cx="12" cy="12" r="2"/>
-            <circle cx="12" cy="19" r="2"/>
-          </svg>
+        <!-- Mobile Hamburger Button -->
+        <button type="button" class="hamburger-btn" id="hamburgerBtn" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobileNavDrawer" onclick="toggleMobileNav()">
+          <span class="hamburger-icon">
+            <span class="bar bar-1"></span>
+            <span class="bar bar-2"></span>
+            <span class="bar bar-3"></span>
+          </span>
         </button>
+      </div>
+    </div>
 
-        <div class="three-dot-menu" id="threeDotMenu" role="menu"></div>
+    <!-- Mobile Navigation Drawer & Backdrop -->
+    <div class="mobile-nav-backdrop" id="mobileNavBackdrop" onclick="closeMobileNav()"></div>
+    <div class="mobile-nav-drawer" id="mobileNavDrawer" role="dialog" aria-modal="true" aria-label="Mobile Navigation">
+      <div class="mobile-nav-inner">
+        <ul class="mobile-nav-list" id="mobileNavList">
+          <li><button type="button" class="mobile-nav-link active" data-nav="home" onclick="navGoTo('home')"><span class="m-icon">🏠</span><span>Home</span></button></li>
+          <li><button type="button" class="mobile-nav-link" data-nav="practice" onclick="navGoTo('practice')"><span class="m-icon">🎯</span><span>Practice</span></button></li>
+          <li><button type="button" class="mobile-nav-link" data-nav="mock-tests" onclick="navGoTo('mock-tests')"><span class="m-icon">📝</span><span>Mock Tests</span></button></li>
+          <li><button type="button" class="mobile-nav-link" data-nav="results" onclick="navGoTo('results')"><span class="m-icon">📊</span><span>Results</span></button></li>
+          <li><button type="button" class="mobile-nav-link" data-nav="about" onclick="navGoTo('about')"><span class="m-icon">✨</span><span>About</span></button></li>
+          <li id="mobileAdminItem" style="display:none">
+            <button type="button" class="mobile-nav-link mobile-nav-admin" data-nav="admin" onclick="navGoTo('admin')">
+              <span class="m-icon">🛡️</span><span>Admin Dashboard</span>
+            </button>
+          </li>
+        </ul>
+
+        <div class="mobile-nav-divider"></div>
+
+        <!-- Mobile Logged Out Section -->
+        <div class="mobile-auth-section" id="mobileLoggedOutSection">
+          <button type="button" class="mobile-btn-signin" onclick="navSignInClick()">Sign In</button>
+          <button type="button" class="mobile-btn-register" onclick="navRegisterClick()">Create Account</button>
+        </div>
+
+        <!-- Mobile Logged In Section -->
+        <div class="mobile-auth-section" id="mobileLoggedInSection" style="display:none">
+          <div class="mobile-user-card" onclick="navProfileClick()">
+            <div class="avatar-circle" id="mobileNavAvatar">
+              <span class="nav-avatar-letter" id="mobileNavInitials">👤</span>
+            </div>
+            <div class="mobile-user-info">
+              <div class="mobile-user-name" id="mobileNavName">Student</div>
+              <div class="mobile-user-role" id="mobileNavRole">NEET Aspirant</div>
+            </div>
+          </div>
+          <div class="mobile-user-actions">
+            <button type="button" class="mobile-action-btn" onclick="navDashboardClick()"><span class="m-icon">📊</span><span>Dashboard</span></button>
+            <button type="button" class="mobile-action-btn" onclick="navProfileClick()"><span class="m-icon">👤</span><span>Profile</span></button>
+            <button type="button" class="mobile-action-btn mobile-logout-btn" onclick="navLogoutClick()"><span class="m-icon">🚪</span><span>Logout</span></button>
+          </div>
+        </div>
       </div>
     </div>
   </header>
@@ -1867,7 +1968,7 @@
       </section>
 
       <!-- 2. Key Benefits Section -->
-      <section style="width:100%;margin-bottom:48px;">
+      <section style="width:100%;margin-bottom:48px;" id="landingAbout">
         <h2 class="landing-section-title">Built for NEET-UG Rank Achievers</h2>
         <p class="landing-section-desc">Everything you need to boost your mock score from 500 to 650+ with disciplined chapter testing.</p>
 
@@ -1896,7 +1997,7 @@
       </section>
 
       <!-- 3. Subject Cards Showcase -->
-      <section style="width:100%;margin-bottom:48px;">
+      <section style="width:100%;margin-bottom:48px;" id="landingPractice">
         <h2 class="landing-section-title">Comprehensive Subject Coverage</h2>
         <p class="landing-section-desc">Targeted practice modules designed specifically for high-yield NEET weightage.</p>
 
@@ -1943,7 +2044,7 @@
       </section>
 
       <!-- 4. Mock Test CTA Banner -->
-      <section class="mock-cta-banner">
+      <section class="mock-cta-banner" id="landingMockTests">
         <h2>Ready to Test Your NEET Rank Readiness?</h2>
         <p>Take an instant chapter mock test now. Get your score, negative marking impact, accuracy rate, and faculty solutions within seconds.</p>
         <button type="button" class="mock-cta-btn" onclick="openRoleAuth('student')">
@@ -1952,7 +2053,7 @@
       </section>
 
       <!-- 5. Student Testimonials -->
-      <section style="width:100%;margin-bottom:48px;">
+      <section style="width:100%;margin-bottom:48px;" id="landingResults">
         <h2 class="landing-section-title">Trusted by Serious NEET Aspirants</h2>
         <p class="landing-section-desc">See how students are transforming their preparation accuracy with PN Neet Diw.</p>
 
@@ -3193,6 +3294,49 @@
       <input id="resourceFile" type="file" accept="application/pdf,video/mp4,video/webm,video/quicktime">
       <button style="margin-top:15px;width:100%" onclick="uploadResource()">Upload Material</button>
     </div>
+  <!-- About PN Neet Diw Modal -->
+  <div class="modal" id="aboutModal">
+    <div class="box" style="max-width:540px;border-radius:20px;">
+      <button class="close" onclick="closeAboutModal()">✕</button>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
+        <img src="/assets/logo.png" alt="PN Neet Diw Logo" style="width:44px;height:44px;object-fit:contain;">
+        <div>
+          <h2 style="margin:0;font-size:22px;font-weight:800;color:var(--text-primary,#0f172a);">About PN Neet Diw</h2>
+          <span style="font-size:11px;font-weight:800;color:var(--p,#2563eb);letter-spacing:0.05em;text-transform:uppercase;">India's Focused NEET-UG Platform</span>
+        </div>
+      </div>
+      <p style="margin:12px 0 16px;font-size:14px;color:var(--m,#64748b);line-height:1.6;">
+        PN Neet Diw is built specifically for medical aspirants targeting top government medical colleges. We believe disciplined chapter practice, authentic NTA simulations, and deep weak-topic diagnostics are the fastest path to 650+ in NEET.
+      </p>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:12px;">
+          <div style="font-size:20px;margin-bottom:4px;">🎯</div>
+          <strong style="font-size:13.5px;display:block;color:var(--ink,#0f172a);">100% NCERT MCQs</strong>
+          <small style="color:var(--m,#64748b);font-size:12px;line-height:1.4;display:block;margin-top:2px;">Line-by-line questions directly aligned with NTA NEET syllabus.</small>
+        </div>
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:12px;">
+          <div style="font-size:20px;margin-bottom:4px;">⏱️</div>
+          <strong style="font-size:13.5px;display:block;color:var(--ink,#0f172a);">Real NTA Simulation</strong>
+          <small style="color:var(--m,#64748b);font-size:12px;line-height:1.4;display:block;margin-top:2px;">Timed test palette with -1 negative marking calculation.</small>
+        </div>
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:12px;">
+          <div style="font-size:20px;margin-bottom:4px;">📊</div>
+          <strong style="font-size:13.5px;display:block;color:var(--ink,#0f172a);">Topic Diagnostics</strong>
+          <small style="color:var(--m,#64748b);font-size:12px;line-height:1.4;display:block;margin-top:2px;">Pinpoints exact concepts to revise before next attempt.</small>
+        </div>
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:12px;">
+          <div style="font-size:20px;margin-bottom:4px;">👨‍🏫</div>
+          <strong style="font-size:13.5px;display:block;color:var(--ink,#0f172a);">Faculty Solutions</strong>
+          <small style="color:var(--m,#64748b);font-size:12px;line-height:1.4;display:block;margin-top:2px;">Detailed step-by-step explanations with NCERT references.</small>
+        </div>
+      </div>
+
+      <div style="border-top:1px solid var(--line,#e2e8f0);padding-top:14px;display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--m,#64748b);">
+        <span>Platform Version 1.0.0</span>
+        <button type="button" class="light" style="padding:6px 16px;font-size:13px;" onclick="closeAboutModal()">Close</button>
+      </div>
+    </div>
   </div>
 
   <!-- Global Official Website Footer -->
@@ -3986,9 +4130,10 @@
       const isLoggedIn = !!(token && user);
 
       if (!isLoggedIn) {
-        // STATE 1: LOGGED OUT -> MANDATORY FIRST PAGE ONLY
+        // STATE 1: LOGGED OUT -> SHOW GLOBAL NAVBAR WITH LOGGED OUT ACTIONS
         const header = $('globalHeader');
-        if (header) header.style.display = 'none';
+        if (header) header.style.display = 'flex';
+        updateNavbarState();
 
         $('loginGateContainer').style.display = 'flex';
         $('roleSelectionScreen').style.display = 'flex';
@@ -4007,25 +4152,26 @@
         $('studentDashboardView').style.display = 'none';
         $('teacherDashboardView').style.display = 'none';
         $('adminDashboardView').style.display = 'none';
-        $('mainNavLinks').style.display = 'none';
-        $('loggedOutBadge').style.display = 'inline-block';
-        $('loggedInControls').style.display = 'none';
+        if ($('mainNavLinks')) $('mainNavLinks').style.display = 'none';
+        if ($('loggedOutBadge')) $('loggedOutBadge').style.display = 'none';
+        if ($('loggedInControls')) $('loggedInControls').style.display = 'none';
         if ($('adminControlsBtn')) $('adminControlsBtn').style.display = 'none';
 
-        ['test', 'results', 'library', 'upload', 'profileModal', 'settingsModal'].forEach(hide);
+        ['test', 'results', 'library', 'upload', 'profileModal', 'settingsModal', 'aboutModal'].forEach(hide);
         return;
       }
 
       // STATE 2: LOGGED IN -> SHOW GLOBAL HEADER & DASHBOARD
       const header = $('globalHeader');
       if (header) header.style.display = 'flex';
+      updateNavbarState();
 
       $('loginGateContainer').style.display = 'none';
       $('dashboardMainArea').style.display = 'block';
-      $('loggedOutBadge').style.display = 'none';
-      $('loggedInControls').style.display = 'flex';
+      if ($('loggedOutBadge')) $('loggedOutBadge').style.display = 'none';
+      if ($('loggedInControls')) $('loggedInControls').style.display = 'flex';
 
-      // Setup Role-Based Navigation Links (hidden as items are inside three-dot menu)
+      // Setup Role-Based Navigation Links
       renderHeaderNavLinks();
 
       // Setup Universal Role Greeting & Introduction
@@ -4087,7 +4233,7 @@
       }
     }
 
-    // Header nav links based on role - completely hidden as required
+    // Header nav links based on role
     function renderHeaderNavLinks() {
       const container = $('mainNavLinks');
       if (container) {
@@ -4104,9 +4250,310 @@
 
     function closeAllOverlays() {
       closeUserMenu();
+      closeMobileNav();
       closeAdminControlsMenu();
-      ['test', 'library', 'results', 'upload', 'profileModal', 'settingsModal'].forEach(hide);
+      closeAboutModal();
+      ['test', 'library', 'results', 'upload', 'profileModal', 'settingsModal', 'aboutModal'].forEach(hide);
     }
+
+    // =========================================================================
+    // RESPONSIVE NAVBAR CONTROLLER & NAVIGATION
+    // =========================================================================
+    let currentActiveNav = 'home';
+
+    function setActiveNavLink(dest) {
+      currentActiveNav = dest || 'home';
+      const allNavButtons = document.querySelectorAll('.nav-link-btn, .mobile-nav-link');
+      allNavButtons.forEach(btn => {
+        const isTarget = btn.getAttribute('data-nav') === currentActiveNav;
+        btn.classList.toggle('active', isTarget);
+        if (isTarget) {
+          btn.setAttribute('aria-current', 'page');
+        } else {
+          btn.removeAttribute('aria-current');
+        }
+      });
+    }
+
+    function updateNavbarState() {
+      const isLoggedIn = !!(token && user);
+      const loggedOutActions = $('navLoggedOutActions');
+      const loggedInActions = $('navLoggedInActions');
+      const mobileLoggedOut = $('mobileLoggedOutSection');
+      const mobileLoggedIn = $('mobileLoggedInSection');
+      const desktopAdminItem = $('desktopAdminItem');
+      const mobileAdminItem = $('mobileAdminItem');
+
+      const isAdmin = isLoggedIn && user && user.role === 'admin';
+
+      if (desktopAdminItem) desktopAdminItem.style.display = isAdmin ? 'inline-block' : 'none';
+      if (mobileAdminItem) mobileAdminItem.style.display = isAdmin ? 'block' : 'none';
+
+      if (!isLoggedIn) {
+        if (loggedOutActions) loggedOutActions.style.display = 'flex';
+        if (loggedInActions) loggedInActions.style.display = 'none';
+        if (mobileLoggedOut) mobileLoggedOut.style.display = 'flex';
+        if (mobileLoggedIn) mobileLoggedIn.style.display = 'none';
+      } else {
+        if (loggedOutActions) loggedOutActions.style.display = 'none';
+        if (loggedInActions) loggedInActions.style.display = 'flex';
+        if (mobileLoggedOut) mobileLoggedOut.style.display = 'none';
+        if (mobileLoggedIn) mobileLoggedIn.style.display = 'block';
+
+        const mobileName = $('mobileNavName');
+        const mobileRole = $('mobileNavRole');
+        const mobileInitials = $('mobileNavInitials');
+        const mobileAvatar = $('mobileNavAvatar');
+
+        if (mobileName) mobileName.textContent = user.name || 'User';
+        if (mobileRole) {
+          if (user.role === 'admin') mobileRole.textContent = 'Platform Administrator';
+          else if (user.role === 'teacher') mobileRole.textContent = 'Faculty / Teacher';
+          else mobileRole.textContent = 'NEET Aspirant';
+        }
+
+        const letter = (user.name || 'U').trim().charAt(0).toUpperCase();
+        if (mobileInitials) mobileInitials.textContent = letter;
+
+        if (mobileAvatar) {
+          const formattedAvatar = formatAvatarUrl(user.avatar);
+          if (formattedAvatar) {
+            mobileAvatar.innerHTML = `<img src="${formattedAvatar}" alt="${esc(user.name)}" class="nav-avatar-img" onerror="this.onerror=null;this.parentElement.innerHTML='<span class=\\'nav-avatar-letter\\'>${letter}</span>';">`;
+          } else {
+            mobileAvatar.innerHTML = `<span class="nav-avatar-letter">${letter}</span>`;
+          }
+        }
+      }
+    }
+
+    function toggleMobileNav() {
+      const drawer = $('mobileNavDrawer');
+      const backdrop = $('mobileNavBackdrop');
+      const btn = $('hamburgerBtn');
+      if (!drawer) return;
+
+      const isOpen = drawer.classList.contains('open');
+      if (isOpen) {
+        closeMobileNav();
+      } else {
+        drawer.classList.add('open');
+        if (backdrop) backdrop.classList.add('open');
+        if (btn) {
+          btn.classList.add('active');
+          btn.setAttribute('aria-expanded', 'true');
+        }
+        document.body.classList.add('mobile-nav-locked');
+      }
+    }
+
+    function closeMobileNav() {
+      const drawer = $('mobileNavDrawer');
+      const backdrop = $('mobileNavBackdrop');
+      const btn = $('hamburgerBtn');
+      if (drawer) drawer.classList.remove('open');
+      if (backdrop) backdrop.classList.remove('open');
+      if (btn) {
+        btn.classList.remove('active');
+        btn.setAttribute('aria-expanded', 'false');
+      }
+      document.body.classList.remove('mobile-nav-locked');
+    }
+
+    function navBrandClick() {
+      closeMobileNav();
+      closeUserMenu();
+      const isLoggedIn = !!(token && user);
+      if (!isLoggedIn) {
+        if ($('roleAuthContainer') && $('roleAuthContainer').style.display !== 'none') {
+          backToRoleSelection();
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setActiveNavLink('home');
+      } else {
+        closeAllOverlays();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setActiveNavLink('home');
+      }
+    }
+
+    function navGoTo(dest) {
+      closeMobileNav();
+      closeUserMenu();
+      setActiveNavLink(dest);
+
+      const isLoggedIn = !!(token && user);
+
+      if (!isLoggedIn) {
+        if ($('roleAuthContainer') && $('roleAuthContainer').style.display !== 'none') {
+          backToRoleSelection();
+        }
+        if (dest === 'home') {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else if (dest === 'practice') {
+          const el = $('landingPractice');
+          if (el) el.scrollIntoView({ behavior: 'smooth' });
+        } else if (dest === 'mock-tests') {
+          const el = $('landingMockTests');
+          if (el) el.scrollIntoView({ behavior: 'smooth' });
+        } else if (dest === 'results') {
+          const el = $('landingResults');
+          if (el) el.scrollIntoView({ behavior: 'smooth' });
+        } else if (dest === 'about') {
+          const el = $('landingAbout');
+          if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }
+        return;
+      }
+
+      // Logged-in navigation
+      if (dest === 'home') {
+        closeAllOverlays();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else if (dest === 'practice') {
+        closeAllOverlays();
+        if (user.role === 'admin') {
+          openAdminSection('tests');
+        } else if (user.role === 'teacher') {
+          scrollToSection('teacherLiveStartArea');
+        } else {
+          scrollToSchedule();
+        }
+      } else if (dest === 'mock-tests') {
+        closeAllOverlays();
+        if (user.role === 'admin') {
+          openAdminSection('tests');
+        } else {
+          scrollToSchedule();
+        }
+      } else if (dest === 'results') {
+        closeAllOverlays();
+        if (user.role === 'admin') {
+          openAdminSection('results');
+        } else {
+          resultsOpen();
+        }
+      } else if (dest === 'about') {
+        openAboutModal();
+      } else if (dest === 'admin') {
+        closeAllOverlays();
+        if (user.role === 'admin') {
+          scrollToSection('adminDashboardView');
+        }
+      }
+    }
+
+    function navSignInClick() {
+      closeMobileNav();
+      closeUserMenu();
+      openRoleAuth('student');
+      setAuthMode('login');
+      const authContainer = $('roleAuthContainer');
+      if (authContainer) authContainer.scrollIntoView({ behavior: 'smooth' });
+      setTimeout(() => {
+        const email = $('authEmail');
+        if (email) email.focus();
+      }, 250);
+    }
+
+    function navRegisterClick() {
+      closeMobileNav();
+      closeUserMenu();
+      openRoleAuth('student');
+      setAuthMode('register');
+      const authContainer = $('roleAuthContainer');
+      if (authContainer) authContainer.scrollIntoView({ behavior: 'smooth' });
+      setTimeout(() => {
+        const name = $('authName');
+        if (name) name.focus();
+      }, 250);
+    }
+
+    function navDashboardClick() {
+      closeMobileNav();
+      closeUserMenu();
+      closeAllOverlays();
+      if (user?.role === 'admin') {
+        scrollToSection('adminDashboardView');
+      } else if (user?.role === 'teacher') {
+        scrollToSection('teacherDashboardView');
+      } else {
+        scrollToSection('studentDashboardView');
+      }
+      setActiveNavLink('home');
+    }
+
+    function navProfileClick() {
+      closeMobileNav();
+      closeUserMenu();
+      openProfileModal();
+    }
+
+    function navLogoutClick() {
+      closeMobileNav();
+      closeUserMenu();
+      logoutUser();
+    }
+
+    function openAboutModal() {
+      closeMobileNav();
+      closeUserMenu();
+      show('aboutModal');
+    }
+
+    function closeAboutModal() {
+      hide('aboutModal');
+    }
+
+    // ScrollSpy for Active Nav Link Highlighting
+    window.addEventListener('scroll', () => {
+      if (token && user) return;
+      const scrollPos = window.scrollY + 120;
+      const sections = [
+        { id: 'landingResults', nav: 'results' },
+        { id: 'landingMockTests', nav: 'mock-tests' },
+        { id: 'landingPractice', nav: 'practice' },
+        { id: 'landingAbout', nav: 'about' }
+      ];
+      for (const sec of sections) {
+        const el = document.getElementById(sec.id);
+        if (el) {
+          const top = el.offsetTop;
+          const height = el.offsetHeight;
+          if (scrollPos >= top && scrollPos < top + height) {
+            setActiveNavLink(sec.nav);
+            return;
+          }
+        }
+      }
+      if (window.scrollY < 200) {
+        setActiveNavLink('home');
+      }
+    }, { passive: true });
+
+    // Keyboard & Click-Outside Handlers for Accessibility
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        closeMobileNav();
+        closeUserMenu();
+        closeAboutModal();
+      }
+    });
+
+    document.addEventListener('click', e => {
+      const drawer = $('mobileNavDrawer');
+      const btn = $('hamburgerBtn');
+      if (drawer && drawer.classList.contains('open')) {
+        if (!drawer.contains(e.target) && !btn.contains(e.target)) {
+          closeMobileNav();
+        }
+      }
+    });
+
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 900) {
+        closeMobileNav();
+      }
+    });
 
     function openStudentSection(section) {
       closeAllOverlays();
