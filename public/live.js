@@ -196,7 +196,14 @@
   window.joinLiveClass = async function () {
     try {
       const live = await api('live-class');
-      if (!live.active) return alert('This live class has concluded.');
+      if (!live || !live.active) {
+        if (typeof liveClassesOpen === 'function') {
+          liveClassesOpen();
+        } else {
+          alert('No live class is currently broadcasting. Recordings are in Notes & Videos.');
+        }
+        return;
+      }
 
       const liveSocket = connect();
       studentPeer = new RTCPeerConnection(iceServers);
@@ -256,8 +263,12 @@
     studentPeer?.close();
     studentPeer = null;
     if ($('studentVideo')) $('studentVideo').srcObject = null;
-    alert('The live class has concluded. Its recording will appear in Notes & Videos.');
     hide('test');
+    if (typeof liveClassesOpen === 'function') {
+      liveClassesOpen();
+    } else {
+      alert('The live class has concluded. Its recording will appear in Notes & Videos.');
+    }
     if (typeof checkStudentLiveStatus === 'function') checkStudentLiveStatus();
   }
 

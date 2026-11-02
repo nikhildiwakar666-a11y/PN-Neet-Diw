@@ -1772,6 +1772,21 @@
     </div>
   </div>
 
+  <!-- Non-blocking Server Waking Banner (Render Free Tier Cold Start Toast) -->
+  <div id="backendWakingBanner" class="backend-waking-banner" style="display:none;" role="status" aria-live="polite">
+    <div class="backend-waking-inner">
+      <div class="backend-waking-status">
+        <span class="backend-waking-pulse"></span>
+        <span class="backend-waking-msg">Server is starting, please wait up to 50 seconds.</span>
+        <span class="backend-waking-timer" id="backendWakingTimer">(auto-retrying...)</span>
+      </div>
+      <div class="backend-waking-actions">
+        <button type="button" class="backend-waking-btn" id="bannerRetryBtn" onclick="manualBackendRetry()">Retry ↻</button>
+        <button type="button" class="backend-waking-close" onclick="dismissWakingBanner()" title="Dismiss banner">✕</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Server Waking Up / Retry Screen (Render Free Tier Cold Start) -->
   <div id="serverWakeupScreen" class="server-wakeup-overlay" style="display:none">
     <div class="server-wakeup-card">
@@ -1860,7 +1875,7 @@
         </div>
 
         <!-- Mobile Hamburger Button -->
-        <button type="button" class="hamburger-btn" id="hamburgerBtn" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobileNavDrawer" onclick="toggleMobileNav()">
+        <button type="button" class="hamburger-btn" id="hamburgerBtn" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobileNavDrawer" onclick="toggleMobileNav(event)">
           <span class="hamburger-icon">
             <span class="bar bar-1"></span>
             <span class="bar bar-2"></span>
@@ -1869,51 +1884,54 @@
         </button>
       </div>
     </div>
+  </header>
 
-    <!-- Mobile Navigation Drawer & Backdrop -->
-    <div class="mobile-nav-backdrop" id="mobileNavBackdrop" onclick="closeMobileNav()"></div>
-    <div class="mobile-nav-drawer" id="mobileNavDrawer" role="dialog" aria-modal="true" aria-label="Mobile Navigation">
-      <div class="mobile-nav-inner">
-        <ul class="mobile-nav-list" id="mobileNavList">
-          <li><button type="button" class="mobile-nav-link active" data-nav="home" onclick="navGoTo('home')"><span class="m-icon">🏠</span><span>Home</span></button></li>
-          <li><button type="button" class="mobile-nav-link" data-nav="practice" onclick="navGoTo('practice')"><span class="m-icon">🎯</span><span>Practice</span></button></li>
-          <li><button type="button" class="mobile-nav-link" data-nav="mock-tests" onclick="navGoTo('mock-tests')"><span class="m-icon">📝</span><span>Mock Tests</span></button></li>
-          <li><button type="button" class="mobile-nav-link" data-nav="results" onclick="navGoTo('results')"><span class="m-icon">📊</span><span>Results</span></button></li>
-          <li><button type="button" class="mobile-nav-link" data-nav="about" onclick="navGoTo('about')"><span class="m-icon">✨</span><span>About</span></button></li>
-          <li id="mobileAdminItem" style="display:none">
-            <button type="button" class="mobile-nav-link mobile-nav-admin" data-nav="admin" onclick="navGoTo('admin')">
-              <span class="m-icon">🛡️</span><span>Admin Dashboard</span>
-            </button>
-          </li>
-        </ul>
+  <!-- Mobile Navigation Drawer & Backdrop (Directly under body for guaranteed stacking & zero clipping) -->
+  <div class="mobile-nav-backdrop" id="mobileNavBackdrop" onclick="closeMobileNav()"></div>
+  <div class="mobile-nav-drawer" id="mobileNavDrawer" role="dialog" aria-modal="true" aria-label="Mobile Navigation">
+    <div class="mobile-nav-inner">
+      <ul class="mobile-nav-list" id="mobileNavList">
+        <li><button type="button" class="mobile-nav-link active" data-nav="home" onclick="navGoTo('home')"><span class="m-icon">🏠</span><span>Dashboard / Home</span></button></li>
+        <li><button type="button" class="mobile-nav-link" data-nav="practice" onclick="navGoTo('practice')"><span class="m-icon">🎯</span><span>Practice</span></button></li>
+        <li><button type="button" class="mobile-nav-link" data-nav="mock-tests" onclick="navGoTo('mock-tests')"><span class="m-icon">📝</span><span>Mock Tests</span></button></li>
+        <li><button type="button" class="mobile-nav-link" data-nav="results" onclick="navGoTo('results')"><span class="m-icon">📊</span><span>Results</span></button></li>
+        <li><button type="button" class="mobile-nav-link" data-nav="notes" onclick="navGoTo('notes')"><span class="m-icon">📚</span><span>Notes &amp; Videos</span></button></li>
+        <li><button type="button" class="mobile-nav-link" data-nav="community" onclick="navGoTo('community')"><span class="m-icon">💬</span><span>Community Chat</span></button></li>
+        <li><button type="button" class="mobile-nav-link" data-nav="live" onclick="navGoTo('live')"><span class="m-icon">🎥</span><span>Live Classes</span><span class="live-pulse-dot" id="mobileNavLivePulse" style="display:none;margin-left:auto"></span></button></li>
+        <li><button type="button" class="mobile-nav-link" data-nav="calendar" onclick="navGoTo('calendar')"><span class="m-icon">🗓️</span><span>Study Calendar</span></button></li>
+        <li><button type="button" class="mobile-nav-link" data-nav="profile" onclick="navGoTo('profile')"><span class="m-icon">👤</span><span>Profile</span></button></li>
+        <li style="margin-top:6px;border-top:1px solid #e2e8f0;padding-top:6px;">
+          <button type="button" class="mobile-nav-link mobile-logout-link" onclick="navLogoutClick()" style="color:#ef4444;"><span class="m-icon">🚪</span><span>Logout</span></button>
+        </li>
+      </ul>
 
-        <div class="mobile-nav-divider"></div>
+      <div class="mobile-nav-divider"></div>
 
-        <!-- Mobile Logged Out Section -->
-        <div class="mobile-auth-section" id="mobileLoggedOutSection">
-          <button type="button" class="mobile-btn-signin" onclick="navSignInClick()">Sign In</button>
-          <button type="button" class="mobile-btn-register" onclick="navRegisterClick()">Create Account</button>
+      <!-- Mobile Logged Out Section -->
+      <div class="mobile-auth-section" id="mobileLoggedOutSection">
+        <button type="button" class="mobile-btn-signin" onclick="navSignInClick()">Sign In</button>
+        <button type="button" class="mobile-btn-register" onclick="navRegisterClick()">Create Account</button>
+      </div>
+
+      <!-- Mobile Logged In Section -->
+      <div class="mobile-auth-section" id="mobileLoggedInSection" style="display:none">
+        <div class="mobile-user-card" onclick="navProfileClick()">
+          <div class="avatar-circle" id="mobileNavAvatar">
+            <span class="nav-avatar-letter" id="mobileNavInitials">👤</span>
+          </div>
+          <div class="mobile-user-info">
+            <div class="mobile-user-name" id="mobileNavName">Student</div>
+            <div class="mobile-user-role" id="mobileNavRole">NEET Aspirant</div>
+          </div>
         </div>
-
-        <!-- Mobile Logged In Section -->
-        <div class="mobile-auth-section" id="mobileLoggedInSection" style="display:none">
-          <div class="mobile-user-card" onclick="navProfileClick()">
-            <div class="avatar-circle" id="mobileNavAvatar">
-              <span class="nav-avatar-letter" id="mobileNavInitials">👤</span>
-            </div>
-            <div class="mobile-user-info">
-              <div class="mobile-user-name" id="mobileNavName">Student</div>
-              <div class="mobile-user-role" id="mobileNavRole">NEET Aspirant</div>
-            </div>
-          </div>
-          <div class="mobile-user-actions">
-            <button type="button" class="mobile-action-btn" onclick="navDashboardClick()"><span class="m-icon">📊</span><span>Dashboard</span></button>
-            <button type="button" class="mobile-action-btn" onclick="navProfileClick()"><span class="m-icon">👤</span><span>Profile</span></button>
-            <button type="button" class="mobile-action-btn mobile-logout-btn" onclick="navLogoutClick()"><span class="m-icon">🚪</span><span>Logout</span></button>
-          </div>
+        <div class="mobile-user-actions">
+          <button type="button" class="mobile-action-btn" onclick="navDashboardClick()"><span class="m-icon">📊</span><span>Dashboard</span></button>
+          <button type="button" class="mobile-action-btn" onclick="navProfileClick()"><span class="m-icon">👤</span><span>Profile</span></button>
+          <button type="button" class="mobile-action-btn mobile-logout-btn" onclick="navLogoutClick()"><span class="m-icon">🚪</span><span>Logout</span></button>
         </div>
       </div>
-  </header>
+    </div>
+  </div>
 
   <!-- Fixed Mobile Bottom Navigation Bar (max-width: 768px) -->
   <nav class="mobile-bottom-nav" id="mobileBottomNav" aria-label="Mobile Navigation">
@@ -2392,7 +2410,6 @@
 
       <div class="gate-switch-link" style="margin-top:16px;">
         <a href="javascript:void(0)" onclick="backToSignInFromReset()">Back to Sign In</a>
-      </div>
     </div>
   </main>
 
@@ -2526,27 +2543,32 @@
 
       <!-- Quick Action Tools for Students -->
       <div class="kpi-grid">
-        <div class="kpi-card" onclick="openStudentSection('schedule')" style="cursor:pointer">
+        <div class="kpi-card" onclick="openStudentSection('schedule')" style="cursor:pointer" id="kpiCardSchedule" role="button" tabindex="0">
           <div class="kpi-label">📅 Test Schedule</div>
-          <div class="kpi-value" id="studentTestCount">3</div>
+          <div class="kpi-value" id="studentTestCount">0</div>
           <div class="kpi-desc">Chapter mock tests</div>
         </div>
-        <div class="kpi-card" onclick="openStudentSection('library')" style="cursor:pointer">
+        <div class="kpi-card" onclick="openStudentSection('library')" style="cursor:pointer" id="kpiCardLibrary" role="button" tabindex="0">
           <div class="kpi-label">📚 Notes & Videos</div>
           <div class="kpi-value" id="studentResourceCount">0</div>
           <div class="kpi-desc">PDFs & recorded lectures</div>
         </div>
-        <div class="kpi-card" onclick="openStudentSection('results')" style="cursor:pointer">
+        <div class="kpi-card" onclick="openStudentSection('results')" style="cursor:pointer" id="kpiCardResults" role="button" tabindex="0">
           <div class="kpi-label">📊 My Results</div>
           <div class="kpi-value" id="studentAttemptCount">0</div>
           <div class="kpi-desc">Test score breakdown</div>
         </div>
-        <div class="kpi-card" onclick="openStudentSection('community')" style="cursor:pointer">
+        <div class="kpi-card" onclick="openStudentSection('community')" style="cursor:pointer" id="kpiCardCommunity" role="button" tabindex="0">
           <div class="kpi-label">💬 Community Chat</div>
           <div class="kpi-value">Active</div>
           <div class="kpi-desc">Ask doubts with peers</div>
         </div>
-        <div class="kpi-card" onclick="openStudentSection('calendar')" style="cursor:pointer">
+        <div class="kpi-card" onclick="openStudentSection('live')" style="cursor:pointer" id="kpiCardLive" role="button" tabindex="0">
+          <div class="kpi-label">🎥 Live Classes</div>
+          <div class="kpi-value" id="studentLiveCardValue">Off-Air</div>
+          <div class="kpi-desc" id="studentLiveCardDesc">Interactive doubt sessions</div>
+        </div>
+        <div class="kpi-card" onclick="openStudentSection('calendar')" style="cursor:pointer" id="kpiCardCalendar" role="button" tabindex="0">
           <div class="kpi-label">🗓️ Study Calendar</div>
           <div class="kpi-value">Planner</div>
           <div class="kpi-desc">Daily revision goals</div>
@@ -3337,6 +3359,105 @@
       <input id="resourceFile" type="file" accept="application/pdf,video/mp4,video/webm,video/quicktime">
       <button style="margin-top:15px;width:100%" onclick="uploadResource()">Upload Material</button>
     </div>
+  </div>
+
+  <!-- Dedicated Community Chat Modal -->
+  <div class="modal" id="communityModal" onclick="if(event.target===this)hide('communityModal')">
+    <div class="box chat-box" id="communityBox" style="max-width:760px;width:100%;padding:0;overflow:hidden;">
+      <div class="chat-modal-box">
+        <div class="chat-header">
+          <div>
+            <h3>💬 NEET Community Chat</h3>
+            <span class="chat-header-status">Respectful Doubts & Discussion</span>
+          </div>
+          <button type="button" class="close" onclick="hide('communityModal');if(typeof setActiveNavLink==='function')setActiveNavLink('home')" style="position:static" aria-label="Close Chat">✕</button>
+        </div>
+        <div class="chat-guideline">
+          Ask doubts directly, reply to discuss concepts, attach questions, and support fellow NEET aspirants.
+        </div>
+        <div class="chat-feed" id="chatFeed">
+          <div class="skeleton-card" style="padding:14px;margin-bottom:8px">
+            <div class="skeleton-line title" style="width:40%"></div>
+            <div class="skeleton-line text" style="width:75%"></div>
+          </div>
+          <div class="skeleton-card" style="padding:14px;margin-bottom:8px">
+            <div class="skeleton-line title" style="width:35%"></div>
+            <div class="skeleton-line text" style="width:85%"></div>
+          </div>
+        </div>
+        <div class="chat-composer-wrap">
+          <div id="replyTargetBar" style="display:none" class="chat-reply-target-bar">
+            <span id="replyTargetText"></span>
+            <button type="button" class="chat-reply-cancel-btn" onclick="cancelReply()">✕</button>
+          </div>
+          <div id="imagePreviewBar" style="display:none" class="chat-image-preview-bar">
+            <img id="imagePreviewThumb" class="chat-image-preview-thumb" src="" alt="Selected image">
+            <span id="imagePreviewName" class="chat-image-preview-name"></span>
+            <button type="button" class="chat-reply-cancel-btn" onclick="clearSelectedImage()">✕</button>
+          </div>
+          <div class="chat-input-row">
+            <textarea id="chatInput" class="chat-textarea" placeholder="Type your doubt or question... (Enter to send, Shift+Enter for newline)"></textarea>
+            <input type="file" id="chatFileInput" accept="image/jpeg,image/png,image/webp,image/gif" style="display:none">
+            <button type="button" class="chat-attach-btn" onclick="$('chatFileInput').click()" title="Attach image (JPG, PNG, WebP, GIF)">📷</button>
+            <button type="button" class="chat-send-btn" id="chatSendBtn" onclick="sendChatMessage()">Send ➤</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dedicated Live Classes & Broadcast Modal -->
+  <div class="modal" id="liveModal" onclick="if(event.target===this)hide('liveModal')">
+    <div class="box" id="liveBox" style="max-width:680px">
+      <button type="button" class="close" onclick="hide('liveModal');if(typeof setActiveNavLink==='function')setActiveNavLink('home')" aria-label="Close Live Classes">✕</button>
+      <div id="liveModalContent">
+        <!-- Populated dynamically by liveClassesOpen() -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Dedicated Study Calendar Modal -->
+  <div class="modal" id="calendarModal" onclick="if(event.target===this)hide('calendarModal')">
+    <div class="box" id="calendarBox" style="max-width:680px">
+      <button type="button" class="close" onclick="hide('calendarModal');if(typeof setActiveNavLink==='function')setActiveNavLink('home')" aria-label="Close Study Calendar">✕</button>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+        <span style="font-size:24px">🗓️</span>
+        <div>
+          <h2 style="margin:0;font-size:20px;font-weight:800;color:var(--text-primary)">NEET Study Calendar & Planner</h2>
+          <small style="color:var(--text-muted)">Plan daily revision goals, mock timings & chapter targets.</small>
+        </div>
+      </div>
+      <div class="panel formgrid" style="margin-top:16px;background:#fcfcfb">
+        <div class="wide">
+          <label style="margin-top:0">Study Topic or Chapter Goal</label>
+          <input id="planTitle" placeholder="e.g. Biology: Photosynthesis & Calvin Cycle Notes">
+        </div>
+        <div>
+          <label>Subject</label>
+          <select id="planSubject">
+            <option>Biology</option>
+            <option>Chemistry</option>
+            <option>Physics</option>
+            <option>General Revision</option>
+          </select>
+        </div>
+        <div>
+          <label>Target Date & Time</label>
+          <input id="planStart" type="datetime-local">
+        </div>
+        <div class="wide" style="margin-top:8px">
+          <button style="width:100%;font-weight:700" onclick="if(typeof savePlan==='function')savePlan()">+ Add Study Target to Calendar</button>
+        </div>
+      </div>
+      <div class="section-head" style="margin:24px 0 12px">
+        <h3 style="margin:0;font-size:17px">Scheduled Study Sessions</h3>
+      </div>
+      <div id="planList">
+        <div class="skeleton-card"><div class="skeleton-line title" style="width:50%"></div><div class="skeleton-line text" style="width:80%"></div></div>
+      </div>
+    </div>
+  </div>
+
   <!-- About PN Neet Diw Modal -->
   <div class="modal" id="aboutModal">
     <div class="box" style="max-width:540px;border-radius:20px;">
@@ -3438,6 +3559,7 @@
     function saveSession(tok, usr) {
       token = tok || '';
       user = usr || null;
+      if (user && !user.role) user.role = 'student';
       try {
         if (tok) {
           localStorage.setItem('token', tok);
@@ -3446,8 +3568,8 @@
           localStorage.removeItem('token');
           sessionStorage.removeItem('token');
         }
-        if (usr) {
-          const serialized = JSON.stringify(usr);
+        if (user) {
+          const serialized = JSON.stringify(user);
           localStorage.setItem('user', serialized);
           sessionStorage.setItem('user', serialized);
         } else {
@@ -3459,7 +3581,7 @@
       }
     }
 
-    // Detect active authenticated Supabase session on every page and after page refresh
+    // Detect active authenticated Supabase/Local session on every page and after page refresh
     function detectActiveSession() {
       let tok = '';
       let usr = null;
@@ -3490,8 +3612,8 @@
                   tok = tok || sbToken;
                   usr = usr || {
                     id: sbUser.id,
-                    name: sbUser.user_metadata?.full_name || sbUser.user_metadata?.name || (sbUser.email ? sbUser.email.split('@')[0] : 'User'),
-                    email: sbUser.email,
+                    name: sbUser.user_metadata?.full_name || sbUser.user_metadata?.name || (sbUser.email ? sbUser.email.split('@')[0] : 'Student'),
+                    email: sbUser.email || '',
                     role: sbUser.user_metadata?.role || 'student',
                     avatar: sbUser.user_metadata?.avatar_url || null
                   };
@@ -3502,8 +3624,28 @@
         } catch (_) {}
       }
 
+      // Fallback 2: Decode JWT token payload if token exists but user object was cleared
+      if (tok && (!usr || !usr.id)) {
+        try {
+          const parts = tok.split('.');
+          if (parts.length === 3) {
+            const decoded = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')));
+            if (decoded && (decoded.id || decoded.sub || decoded.email)) {
+              usr = {
+                id: decoded.id || decoded.sub,
+                name: decoded.name || decoded.user_metadata?.full_name || (decoded.email ? decoded.email.split('@')[0] : 'Student'),
+                email: decoded.email || '',
+                role: decoded.role || decoded.user_metadata?.role || 'student',
+                avatar: decoded.avatar || decoded.user_metadata?.avatar_url || null
+              };
+            }
+          }
+        } catch (_) {}
+      }
+
       if (tok && usr) {
         token = tok;
+        if (!usr.role) usr.role = 'student';
         user = usr;
         saveSession(tok, usr);
         return true;
@@ -3518,15 +3660,15 @@
       if (!token || !user) {
         detectActiveSession();
       }
-      return !!(token && user && user.id);
+      return !!(token && user && (user.id || user.email));
     }
 
     const $ = id => document.getElementById(id),
-          show = id => $(id).classList.add('show'),
-          hide = id => $(id).classList.remove('show'),
+          show = id => { const el = $(id); if (el) el.classList.add('show'); },
+          hide = id => { const el = $(id); if (el) el.classList.remove('show'); },
           esc = s => String(s || '').replace(/[&<>]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[c]));
 
-    // Central shared API base URL configuration:
+    // Central shared API base URL configuration
     function getApiBaseUrl() {
       const DEFAULT_PROD_URL = 'https://pnneet-api.onrender.com';
       let candidate = (
@@ -3563,14 +3705,108 @@
       }
     }
 
-    // Server wakeup modal controls
+    // Non-blocking Backend Waking Banner & Cold Start Handling
+    let backendIsWaking = false;
+    let backendTimerSec = 50;
+    let backendTimerInterval = null;
+    const pendingPageRefreshers = new Set();
+
+    function showBackendWakingBanner(reason) {
+      hideInitialLoader();
+      console.warn('[Backend Waking Banner]:', reason);
+      const banner = $('backendWakingBanner');
+      if (!banner) return;
+
+      if (!backendIsWaking) {
+        backendIsWaking = true;
+        backendTimerSec = 50;
+        const timerEl = $('backendWakingTimer');
+        if (timerEl) timerEl.textContent = '(est. ~' + backendTimerSec + 's)';
+        if (backendTimerInterval) clearInterval(backendTimerInterval);
+        backendTimerInterval = setInterval(() => {
+          backendTimerSec--;
+          if (backendTimerSec > 0) {
+            if (timerEl) timerEl.textContent = '(est. ~' + backendTimerSec + 's)';
+          } else {
+            if (timerEl) timerEl.textContent = '(checking server...)';
+          }
+        }, 1000);
+      }
+      banner.style.display = 'block';
+    }
+
+    function hideBackendWakingBanner() {
+      backendIsWaking = false;
+      if (backendTimerInterval) {
+        clearInterval(backendTimerInterval);
+        backendTimerInterval = null;
+      }
+      const banner = $('backendWakingBanner');
+      if (banner) banner.style.display = 'none';
+    }
+
+    function dismissWakingBanner() {
+      const banner = $('backendWakingBanner');
+      if (banner) banner.style.display = 'none';
+    }
+
+    function onBackendAwake() {
+      hideBackendWakingBanner();
+      dismissWakeupScreen();
+      console.log('[Backend Awake]: Auto-refreshing pending view data...');
+
+      if (pendingPageRefreshers.has('tests') || pendingPageRefreshers.has('dashboard')) {
+        loadStudentDashboard(true);
+      }
+      if (pendingPageRefreshers.has('resources') && $('library')?.classList.contains('show')) {
+        libraryOpen(true);
+      }
+      if (pendingPageRefreshers.has('results') && $('results')?.classList.contains('show')) {
+        resultsOpen(true);
+      }
+      if (pendingPageRefreshers.has('live') && $('liveModal')?.classList.contains('show')) {
+        liveClassesOpen(true);
+      }
+      if (pendingPageRefreshers.has('community') && $('communityModal')?.classList.contains('show')) {
+        if (typeof loadChatMessages === 'function') loadChatMessages();
+      }
+      pendingPageRefreshers.clear();
+    }
+
+    async function pingBackendHealth() {
+      try {
+        const res = await fetch(API_BASE_URL + '/api/health', {
+          method: 'GET',
+          headers: { 'Accept': 'application/json' },
+          cache: 'no-store'
+        });
+        if (res.ok) {
+          onBackendAwake();
+          return true;
+        }
+      } catch (_) {}
+      return false;
+    }
+
+    async function manualBackendRetry() {
+      const btn = $('bannerRetryBtn');
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'Checking...';
+      }
+      const ok = await pingBackendHealth();
+      if (!ok && user?.role === 'student') {
+        loadStudentDashboard(true);
+      }
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = 'Retry ↻';
+      }
+    }
+
     function triggerServerWakeupScreen(endpoint, reason) {
       hideInitialLoader();
-      console.warn(`[Server Wakeup] Triggered on endpoint: ${endpoint}. Reason: ${reason}`);
-      const screen = $('serverWakeupScreen');
-      const label = $('wakeupEndpointLabel');
-      if (label) label.textContent = endpoint || `${API_BASE_URL}/api/health`;
-      if (screen) screen.style.display = 'flex';
+      showBackendWakingBanner(reason || 'Server cold start');
     }
 
     function dismissWakeupScreen() {
@@ -3584,23 +3820,16 @@
       if (btn) btn.disabled = true;
       if (label) label.textContent = 'Pinging server...';
 
-      try {
-        const res = await fetch(`${API_BASE_URL}/api/health`, {
-          method: 'GET',
-          headers: { 'Accept': 'application/json' }
-        });
-        if (res.ok) {
-          if (label) label.textContent = 'Server is online! ✓';
-          setTimeout(() => {
-            dismissWakeupScreen();
-            if (btn) btn.disabled = false;
-            if (label) label.textContent = 'Retry Connection ↻';
-            applyViewState();
-          }, 600);
-          return;
-        }
-      } catch (err) {
-        console.warn('[Server Ping] Still waking up...', err);
+      const ok = await pingBackendHealth();
+      if (ok) {
+        if (label) label.textContent = 'Server is online! ✓';
+        setTimeout(() => {
+          dismissWakeupScreen();
+          if (btn) btn.disabled = false;
+          if (label) label.textContent = 'Retry Connection ↻';
+          applyViewState();
+        }, 500);
+        return;
       }
 
       if (label) label.textContent = 'Still warming up... retry in 10s';
@@ -3610,100 +3839,100 @@
       }, 3500);
     }
 
+    // Auto-retrying API helper with safe exponential backoff
     async function api(path, opt = {}) {
       const cleanPath = String(path).replace(/^\/?(api\/)?/, '');
-      const endpoint = `${API_BASE_URL}/api/${cleanPath}`;
-      const timeoutMs = opt.timeout || 15000; // 15-second timeout on requests
+      const endpoint = API_BASE_URL + '/api/' + cleanPath;
+      const isGet = !opt.method || opt.method.toUpperCase() === 'GET';
+      const maxRetries = (opt.maxRetries !== undefined) ? opt.maxRetries : (isGet ? 3 : 0);
+      const baseTimeoutMs = opt.timeout || 12000;
 
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => {
-        controller.abort();
-      }, timeoutMs);
+      let attempt = 0;
+      while (true) {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), baseTimeoutMs);
 
-      let r;
-      try {
-        r = await fetch(endpoint, {
-          ...opt,
-          signal: controller.signal,
-          headers: {
-            ...(opt.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }),
-            ...(token ? { Authorization: 'Bearer ' + token } : {}),
-            ...(opt.headers || {})
-          }
-        });
-      } catch (netErr) {
-        clearTimeout(timeoutId);
-        console.error(`[API Error] Failed to fetch "${cleanPath}" from ${endpoint}:`, netErr);
-        if (netErr.name === 'AbortError') {
-          triggerServerWakeupScreen(endpoint, `Request timed out after ${timeoutMs / 1000} seconds`);
-          throw new Error(`Request to "/api/${cleanPath}" timed out. Render backend may be waking up.`);
-        }
-        triggerServerWakeupScreen(endpoint, netErr.message);
-        throw new Error(`Unable to connect to backend server at ${endpoint}. Please wait a moment and try again.`);
-      } finally {
-        clearTimeout(timeoutId);
-      }
-
-      const contentType = (r.headers.get('content-type') || '').toLowerCase();
-      let d = null;
-      let rawText = '';
-
-      // Check Content-Type BEFORE attempting to parse JSON
-      if (contentType.includes('application/json')) {
         try {
-          d = await r.json();
-        } catch (_) {
-          d = null;
-        }
-      } else {
-        try {
-          rawText = await r.text();
-        } catch (_) {
-          rawText = '';
-        }
-      }
-
-      // Check response.ok
-      if (!r.ok) {
-        console.error(`[API Error] HTTP ${r.status} on endpoint: ${endpoint}`, { contentType, rawText, d });
-        if (r.status === 401) {
-          logoutUser();
-        }
-
-        let errMsg = d?.error || d?.message;
-        if (!errMsg) {
-          if (contentType.includes('text/html') || rawText.includes('<!DOCTYPE') || rawText.includes('<html')) {
-            if (r.status === 404) {
-              errMsg = 'API endpoint not found (404). Please ensure the backend server is deployed on Render.';
-            } else if (r.status === 502 || r.status === 503 || r.status === 504) {
-              triggerServerWakeupScreen(endpoint, `Backend returned HTTP ${r.status}`);
-              errMsg = 'Backend server is currently starting up (Render cold start). Please wait ~30 seconds and try again.';
-            } else {
-              errMsg = `Backend returned an HTML error (${r.status} ${r.statusText || 'Error'}). Please try again shortly.`;
+          const r = await fetch(endpoint, {
+            ...opt,
+            signal: controller.signal,
+            headers: {
+              ...(opt.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }),
+              ...(token ? { Authorization: 'Bearer ' + token } : {}),
+              ...(opt.headers || {})
             }
-          } else if (rawText && rawText.length < 200) {
-            errMsg = rawText.trim();
-          } else {
-            errMsg = `Request failed with status ${r.status} (${r.statusText || 'Error'}).`;
+          });
+          clearTimeout(timeoutId);
+
+          if ([502, 503, 504].includes(r.status)) {
+            showBackendWakingBanner('Backend server waking up (HTTP ' + r.status + ')');
+            pendingPageRefreshers.add(cleanPath);
+            if (attempt < maxRetries) {
+              attempt++;
+              const delay = Math.min(1200 * Math.pow(1.8, attempt), 7000);
+              await new Promise(res => setTimeout(res, delay));
+              continue;
+            }
+            throw new Error('Backend server is currently starting up (Render cold start). Please wait ~30-50 seconds.');
           }
-        }
-        throw new Error(errMsg);
-      }
 
-      // Successful HTTP status (200-299)
-      if (d === null) {
-        if (r.status === 204 || !rawText) {
-          return { ok: true };
-        }
-        try {
-          d = JSON.parse(rawText);
-        } catch (_) {
-          console.error(`[API Error] Non-JSON payload received from ${endpoint}:`, rawText);
-          throw new Error('Received an unexpected non-JSON response from the server.');
+          const contentType = (r.headers.get('content-type') || '').toLowerCase();
+          let d = null;
+          let rawText = '';
+
+          if (contentType.includes('application/json')) {
+            try { d = await r.json(); } catch (_) { d = null; }
+          } else {
+            try { rawText = await r.text(); } catch (_) { rawText = ''; }
+          }
+
+          if (!r.ok) {
+            if (r.status === 401 && !cleanPath.includes('health')) {
+              // Genuine auth rejection from backend
+              console.warn('[API Auth 401]: Access token expired or invalid.');
+              logoutUser();
+            }
+
+            let errMsg = d?.error || d?.message;
+            if (!errMsg) {
+              if (contentType.includes('text/html') || rawText.includes('<!DOCTYPE') || rawText.includes('<html')) {
+                showBackendWakingBanner('Backend warming up');
+                errMsg = 'Backend server is initializing. Please wait up to 50 seconds.';
+              } else {
+                errMsg = rawText || ('Request failed (' + r.status + ').');
+              }
+            }
+            throw new Error(errMsg);
+          }
+
+          // Successful response
+          hideBackendWakingBanner();
+          dismissWakeupScreen();
+
+          if (d === null) {
+            if (r.status === 204 || !rawText) return { ok: true };
+            try { d = JSON.parse(rawText); } catch (_) { return { raw: rawText }; }
+          }
+          return d;
+
+        } catch (err) {
+          clearTimeout(timeoutId);
+          const isAbort = err.name === 'AbortError';
+          const isNetError = isAbort || (err.message && (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')));
+
+          if (isNetError) {
+            showBackendWakingBanner('Backend connection waking up');
+            pendingPageRefreshers.add(cleanPath);
+            if (attempt < maxRetries) {
+              attempt++;
+              const delay = Math.min(1500 * Math.pow(1.8, attempt), 7000);
+              await new Promise(res => setTimeout(res, delay));
+              continue;
+            }
+          }
+          throw err;
         }
       }
-
-      return d;
     }
 
     function formatAvatarUrl(url) {
@@ -4493,9 +4722,14 @@
     // RESPONSIVE NAVBAR CONTROLLER & NAVIGATION
     // =========================================================================
     let currentActiveNav = 'home';
+    let currentUnderlyingPage = 'home';
 
     function setActiveNavLink(dest) {
       currentActiveNav = dest || 'home';
+      if (!['results', 'notes', 'library', 'community', 'live', 'calendar', 'profile'].includes(dest)) {
+        currentUnderlyingPage = dest || 'home';
+      }
+
       const allNavButtons = document.querySelectorAll('.nav-link-btn, .mobile-nav-link');
       allNavButtons.forEach(btn => {
         const isTarget = btn.getAttribute('data-nav') === currentActiveNav;
@@ -4519,7 +4753,7 @@
       });
     }
 
-    // Requirement 2: Role-aware bottom navigation
+    // Role-aware bottom navigation
     function renderBottomNav() {
       const nav = $('mobileBottomNav');
       if (!nav) return;
@@ -4530,9 +4764,8 @@
       let itemsHtml = '';
 
       if (!loggedIn) {
-        // Logged-out visitor: Home, Practice, Tests, Results, Sign In
         itemsHtml = `
-          <button type="button" class="bottom-nav-item" data-bottom-nav="home" onclick="bottomNavGoTo('home')" aria-label="Home">
+          <button type="button" class="bottom-nav-item active" data-bottom-nav="home" onclick="bottomNavGoTo('home')" aria-label="Home">
             <span class="bottom-nav-icon">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
             </span>
@@ -4569,7 +4802,6 @@
           </button>
         `;
       } else if (role === 'admin') {
-        // Logged-in admin: Admin Dashboard, Students, Tests, Questions, Profile
         itemsHtml = `
           <button type="button" class="bottom-nav-item" data-bottom-nav="admin-dashboard" onclick="bottomNavGoTo('admin-dashboard')" aria-label="Admin Dashboard" title="Admin Dashboard">
             <span class="bottom-nav-icon">
@@ -4608,7 +4840,6 @@
           </button>
         `;
       } else if (role === 'teacher') {
-        // Logged-in teacher: Home, Live Class, Library, Community, Profile
         itemsHtml = `
           <button type="button" class="bottom-nav-item" data-bottom-nav="home" onclick="bottomNavGoTo('home')" aria-label="Home">
             <span class="bottom-nav-icon">
@@ -4649,7 +4880,7 @@
       } else {
         // Logged-in student: Home, Practice, Tests, Results, Profile
         itemsHtml = `
-          <button type="button" class="bottom-nav-item" data-bottom-nav="home" onclick="bottomNavGoTo('home')" aria-label="Home">
+          <button type="button" class="bottom-nav-item active" data-bottom-nav="home" onclick="bottomNavGoTo('home')" aria-label="Home">
             <span class="bottom-nav-icon">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
             </span>
@@ -4694,7 +4925,6 @@
     function bottomNavGoTo(dest) {
       closeMobileNav();
       closeUserMenu();
-      setActiveNavLink(dest);
       const isAuthed = isLoggedIn();
 
       if (dest === 'signin') {
@@ -4702,7 +4932,6 @@
         return;
       }
 
-      // Requirement 3: The Profile item must open the logged-in user’s profile/account page, never the login page.
       if (dest === 'profile') {
         if (isAuthed) {
           openProfileModal();
@@ -4723,55 +4952,122 @@
 
       if (dest === 'admin-students') {
         closeAllOverlays();
-        if (user?.role === 'admin') {
-          openAdminSection('accounts');
-        }
+        if (user?.role === 'admin') openAdminSection('accounts');
         return;
       }
 
       if (dest === 'admin-tests') {
         closeAllOverlays();
-        if (user?.role === 'admin') {
-          openAdminSection('tests');
-        }
+        if (user?.role === 'admin') openAdminSection('tests');
         return;
       }
 
       if (dest === 'admin-questions') {
         closeAllOverlays();
-        if (user?.role === 'admin') {
-          openAdminSection('questions');
-        }
+        if (user?.role === 'admin') openAdminSection('questions');
         return;
       }
 
       if (dest === 'live') {
-        closeAllOverlays();
         if (user?.role === 'teacher') {
+          closeAllOverlays();
           scrollToSection('teacherLiveActiveArea');
+        } else {
+          liveClassesOpen();
         }
         return;
       }
 
-      if (dest === 'library') {
-        closeAllOverlays();
+      if (dest === 'library' || dest === 'notes') {
         libraryOpen();
         return;
       }
 
       if (dest === 'community') {
-        closeAllOverlays();
-        if (typeof window.communityOpen === 'function') {
-          window.communityOpen();
-        }
+        communityOpen();
+        return;
+      }
+
+      if (dest === 'results') {
+        resultsOpen();
         return;
       }
 
       navGoTo(dest);
     }
 
+    // Dynamic Mobile Navigation Drawer List
+    function renderMobileNavList() {
+      const list = $('mobileNavList');
+      if (!list) return;
+
+      const loggedIn = isLoggedIn();
+      const role = user?.role || 'student';
+
+      if (!loggedIn) {
+        list.innerHTML = `
+          <li><button type="button" class="mobile-nav-link" data-nav="home" onclick="navGoTo('home')"><span class="m-icon">🏠</span><span>Dashboard / Home</span></button></li>
+          <li><button type="button" class="mobile-nav-link" data-nav="practice" onclick="navGoTo('practice')"><span class="m-icon">🎯</span><span>Practice</span></button></li>
+          <li><button type="button" class="mobile-nav-link" data-nav="mock-tests" onclick="navGoTo('mock-tests')"><span class="m-icon">📝</span><span>Mock Tests</span></button></li>
+          <li><button type="button" class="mobile-nav-link" data-nav="results" onclick="navGoTo('results')"><span class="m-icon">📊</span><span>Results</span></button></li>
+          <li><button type="button" class="mobile-nav-link" data-nav="notes" onclick="navGoTo('notes')"><span class="m-icon">📚</span><span>Notes &amp; Videos</span></button></li>
+          <li><button type="button" class="mobile-nav-link" data-nav="community" onclick="navGoTo('community')"><span class="m-icon">💬</span><span>Community Chat</span></button></li>
+          <li><button type="button" class="mobile-nav-link" data-nav="live" onclick="navGoTo('live')"><span class="m-icon">🎥</span><span>Live Classes</span></button></li>
+          <li><button type="button" class="mobile-nav-link" data-nav="calendar" onclick="navGoTo('calendar')"><span class="m-icon">🗓️</span><span>Study Calendar</span></button></li>
+          <li><button type="button" class="mobile-nav-link" data-nav="profile" onclick="navGoTo('profile')"><span class="m-icon">👤</span><span>Profile</span></button></li>
+          <li style="margin-top:6px;border-top:1px solid #e2e8f0;padding-top:6px;">
+            <button type="button" class="mobile-nav-link" onclick="navSignInClick()" style="color:var(--primary);"><span class="m-icon">🔑</span><span>Sign In</span></button>
+          </li>
+        `;
+        setActiveNavLink(currentActiveNav);
+        return;
+      }
+
+      if (role === 'student') {
+        list.innerHTML = `
+          <li><button type="button" class="mobile-nav-link" data-nav="home" onclick="navGoTo('home')"><span class="m-icon">🏠</span><span>Dashboard / Home</span></button></li>
+          <li><button type="button" class="mobile-nav-link" data-nav="practice" onclick="navGoTo('practice')"><span class="m-icon">🎯</span><span>Practice</span></button></li>
+          <li><button type="button" class="mobile-nav-link" data-nav="mock-tests" onclick="navGoTo('mock-tests')"><span class="m-icon">📝</span><span>Mock Tests</span></button></li>
+          <li><button type="button" class="mobile-nav-link" data-nav="results" onclick="navGoTo('results')"><span class="m-icon">📊</span><span>Results</span></button></li>
+          <li><button type="button" class="mobile-nav-link" data-nav="notes" onclick="navGoTo('notes')"><span class="m-icon">📚</span><span>Notes &amp; Videos</span></button></li>
+          <li><button type="button" class="mobile-nav-link" data-nav="community" onclick="navGoTo('community')"><span class="m-icon">💬</span><span>Community Chat</span></button></li>
+          <li><button type="button" class="mobile-nav-link" data-nav="live" onclick="navGoTo('live')"><span class="m-icon">🎥</span><span>Live Classes</span><span class="live-pulse-dot" id="mobileNavLivePulse" style="display:none;margin-left:auto"></span></button></li>
+          <li><button type="button" class="mobile-nav-link" data-nav="calendar" onclick="navGoTo('calendar')"><span class="m-icon">🗓️</span><span>Study Calendar</span></button></li>
+          <li><button type="button" class="mobile-nav-link" data-nav="profile" onclick="navGoTo('profile')"><span class="m-icon">👤</span><span>Profile</span></button></li>
+          <li style="margin-top:6px;border-top:1px solid #e2e8f0;padding-top:6px;">
+            <button type="button" class="mobile-nav-link mobile-logout-link" onclick="navLogoutClick()" style="color:#ef4444;"><span class="m-icon">🚪</span><span>Logout</span></button>
+          </li>
+        `;
+      } else if (role === 'teacher') {
+        list.innerHTML = `
+          <li><button type="button" class="mobile-nav-link" data-nav="home" onclick="navGoTo('home')"><span class="m-icon">🏠</span><span>Home</span></button></li>
+          <li><button type="button" class="mobile-nav-link" data-nav="live" onclick="navGoTo('live')"><span class="m-icon">🎥</span><span>Live Classroom</span></button></li>
+          <li><button type="button" class="mobile-nav-link" data-nav="notes" onclick="navGoTo('notes')"><span class="m-icon">📚</span><span>Study Materials</span></button></li>
+          <li><button type="button" class="mobile-nav-link" data-nav="community" onclick="navGoTo('community')"><span class="m-icon">💬</span><span>Community Chat</span></button></li>
+          <li><button type="button" class="mobile-nav-link" data-nav="profile" onclick="navGoTo('profile')"><span class="m-icon">👤</span><span>Profile</span></button></li>
+          <li style="margin-top:6px;border-top:1px solid #e2e8f0;padding-top:6px;">
+            <button type="button" class="mobile-nav-link mobile-logout-link" onclick="navLogoutClick()" style="color:#ef4444;"><span class="m-icon">🚪</span><span>Logout</span></button>
+          </li>
+        `;
+      } else if (role === 'admin') {
+        list.innerHTML = `
+          <li><button type="button" class="mobile-nav-link" data-nav="admin" onclick="navGoTo('admin')"><span class="m-icon">🛡️</span><span>Admin Dashboard</span></button></li>
+          <li><button type="button" class="mobile-nav-link" data-nav="mock-tests" onclick="navGoTo('mock-tests')"><span class="m-icon">📝</span><span>Manage Tests</span></button></li>
+          <li><button type="button" class="mobile-nav-link" data-nav="notes" onclick="navGoTo('notes')"><span class="m-icon">📚</span><span>Study Materials</span></button></li>
+          <li><button type="button" class="mobile-nav-link" data-nav="results" onclick="navGoTo('results')"><span class="m-icon">📊</span><span>Results</span></button></li>
+          <li><button type="button" class="mobile-nav-link" data-nav="community" onclick="navGoTo('community')"><span class="m-icon">💬</span><span>Community Moderation</span></button></li>
+          <li><button type="button" class="mobile-nav-link" data-nav="live" onclick="navGoTo('live')"><span class="m-icon">🎥</span><span>Live Stream Hub</span></button></li>
+          <li><button type="button" class="mobile-nav-link" data-nav="profile" onclick="navGoTo('profile')"><span class="m-icon">👤</span><span>Profile</span></button></li>
+          <li style="margin-top:6px;border-top:1px solid #e2e8f0;padding-top:6px;">
+            <button type="button" class="mobile-nav-link mobile-logout-link" onclick="navLogoutClick()" style="color:#ef4444;"><span class="m-icon">🚪</span><span>Logout</span></button>
+          </li>
+        `;
+      }
+      setActiveNavLink(currentActiveNav);
+    }
+
     function updateNavbarState() {
-      const isLoggedIn = !!(token && user);
+      const loggedIn = isLoggedIn();
       const loggedOutActions = $('navLoggedOutActions');
       const loggedInActions = $('navLoggedInActions');
       const mobileLoggedOut = $('mobileLoggedOutSection');
@@ -4779,12 +5075,14 @@
       const desktopAdminItem = $('desktopAdminItem');
       const mobileAdminItem = $('mobileAdminItem');
 
-      const isAdmin = isLoggedIn && user && user.role === 'admin';
+      const isAdmin = loggedIn && user && user.role === 'admin';
 
       if (desktopAdminItem) desktopAdminItem.style.display = isAdmin ? 'inline-block' : 'none';
       if (mobileAdminItem) mobileAdminItem.style.display = isAdmin ? 'block' : 'none';
 
-      if (!isLoggedIn) {
+      renderMobileNavList();
+
+      if (!loggedIn) {
         if (loggedOutActions) loggedOutActions.style.display = 'flex';
         if (loggedInActions) loggedInActions.style.display = 'none';
         if (mobileLoggedOut) mobileLoggedOut.style.display = 'flex';
@@ -4821,7 +5119,8 @@
       }
     }
 
-    function toggleMobileNav() {
+    function toggleMobileNav(e) {
+      if (e && e.stopPropagation) e.stopPropagation();
       const drawer = $('mobileNavDrawer');
       const backdrop = $('mobileNavBackdrop');
       const btn = $('hamburgerBtn');
@@ -4831,6 +5130,7 @@
       if (isOpen) {
         closeMobileNav();
       } else {
+        renderMobileNavList();
         drawer.classList.add('open');
         if (backdrop) backdrop.classList.add('open');
         if (btn) {
@@ -4857,8 +5157,8 @@
     function navBrandClick() {
       closeMobileNav();
       closeUserMenu();
-      const isLoggedIn = !!(token && user);
-      if (!isLoggedIn) {
+      const isAuthed = isLoggedIn();
+      if (!isAuthed) {
         if ($('roleAuthContainer') && $('roleAuthContainer').style.display !== 'none') {
           backToRoleSelection();
         }
@@ -4876,9 +5176,9 @@
       closeUserMenu();
       setActiveNavLink(dest);
 
-      const isLoggedIn = !!(token && user);
+      const isAuthed = isLoggedIn();
 
-      if (!isLoggedIn) {
+      if (!isAuthed) {
         if ($('roleAuthContainer') && $('roleAuthContainer').style.display !== 'none') {
           backToRoleSelection();
         }
@@ -4890,50 +5190,59 @@
         } else if (dest === 'mock-tests') {
           const el = $('landingMockTests');
           if (el) el.scrollIntoView({ behavior: 'smooth' });
-        } else if (dest === 'results') {
-          const el = $('landingResults');
-          if (el) el.scrollIntoView({ behavior: 'smooth' });
         } else if (dest === 'about') {
           const el = $('landingAbout');
           if (el) el.scrollIntoView({ behavior: 'smooth' });
+        } else {
+          navSignInClick();
         }
         return;
       }
 
-      // Logged-in navigation
-      if (dest === 'home') {
+      // Logged-in routing
+      if (dest === 'home' || dest === 'dashboard') {
         closeAllOverlays();
+        if ($('dashboardMainArea')) $('dashboardMainArea').style.display = 'block';
+        if ($('studentDashboardView') && user?.role === 'student') $('studentDashboardView').style.display = 'block';
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else if (dest === 'practice') {
         closeAllOverlays();
-        if (user.role === 'admin') {
-          openAdminSection('tests');
-        } else if (user.role === 'teacher') {
-          scrollToSection('teacherLiveStartArea');
-        } else {
-          scrollToSchedule();
-        }
+        if ($('dashboardMainArea')) $('dashboardMainArea').style.display = 'block';
+        if ($('studentDashboardView') && user?.role === 'student') $('studentDashboardView').style.display = 'block';
+        if (user.role === 'admin') openAdminSection('tests');
+        else if (user.role === 'teacher') scrollToSection('teacherLiveStartArea');
+        else scrollToSchedule();
       } else if (dest === 'mock-tests') {
         closeAllOverlays();
-        if (user.role === 'admin') {
-          openAdminSection('tests');
-        } else {
-          scrollToSchedule();
-        }
+        if ($('dashboardMainArea')) $('dashboardMainArea').style.display = 'block';
+        if ($('studentDashboardView') && user?.role === 'student') $('studentDashboardView').style.display = 'block';
+        if (user.role === 'admin') openAdminSection('tests');
+        else scrollToSchedule();
       } else if (dest === 'results') {
-        closeAllOverlays();
+        resultsOpen();
+      } else if (dest === 'notes' || dest === 'library') {
+        libraryOpen();
+      } else if (dest === 'community') {
+        communityOpen();
+      } else if (dest === 'live') {
         if (user.role === 'admin') {
-          openAdminSection('results');
+          closeAllOverlays();
+          openAdminSection('live');
+        } else if (user.role === 'teacher') {
+          closeAllOverlays();
+          scrollToSection('teacherLiveActiveArea');
         } else {
-          resultsOpen();
+          liveClassesOpen();
         }
+      } else if (dest === 'calendar') {
+        calendarOpen();
+      } else if (dest === 'profile') {
+        openProfileModal();
       } else if (dest === 'about') {
         openAboutModal();
       } else if (dest === 'admin') {
         closeAllOverlays();
-        if (user.role === 'admin') {
-          scrollToSection('adminDashboardView');
-        }
+        if (user.role === 'admin') scrollToSection('adminDashboardView');
       }
     }
 
@@ -5007,38 +5316,12 @@
       hide('aboutModal');
     }
 
-    // ScrollSpy for Active Nav Link Highlighting
-    window.addEventListener('scroll', () => {
-      if (token && user) return;
-      const scrollPos = window.scrollY + 120;
-      const sections = [
-        { id: 'landingResults', nav: 'results' },
-        { id: 'landingMockTests', nav: 'mock-tests' },
-        { id: 'landingPractice', nav: 'practice' },
-        { id: 'landingAbout', nav: 'about' }
-      ];
-      for (const sec of sections) {
-        const el = document.getElementById(sec.id);
-        if (el) {
-          const top = el.offsetTop;
-          const height = el.offsetHeight;
-          if (scrollPos >= top && scrollPos < top + height) {
-            setActiveNavLink(sec.nav);
-            return;
-          }
-        }
-      }
-      if (window.scrollY < 200) {
-        setActiveNavLink('home');
-      }
-    }, { passive: true });
-
     // Keyboard & Click-Outside Handlers for Accessibility
     document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') {
+      if (e.key === 'Escape' || e.key === 'Esc') {
         closeMobileNav();
         closeUserMenu();
-        closeAboutModal();
+        closeAllOverlays();
       }
     });
 
@@ -5046,7 +5329,7 @@
       const drawer = $('mobileNavDrawer');
       const btn = $('hamburgerBtn');
       if (drawer && drawer.classList.contains('open')) {
-        if (!drawer.contains(e.target) && !btn.contains(e.target)) {
+        if (!drawer.contains(e.target) && !btn?.contains(e.target)) {
           closeMobileNav();
         }
       }
@@ -5058,34 +5341,213 @@
       }
     });
 
+    // Close all overlays & restore underlying active nav highlight
+    function closeAllOverlays() {
+      closeUserMenu();
+      closeMobileNav();
+      closeAdminControlsMenu();
+      closeAboutModal();
+      ['test', 'library', 'results', 'upload', 'profileModal', 'settingsModal', 'aboutModal', 'communityModal', 'liveModal', 'calendarModal'].forEach(hide);
+      if (currentUnderlyingPage) {
+        setActiveNavLink(currentUnderlyingPage);
+      } else {
+        setActiveNavLink('home');
+      }
+    }
+
     function openStudentSection(section) {
-      closeAllOverlays();
       if (user?.role !== 'student') return;
 
       if (section === 'schedule') {
+        closeAllOverlays();
         scrollToSchedule();
-      } else if (section === 'library') {
+        setActiveNavLink('mock-tests');
+      } else if (section === 'library' || section === 'notes') {
         libraryOpen();
       } else if (section === 'results') {
         resultsOpen();
       } else if (section === 'community') {
-        if (typeof window.communityOpen === 'function') {
-          window.communityOpen();
-        }
+        communityOpen();
+      } else if (section === 'live') {
+        liveClassesOpen();
       } else if (section === 'calendar') {
-        if (typeof window.calendarOpen === 'function') {
-          window.calendarOpen();
-        }
+        calendarOpen();
       } else if (section === 'help') {
-        if (typeof window.helpOpen === 'function') {
-          window.helpOpen();
-        }
+        if (typeof window.helpOpen === 'function') window.helpOpen();
       } else if (section === 'profile') {
         openProfileModal();
       } else if (section === 'settings') {
         openSettingsModal();
       }
     }
+
+    // SKELETON RENDERERS
+    function renderTestSkeletons() {
+      const container = $('cards');
+      if (!container) return;
+      container.innerHTML = `
+        <div class="skeleton-test-grid">
+          <div class="skeleton-card"><div class="skeleton-line pill"></div><div class="skeleton-line title"></div><div class="skeleton-line text"></div><div class="skeleton-line btn"></div></div>
+          <div class="skeleton-card"><div class="skeleton-line pill"></div><div class="skeleton-line title"></div><div class="skeleton-line text"></div><div class="skeleton-line btn"></div></div>
+          <div class="skeleton-card"><div class="skeleton-line pill"></div><div class="skeleton-line title"></div><div class="skeleton-line text"></div><div class="skeleton-line btn"></div></div>
+        </div>
+      `;
+    }
+
+    function renderResultsSkeletons() {
+      const container = $('resultsList');
+      if (!container) return;
+      container.innerHTML = `
+        <div class="skeleton-row-item"><div class="skeleton-line title" style="width:60%"></div><div class="skeleton-line text" style="width:40%"></div></div>
+        <div class="skeleton-row-item"><div class="skeleton-line title" style="width:55%"></div><div class="skeleton-line text" style="width:45%"></div></div>
+        <div class="skeleton-row-item"><div class="skeleton-line title" style="width:65%"></div><div class="skeleton-line text" style="width:35%"></div></div>
+      `;
+    }
+
+    function renderResourceSkeletons() {
+      const container = $('resourceList');
+      if (!container) return;
+      container.innerHTML = `
+        <div class="skeleton-row-item"><div class="skeleton-line title" style="width:60%"></div><div class="skeleton-line text" style="width:40%"></div></div>
+        <div class="skeleton-row-item"><div class="skeleton-line title" style="width:50%"></div><div class="skeleton-line text" style="width:70%"></div></div>
+      `;
+    }
+
+    // DEDICATED STUDENT FEATURE HANDLERS
+    async function liveClassesOpen(forceRefresh = false) {
+      if (!isLoggedIn()) {
+        navSignInClick();
+        return;
+      }
+      closeAllOverlays();
+      setActiveNavLink('live');
+
+      const content = $('liveModalContent');
+      if (content) {
+        content.innerHTML = `
+          <div style="text-align:center;padding:30px 16px">
+            <div class="skeleton-line title" style="width:50%;margin:0 auto 12px"></div>
+            <div class="skeleton-line text" style="width:70%;margin:0 auto"></div>
+            <p style="margin-top:16px;color:var(--text-muted);font-size:13px">Checking live broadcast status...</p>
+          </div>
+        `;
+      }
+      show('liveModal');
+
+      try {
+        const live = await api('live-class');
+        const isLive = live && live.active;
+
+        const banner = $('studentLiveBanner');
+        const liveCardVal = $('studentLiveCardValue');
+        const navLivePulse = $('mobileNavLivePulse');
+
+        if (isLive) {
+          if (banner) {
+            $('studentLiveTitle').textContent = live.title || 'NEET Live Interactive Session';
+            $('studentLiveTeacher').textContent = 'Teacher: ' + (live.teacher || 'Faculty') + ' · Broadcasting Live';
+            banner.style.display = 'flex';
+          }
+          if (liveCardVal) liveCardVal.textContent = '● LIVE NOW';
+          if (navLivePulse) navLivePulse.style.display = 'inline-block';
+
+          if (content) {
+            content.innerHTML = `
+              <div class="live-active-card" style="background:#0f172a;color:#ffffff;padding:24px;border-radius:16px;text-align:center;box-shadow:0 12px 30px rgba(0,0,0,0.25)">
+                <span class="tag" style="background:#dc2626;color:#ffffff;font-size:12px;font-weight:800;padding:4px 12px;display:inline-flex;align-items:center;gap:6px;margin-bottom:12px">
+                  <span class="live-pulse-dot"></span>BROADCASTING LIVE NOW
+                </span>
+                <h2 style="margin:8px 0 6px;color:#ffffff;font-size:22px;font-weight:800">${esc(live.title || 'NEET High-Yield Live Lecture')}</h2>
+                <p style="margin:0 0 16px;color:#cbd5e1;font-size:14px">Instructor: <b>${esc(live.teacher || 'Faculty')}</b> · Interactive WebRTC Session</p>
+                <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+                  <button type="button" class="landing-btn-primary" style="padding:12px 24px;font-size:15px" onclick="hide('liveModal');joinLiveClass()">
+                    🎥 Join Live Classroom Now →
+                  </button>
+                  <button type="button" class="light" style="padding:12px 18px;font-size:14px;background:#334155;color:#ffffff;border-color:#475569" onclick="hide('liveModal');closeAllOverlays()">
+                    Close
+                  </button>
+                </div>
+                <p style="margin:16px 0 0;font-size:12px;color:#94a3b8">💡 The full session will be auto-saved into Notes & Videos once broadcast concludes.</p>
+              </div>
+            `;
+          }
+        } else {
+          if (banner) banner.style.display = 'none';
+          if (liveCardVal) liveCardVal.textContent = 'Off-Air';
+          if (navLivePulse) navLivePulse.style.display = 'none';
+
+          if (content) {
+            content.innerHTML = `
+              <div class="empty-state-card" style="padding:32px 16px;text-align:center">
+                <span class="empty-state-icon" style="font-size:44px;display:block;margin-bottom:12px">📡</span>
+                <h3 class="empty-state-title" style="font-size:20px;font-weight:800;color:var(--text-primary);margin:0 0 6px">No Live Classes Right Now</h3>
+                <p class="empty-state-desc" style="max-width:440px;margin:0 auto 20px;font-size:13.5px;color:var(--text-secondary);line-height:1.5">
+                  Faculty broadcasts live chapter problem-solving sessions and doubt marathons. When a class begins, you'll see a notification banner right here on your screen.
+                </p>
+                <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+                  <button type="button" class="landing-btn-primary" style="padding:10px 20px;font-size:13.5px" onclick="hide('liveModal');libraryOpen()">
+                    📚 Browse Recorded Notes & Videos →
+                  </button>
+                  <button type="button" class="light" style="padding:10px 16px;font-size:13.5px" onclick="liveClassesOpen(true)">
+                    Check Again ↻
+                  </button>
+                </div>
+              </div>
+            `;
+          }
+        }
+      } catch (err) {
+        if (content) {
+          content.innerHTML = `
+            <div class="empty-state-card error-state-card" style="padding:28px 16px;text-align:center">
+              <span class="empty-state-icon" style="font-size:36px;display:block;margin-bottom:10px">⚠️</span>
+              <h4 class="empty-state-title">Unable to Check Live Status</h4>
+              <p class="empty-state-desc">${esc(err.message || 'Server is waking up. Please try again.')}</p>
+              <button type="button" class="retry-state-btn" onclick="liveClassesOpen(true)">Check Again ↻</button>
+            </div>
+          `;
+        }
+      }
+    }
+    window.liveClassesOpen = liveClassesOpen;
+
+    async function communityOpen() {
+      if (!isLoggedIn()) {
+        navSignInClick();
+        return;
+      }
+      closeAllOverlays();
+      setActiveNavLink('community');
+      show('communityModal');
+
+      if (typeof window.loadChatMessages === 'function') {
+        window.loadChatMessages();
+      } else {
+        setTimeout(() => {
+          if (typeof window.loadChatMessages === 'function') window.loadChatMessages();
+        }, 300);
+      }
+    }
+    window.communityOpen = communityOpen;
+
+    async function calendarOpen() {
+      if (!isLoggedIn()) {
+        navSignInClick();
+        return;
+      }
+      closeAllOverlays();
+      setActiveNavLink('calendar');
+      show('calendarModal');
+
+      if (typeof window.loadPlans === 'function') {
+        window.loadPlans();
+      } else {
+        setTimeout(() => {
+          if (typeof window.loadPlans === 'function') window.loadPlans();
+        }, 300);
+      }
+    }
+    window.calendarOpen = calendarOpen;
 
     function openTeacherSection(sec) {
       closeAllOverlays();
@@ -5490,27 +5952,41 @@
       return v ? new Date(v).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }) : 'Available now';
     }
 
-    async function loadStudentDashboard() {
+    async function loadStudentDashboard(forceRefresh = false) {
       if (!token || user?.role !== 'student') return;
       hideInitialLoader();
+
+      const container = $('cards');
+      if (container && (!tests || !tests.length || forceRefresh)) {
+        renderTestSkeletons();
+      }
+
       try {
         tests = await api('tests');
-        if ($('studentTestCount')) $('studentTestCount').textContent = tests.length;
-
+        if ($('studentTestCount')) $('studentTestCount').textContent = tests ? tests.length : 0;
         renderStudentTestCards();
 
-        // Non-blocking secondary metrics
         api('resources').then(r => {
-          if ($('studentResourceCount')) $('studentResourceCount').textContent = r.length;
+          if ($('studentResourceCount') && Array.isArray(r)) $('studentResourceCount').textContent = r.length;
         }).catch(err => console.warn('[Student Dashboard] resources metric error:', err));
 
         api('my-results').then(a => {
-          if ($('studentAttemptCount')) $('studentAttemptCount').textContent = a.length;
+          if ($('studentAttemptCount') && Array.isArray(a)) $('studentAttemptCount').textContent = a.length;
         }).catch(err => console.warn('[Student Dashboard] results metric error:', err));
 
         checkStudentLiveStatus();
       } catch (e) {
         console.error('[Student Dashboard Error]', e);
+        if (container && (!tests || !tests.length)) {
+          container.innerHTML = `
+            <div class="empty-state-card error-state-card wide" style="grid-column:1/-1;text-align:center;padding:28px 16px">
+              <span class="empty-state-icon" style="font-size:36px;display:block;margin-bottom:8px">⚠️</span>
+              <h4 class="empty-state-title">Unable to Load Chapter Tests</h4>
+              <p class="empty-state-desc">${esc(e.message || 'The server is currently starting up (Render cold start).')}</p>
+              <button type="button" class="retry-state-btn" onclick="loadStudentDashboard(true)">Retry Loading Tests ↻</button>
+            </div>
+          `;
+        }
       } finally {
         hideInitialLoader();
       }
@@ -6614,21 +7090,42 @@
     // =========================================================================
     let currentLibraryFilter = 'all';
 
-    async function libraryOpen() {
-      if (!user) { logoutUser(); return; }
+    async function libraryOpen(forceRefresh = false) {
+      if (!isLoggedIn()) {
+        navSignInClick();
+        return;
+      }
+      closeAllOverlays();
+      setActiveNavLink('notes');
+
+      const container = $('resourceList');
+      if (container && (!container.children.length || !allResources || !allResources.length || forceRefresh)) {
+        renderResourceSkeletons();
+      }
+      show('library');
+
       try {
-        ['test', 'results', 'upload', 'profileModal', 'settingsModal'].forEach(hide);
         allResources = await api('resources');
         const canManage = user?.role === 'admin' || user?.role === 'teacher';
 
         renderLibraryList();
 
-        $('uploadLink').innerHTML = canManage
-          ? '<button onclick="show(\'upload\')">+ Upload Study Material / Video</button>'
-          : '';
-        show('library');
+        if ($('uploadLink')) {
+          $('uploadLink').innerHTML = canManage
+            ? '<button onclick="show(\'upload\')">+ Upload Study Material / Video</button>'
+            : '';
+        }
       } catch (e) {
-        alert(e.message);
+        if (container) {
+          container.innerHTML = `
+            <div class="empty-state-card error-state-card" style="padding:24px 16px;text-align:center">
+              <span class="empty-state-icon" style="font-size:32px;display:block;margin-bottom:8px">⚠️</span>
+              <h4 class="empty-state-title">Unable to Load Study Material</h4>
+              <p class="empty-state-desc">${esc(e.message || 'Server is warming up. Please try again.')}</p>
+              <button type="button" class="retry-state-btn" onclick="libraryOpen(true)">Retry Notes & Videos ↻</button>
+            </div>
+          `;
+        }
       }
     }
 
@@ -6720,12 +7217,22 @@
     // =========================================================================
     // RESULTS & REVIEW
     // =========================================================================
-    async function resultsOpen() {
-      if (!user) { logoutUser(); return; }
+    async function resultsOpen(forceRefresh = false) {
+      if (!isLoggedIn()) {
+        navSignInClick();
+        return;
+      }
+      closeAllOverlays();
+      setActiveNavLink('results');
+
+      const container = $('resultsList');
+      if (container && (!container.children.length || forceRefresh)) {
+        renderResultsSkeletons();
+      }
+      show('results');
+
       try {
-        ['test', 'library', 'upload', 'profileModal', 'settingsModal'].forEach(hide);
         let r = await api('my-results');
-        const container = $('resultsList');
         if (!container) return;
 
         if (!r.length) {
@@ -6734,7 +7241,7 @@
               <span class="empty-state-icon">📊</span>
               <h4 class="empty-state-title">No Test Attempts Yet</h4>
               <p class="empty-state-desc">Take a chapter mock test from the schedule to track your scores and analyze mistakes here.</p>
-              <button style="margin-top:16px" onclick="hide('results');scrollToSchedule()">Browse Test Schedule →</button>
+              <button style="margin-top:16px" onclick="hide('results');closeAllOverlays();scrollToSchedule()">Browse Test Schedule →</button>
             </div>
           `;
         } else {
@@ -6748,7 +7255,7 @@
                   <b style="display:block;font-size:15px;margin:4px 0 2px">${esc(x.title)}</b>
                   <small class="muted">Attempted on ${new Date(x.createdAt).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}</small>
                 </div>
-                <div style="display:flex;align-items:center;gap:12px">
+                <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
                   <span class="tag ${tagClass}" style="font-size:13px;padding:5px 12px">${x.score}/${x.total} · ${pct}%</span>
                   <button class="light" style="padding:7px 14px;font-size:13px;font-weight:700" onclick="viewReview(${x.id})">Review Answers →</button>
                 </div>
@@ -6756,9 +7263,17 @@
             `;
           }).join('');
         }
-        show('results');
       } catch (e) {
-        alert(e.message);
+        if (container) {
+          container.innerHTML = `
+            <div class="empty-state-card error-state-card" style="padding:24px 16px;text-align:center">
+              <span class="empty-state-icon" style="font-size:32px;display:block;margin-bottom:8px">⚠️</span>
+              <h4 class="empty-state-title">Unable to Load Results</h4>
+              <p class="empty-state-desc">${esc(e.message || 'Server is waking up. Please try again.')}</p>
+              <button type="button" class="retry-state-btn" onclick="resultsOpen(true)">Retry Results ↻</button>
+            </div>
+          `;
+        }
       }
     }
 
@@ -6897,10 +7412,58 @@
       alert('Preferences saved.');
     }
 
+    // Netlify floating badge protector: ensures bottom nav is never covered
+    (function protectBottomNav() {
+      function repositionBadges() {
+        if (window.innerWidth > 768) return;
+        const selectors = [
+          '#netlify-badge',
+          '[data-netlify-badge]',
+          '.netlify-badge',
+          '[data-netlify-deploy-id]',
+          'iframe[src*="netlify"]',
+          'a[href*="netlify.com"]',
+          'div[style*="fixed"][style*="bottom"]',
+          'div[style*="position: fixed"][style*="bottom"]',
+          'div[style*="position:fixed"][style*="bottom"]'
+        ];
+        selectors.forEach(sel => {
+          document.querySelectorAll(sel).forEach(el => {
+            if (el.id === 'mobileBottomNav' || el.closest('#mobileBottomNav') || el.id === 'backendWakingBanner') return;
+            el.style.setProperty('bottom', 'calc(68px + env(safe-area-inset-bottom, 0px))', 'important');
+            el.style.setProperty('z-index', '99990', 'important');
+          });
+        });
+      }
+
+      document.addEventListener('DOMContentLoaded', repositionBadges);
+      window.addEventListener('load', repositionBadges);
+      window.addEventListener('resize', repositionBadges);
+
+      try {
+        const obs = new MutationObserver(() => repositionBadges());
+        obs.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+      } catch (_) {}
+    })();
+
+    // Hash & Route change listener
+    window.addEventListener('hashchange', () => {
+      if (!isLoggedIn()) return;
+      const hash = (window.location.hash || '').toLowerCase().replace(/^#\/?/, '');
+      if (['results', 'notes', 'library', 'community', 'live', 'calendar', 'profile', 'practice', 'mock-tests', 'home'].includes(hash)) {
+        navGoTo(hash);
+      }
+    });
+
     // Initialize application state
     applyViewState();
     if (isLoggedIn()) {
       syncProfileWithSupabase();
+      // Handle initial hash routing
+      const initHash = (window.location.hash || '').toLowerCase().replace(/^#\/?/, '');
+      if (['results', 'notes', 'library', 'community', 'live', 'calendar', 'profile', 'practice', 'mock-tests'].includes(initHash)) {
+        setTimeout(() => navGoTo(initHash), 250);
+      }
     }
 
     // Fail-safe: loader is always dismissed even on very slow networks
@@ -6913,18 +7476,19 @@
         const start = Date.now();
         const ctrl = new AbortController();
         const tid = setTimeout(() => ctrl.abort(), 15000);
-        const res = await fetch(`${API_BASE_URL}/api/health`, {
+        const res = await fetch(API_BASE_URL + '/api/health', {
           signal: ctrl.signal,
           headers: { 'Accept': 'application/json' }
         });
         clearTimeout(tid);
         if (res.ok) {
-          console.log(`[PN Neet Diw] Backend service is healthy (${Date.now() - start}ms) at ${API_BASE_URL}`);
+          console.log('[PN Neet Diw] Backend service is healthy (' + (Date.now() - start) + 'ms) at ' + API_BASE_URL);
+          onBackendAwake();
         } else {
-          console.warn(`[PN Neet Diw] Health check returned HTTP ${res.status}`);
+          console.warn('[PN Neet Diw] Health check returned HTTP ' + res.status);
         }
       } catch (err) {
-        console.warn(`[PN Neet Diw] Startup health ping failed (Render cold start): ${err.message}`);
+        console.warn('[PN Neet Diw] Startup health ping failed (Render cold start): ' + err.message);
       }
     })();
   </script>

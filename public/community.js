@@ -393,25 +393,37 @@
 
   window.communityOpen = async function () {
     if (!user) {
-      if (typeof loginOpen === 'function') loginOpen();
+      if (typeof navSignInClick === 'function') navSignInClick();
+      else if (typeof loginOpen === 'function') loginOpen();
       return;
     }
-    ['library', 'results', 'upload', 'profileModal', 'settingsModal'].forEach(hide);
+    if (typeof closeAllOverlays === 'function') closeAllOverlays();
+    if (typeof setActiveNavLink === 'function') setActiveNavLink('community');
 
-    $('testBox').innerHTML = `
+    const modalId = $('communityModal') ? 'communityModal' : 'test';
+    const boxId = $('communityBox') ? 'communityBox' : 'testBox';
+
+    $(boxId).innerHTML = `
       <div class="chat-modal-box">
         <div class="chat-header">
           <div>
             <h3>💬 NEET Community Chat</h3>
             <span class="chat-header-status">Respectful Doubts & Discussion</span>
           </div>
-          <button class="close" onclick="hide('test')" style="position:static">✕</button>
+          <button class="close" onclick="hide('${modalId}');if(typeof setActiveNavLink==='function')setActiveNavLink('home')" style="position:static" aria-label="Close Community Chat">✕</button>
         </div>
         <div class="chat-guideline">
           Ask doubts directly, reply to discuss concepts, attach questions, and support fellow NEET aspirants.
         </div>
         <div class="chat-feed" id="chatFeed">
-          <p class="muted" style="text-align:center;padding:20px">Loading chat messages...</p>
+          <div class="skeleton-card" style="padding:14px;margin-bottom:8px">
+            <div class="skeleton-line title" style="width:40%"></div>
+            <div class="skeleton-line text" style="width:75%"></div>
+          </div>
+          <div class="skeleton-card" style="padding:14px;margin-bottom:8px">
+            <div class="skeleton-line title" style="width:35%"></div>
+            <div class="skeleton-line text" style="width:85%"></div>
+          </div>
         </div>
         <div class="chat-composer-wrap">
           <div id="replyTargetBar" style="display:none" class="chat-reply-target-bar">
@@ -432,7 +444,7 @@
         </div>
       </div>
     `;
-    show('test');
+    show(modalId);
 
     // Wire up image input change
     const fileInput = $('chatFileInput');
@@ -603,7 +615,16 @@
       feed.scrollTop = feed.scrollHeight;
     } catch (e) {
       const feed = $('chatFeed');
-      if (feed) feed.innerHTML = `<p class="muted" style="color:#ce3b3b;padding:20px">${esc(e.message)}</p>`;
+      if (feed) {
+        feed.innerHTML = `
+          <div class="empty-state-card error-state-card" style="padding:24px 16px;text-align:center">
+            <span class="empty-state-icon" style="font-size:32px;display:block;margin-bottom:8px">⚠️</span>
+            <h4 class="empty-state-title" style="margin:0 0 6px">Could Not Load Messages</h4>
+            <p class="empty-state-desc" style="margin:0 0 12px;font-size:13px">${esc(e.message || 'Server is starting up')}</p>
+            <button type="button" class="retry-state-btn" onclick="loadChatMessages()">Retry Chat ↻</button>
+          </div>
+        `;
+      }
     }
   }
 
@@ -695,10 +716,19 @@
 
   // Modern Study Calendar feature
   window.calendarOpen = async function () {
-    if (!user) { applyViewState(); return; }
-    ['library', 'results', 'upload', 'profileModal', 'settingsModal'].forEach(hide);
-    $('testBox').innerHTML = `
-      <button class="close" onclick="hide('test')">✕</button>
+    if (!user) {
+      if (typeof navSignInClick === 'function') navSignInClick();
+      else if (typeof applyViewState === 'function') applyViewState();
+      return;
+    }
+    if (typeof closeAllOverlays === 'function') closeAllOverlays();
+    if (typeof setActiveNavLink === 'function') setActiveNavLink('calendar');
+
+    const modalId = $('calendarModal') ? 'calendarModal' : 'test';
+    const boxId = $('calendarBox') ? 'calendarBox' : 'testBox';
+
+    $(boxId).innerHTML = `
+      <button class="close" onclick="hide('${modalId}');if(typeof setActiveNavLink==='function')setActiveNavLink('home')" aria-label="Close Study Calendar">✕</button>
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
         <span class="tag">Daily Revision Tracker</span>
       </div>
@@ -731,9 +761,11 @@
       <div class="section-head" style="margin:24px 0 12px">
         <h3 style="margin:0;font-size:17px">Scheduled Study Sessions</h3>
       </div>
-      <div id="planList"></div>
+      <div id="planList">
+        <div class="skeleton-card"><div class="skeleton-line title" style="width:50%"></div><div class="skeleton-line text" style="width:80%"></div></div>
+      </div>
     `;
-    show('test');
+    show(modalId);
     await loadPlans();
   };
 
@@ -769,7 +801,17 @@
           </div>
         </div>
       `).join('');
-    } catch (_) {}
+    } catch (e) {
+      const list = $('planList');
+      if (list) {
+        list.innerHTML = `
+          <div class="empty-state-card error-state-card" style="padding:20px;text-align:center">
+            <p class="empty-state-desc" style="margin:0 0 10px">${esc(e.message || 'Unable to load study plan')}</p>
+            <button type="button" class="retry-state-btn" onclick="loadPlans()">Retry ↻</button>
+          </div>
+        `;
+      }
+    }
   }
 
   window.savePlan = async function () {
